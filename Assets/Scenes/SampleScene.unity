@@ -1294,6 +1294,7 @@ GameObject:
   - component: {fileID: 1419076724}
   - component: {fileID: 1419076723}
   - component: {fileID: 1419076722}
+  - component: {fileID: 1419076726}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1385,6 +1386,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1419076726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419076721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e10cfbc49b2b9eb41a4240c8e5f8b75b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PrograMago.Unity::PrograMago.UnityIntegration.GameplayBootstrapper
+  codeInput: {fileID: 270336642}
+  feedbackText: {fileID: 0}
+  wizardPlaceholder: {fileID: 153569262}
+  submitButton: {fileID: 0}
+  restartButton: {fileID: 0}
 --- !u!1 &1495335285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,8 +1547,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Comece a codar aqui!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1577,13 +1595,13 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
   m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
-  m_isOrthographic: 0
+  m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
   m_verticalMapping: 0

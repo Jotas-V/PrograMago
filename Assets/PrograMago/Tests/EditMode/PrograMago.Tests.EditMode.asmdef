@@ -1,0 +1,17 @@
+{
+  "name": "PrograMago.Tests.EditMode",
+  "rootNamespace": "PrograMago.Tests",
+  "references": [
+    "PrograMago.Domain",
+    "PrograMago.Language",
+    "PrograMago.Application",
+    "PrograMago.Presentation"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "autoReferenced": false
+}

@@ -1,0 +1,10 @@
+{
+  "name": "PrograMago.Presentation",
+  "rootNamespace": "PrograMago.Presentation",
+  "references": [
+    "PrograMago.Domain",
+    "PrograMago.Application",
+    "PrograMago.Language"
+  ],
+  "autoReferenced": false
+}

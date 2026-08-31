@@ -1,0 +1,13 @@
+{
+  "name": "PrograMago.Unity",
+  "rootNamespace": "PrograMago.Unity",
+  "references": [
+    "PrograMago.Domain",
+    "PrograMago.Language",
+    "PrograMago.Application",
+    "PrograMago.Presentation",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro"
+  ],
+  "autoReferenced": false
+}
