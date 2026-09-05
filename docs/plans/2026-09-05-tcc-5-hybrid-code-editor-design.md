@@ -18,7 +18,7 @@ final do protótipo ele será a fronteira entre edição e batalha automática.
 - Não exibir diagnósticos durante a digitação.
 - Validar o código completo somente quando o jogador clicar em **Batalhar**.
 - Preservar o código após tentativas válidas e inválidas.
-- Exibir sucesso ou orientação de erro no painel lateral após a validação.
+- Exibir somente orientação de erro no painel lateral após a validação.
 - Manter somente o botão **Batalhar**; não oferecer ações de limpar ou
   restaurar.
 
@@ -51,7 +51,8 @@ incremento futuro.
 1. O jogador clica em **Batalhar**.
 2. Todo o conteúdo do editor é tokenizado e validado.
 3. A sessão recebe o resultado validado.
-4. A arena permanece coerente com o código e o painel confirma o sucesso.
+4. A arena permanece coerente com o código e o painel não exibe mensagem de
+   sucesso; a resposta positiva é exclusivamente visual.
 5. O texto do editor não é alterado.
 
 ### Batalhar com código inválido
@@ -73,9 +74,10 @@ A apresentação terá duas operações distintas:
   validados à sessão e apresenta sucesso ou diagnóstico.
 
 O `GameplayBootstrapper` conectará `TMP_InputField.onValueChanged` à prévia e o
-`Button.onClick` à batalha. Ele também garantirá que o campo esteja configurado
-como multilinha e criará o botão **Batalhar** quando a cena ainda não possuir
-uma referência serializada.
+`Button.onClick` à batalha. O campo multilinha, o botão **Batalhar** e o texto de
+feedback devem existir na cena e ser fornecidos por referências serializadas.
+Referências ausentes são erro de configuração; a interface não será montada em
+tempo de execução.
 
 As regras de sintaxe permanecem nas camadas de linguagem e aplicação. O código
 do jogador nunca é compilado nem executado diretamente. A integração Unity não
@@ -97,20 +99,31 @@ As seguintes garantias devem ser mantidas:
 - a interface não oferece atalhos que apaguem o código do jogador;
 - múltiplas validações não duplicam estado nem entidades.
 
-## Posicionamento do botão
+## Composição da cena
 
 O botão **Batalhar** ficará na faixa inferior do editor, separado do painel
 lateral e com contraste suficiente para representar a principal ação da tela.
-Nesta entrega ele poderá continuar sendo criado pelo ponto de composição em
-tempo de execução; a posterior incorporação definitiva na cena não mudará o
-contrato da apresentação.
+Ele será um objeto permanente da cena, visível e ajustável também fora do Play
+Mode.
+
+O `TutorialPanel` formará uma coluna própria à direita do editor:
+
+- `Title`: título pequeno no topo, identificando o conteúdo estudado;
+- `ObjectiveText`: instrução da atividade abaixo do título;
+- `FeedbackText`: área de erros abaixo do objetivo, vazia no estado inicial.
+
+Esses três textos devem permanecer contidos pelo `TutorialPanel`, sem sobrepor
+o `CodeInput`. Eles não podem repetir o código do editor nem capturar raycasts.
+O `FeedbackText` existente será reutilizado pela integração, em vez da criação
+de um texto alternativo em tempo de execução.
 
 ## Tratamento de erros
 
 Diagnósticos serão exibidos apenas após o clique em **Batalhar**. A mensagem
 deve indicar o tipo do problema e sua posição quando disponível. Entrada vazia,
 estrutura incompleta, nome incorreto e caracteres desconhecidos não podem
-travar a cena nem modificar o texto.
+travar a cena nem modificar o texto. Uma validação bem-sucedida apenas remove
+um erro anterior; não apresenta confirmação textual.
 
 ## Estratégia de testes
 
@@ -119,10 +132,13 @@ O trabalho seguirá RED–GREEN–REFACTOR:
 1. teste de apresentação para prévia válida e inválida sem feedback;
 2. teste de apresentação garantindo que editar limpa feedback antigo;
 3. teste de apresentação para validação explícita preservando o texto;
-4. teste Play Mode para configuração multilinha;
-5. teste Play Mode para prévia acionada pela alteração do campo;
-6. teste Play Mode para o botão **Batalhar**, sucesso, erro e preservação do
-   conteúdo.
+4. teste da cena para configuração editável e multilinha, sem elementos do
+   painel lateral bloqueando o foco ou os raycasts do editor;
+5. teste da cena comprovando que botão e feedback são objetos persistidos e
+   referenciados, não filhos criados em runtime;
+6. teste Play Mode para prévia acionada pela alteração do campo;
+7. teste Play Mode para o botão **Batalhar**, erro, ausência de mensagem de
+   sucesso e preservação do conteúdo.
 
 Cada comportamento novo deve falhar pela ausência da funcionalidade antes da
 alteração de produção. Ao final, as suítes Edit Mode e Play Mode devem passar
