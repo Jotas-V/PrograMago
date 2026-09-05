@@ -10,13 +10,10 @@ namespace PrograMago.UnityIntegration
 {
     public sealed class GameplayBootstrapper : MonoBehaviour, ICodeEditorView, IFeedbackView, IArenaView
     {
-        private const string StarterCode = "public class Mago {\n\n}";
-
         [SerializeField] private TMP_InputField codeInput;
         [SerializeField] private TMP_Text feedbackText;
         [SerializeField] private GameObject wizardPlaceholder;
-        [SerializeField] private Button submitButton;
-        [SerializeField] private Button restartButton;
+        [SerializeField] private Button battleButton;
 
         private GameplayPresenter presenter;
 
@@ -36,8 +33,9 @@ namespace PrograMago.UnityIntegration
                 return;
             }
 
+            codeInput.lineType = TMP_InputField.LineType.MultiLineNewline;
             feedbackText ??= CreateFeedbackText();
-            CreateButtonsWhenMissing();
+            CreateBattleButtonWhenMissing();
             wizardPlaceholder.SetActive(false);
 
             var session = new LearningSession(new ExerciseDefinition(
@@ -46,14 +44,12 @@ namespace PrograMago.UnityIntegration
                 "Declare a classe Mago."));
             presenter = new GameplayPresenter(
                 new SubmitCodeUseCase(new CodeTokenizer(), new ClassDeclarationValidator(), session),
-                new RestartSessionUseCase(session),
                 this,
                 this,
-                this,
-                StarterCode);
+                this);
 
-            submitButton.onClick.AddListener(presenter.Submit);
-            restartButton.onClick.AddListener(presenter.Restart);
+            battleButton.onClick.AddListener(presenter.Battle);
+            codeInput.onValueChanged.AddListener(HandleCodeChanged);
         }
 
         private void OnDestroy()
@@ -63,8 +59,8 @@ namespace PrograMago.UnityIntegration
                 return;
             }
 
-            submitButton.onClick.RemoveListener(presenter.Submit);
-            restartButton.onClick.RemoveListener(presenter.Restart);
+            battleButton.onClick.RemoveListener(presenter.Battle);
+            codeInput.onValueChanged.RemoveListener(HandleCodeChanged);
         }
 
         public void ShowSuccess(string message)
@@ -89,6 +85,11 @@ namespace PrograMago.UnityIntegration
         public void SetClassDeclared(bool hasDeclaredClass)
         {
             wizardPlaceholder.SetActive(hasDeclaredClass);
+        }
+
+        private void HandleCodeChanged(string _)
+        {
+            presenter.Preview();
         }
 
         private void ResolveSceneReferences()
@@ -137,20 +138,14 @@ namespace PrograMago.UnityIntegration
             return null;
         }
 
-        private void CreateButtonsWhenMissing()
+        private void CreateBattleButtonWhenMissing()
         {
-            submitButton ??= CreateButton(
-                "SubmitButton",
-                "Executar",
-                new Vector2(0.08f, 0.04f),
-                new Vector2(0.20f, 0.11f),
+            battleButton ??= CreateButton(
+                "BattleButton",
+                "Batalhar",
+                new Vector2(0.52f, 0.04f),
+                new Vector2(0.65f, 0.11f),
                 new Color32(91, 74, 190, 255));
-            restartButton ??= CreateButton(
-                "RestartButton",
-                "Reiniciar",
-                new Vector2(0.22f, 0.04f),
-                new Vector2(0.34f, 0.11f),
-                new Color32(76, 81, 105, 255));
         }
 
         private Button CreateButton(

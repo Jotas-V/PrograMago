@@ -6,32 +6,26 @@ namespace PrograMago.Presentation
     public sealed class GameplayPresenter
     {
         private readonly SubmitCodeUseCase submitCode;
-        private readonly RestartSessionUseCase restartSession;
         private readonly ICodeEditorView editor;
         private readonly IFeedbackView feedback;
         private readonly IArenaView arena;
-        private readonly string starterCode;
 
         public GameplayPresenter(
             SubmitCodeUseCase submitCode,
-            RestartSessionUseCase restartSession,
             ICodeEditorView editor,
             IFeedbackView feedback,
-            IArenaView arena,
-            string starterCode)
+            IArenaView arena)
         {
             this.submitCode = submitCode ?? throw new ArgumentNullException(nameof(submitCode));
-            this.restartSession = restartSession ?? throw new ArgumentNullException(nameof(restartSession));
             this.editor = editor ?? throw new ArgumentNullException(nameof(editor));
             this.feedback = feedback ?? throw new ArgumentNullException(nameof(feedback));
             this.arena = arena ?? throw new ArgumentNullException(nameof(arena));
-            this.starterCode = starterCode ?? throw new ArgumentNullException(nameof(starterCode));
         }
 
-        public void Submit()
+        public void Battle()
         {
             SubmitCodeResult result = submitCode.Execute(editor.SourceCode);
-            arena.SetClassDeclared(result.HasDeclaredClass);
+            arena.SetClassDeclared(result.IsSuccess);
 
             if (result.IsSuccess)
             {
@@ -42,12 +36,10 @@ namespace PrograMago.Presentation
             feedback.ShowError(result.Diagnostic);
         }
 
-        public void Restart()
+        public void Preview()
         {
-            bool hasDeclaredClass = restartSession.Execute();
-            editor.SourceCode = starterCode;
             feedback.Clear();
-            arena.SetClassDeclared(hasDeclaredClass);
+            arena.SetClassDeclared(submitCode.CanPreview(editor.SourceCode));
         }
     }
 }

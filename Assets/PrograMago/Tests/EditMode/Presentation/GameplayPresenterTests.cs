@@ -8,17 +8,15 @@ namespace PrograMago.Tests.Presentation
 {
     public sealed class GameplayPresenterTests
     {
-        private const string StarterCode = "public class Mago {\n\n}";
-
         [Test]
-        public void Submit_ValidCode_ShowsSuccessAndRevealsWizard()
+        public void Battle_ValidCode_ShowsSuccessAndRevealsWizard()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
             var feedback = new FakeFeedbackView();
             var arena = new FakeArenaView();
             GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
 
-            presenter.Submit();
+            presenter.Battle();
 
             Assert.That(feedback.SuccessMessage, Is.Not.Empty);
             Assert.That(feedback.Diagnostic, Is.Null);
@@ -26,30 +24,14 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
-        public void Restart_AfterSuccess_RestoresInitialPresentationState()
-        {
-            var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
-            var feedback = new FakeFeedbackView();
-            var arena = new FakeArenaView();
-            GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
-            presenter.Submit();
-
-            presenter.Restart();
-
-            Assert.That(editor.SourceCode, Is.EqualTo(StarterCode));
-            Assert.That(feedback.WasCleared, Is.True);
-            Assert.That(arena.HasDeclaredClass, Is.False);
-        }
-
-        [Test]
-        public void Submit_InvalidCode_ShowsDiagnosticAndKeepsWizardHidden()
+        public void Battle_InvalidCode_ShowsDiagnosticAndKeepsWizardHidden()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Bruxo {}" };
             var feedback = new FakeFeedbackView();
             var arena = new FakeArenaView();
             GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
 
-            presenter.Submit();
+            presenter.Battle();
 
             Assert.That(feedback.SuccessMessage, Is.Null);
             Assert.That(feedback.Diagnostic.Code, Is.EqualTo("CLASS001"));
@@ -57,20 +39,52 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
-        public void Submit_InvalidCodeAfterSuccess_PreservesWizardAndShowsDiagnostic()
+        public void Battle_InvalidCodeAfterSuccess_PreservesSessionButHidesCurrentPreview()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
             var feedback = new FakeFeedbackView();
             var arena = new FakeArenaView();
             GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
-            presenter.Submit();
+            presenter.Battle();
             editor.SourceCode = "class public Mago {}";
 
-            presenter.Submit();
+            presenter.Battle();
 
             Assert.That(feedback.SuccessMessage, Is.Null);
             Assert.That(feedback.Diagnostic.Code, Is.EqualTo("SYN001"));
+            Assert.That(arena.HasDeclaredClass, Is.False);
+        }
+
+        [Test]
+        public void Preview_ValidCode_RevealsWizardWithoutShowingFeedback()
+        {
+            var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
+
+            presenter.Preview();
+
             Assert.That(arena.HasDeclaredClass, Is.True);
+            Assert.That(feedback.WasCleared, Is.True);
+            Assert.That(feedback.SuccessMessage, Is.Null);
+            Assert.That(feedback.Diagnostic, Is.Null);
+        }
+
+        [Test]
+        public void Preview_InvalidCode_HidesWizardWithoutShowingFeedback()
+        {
+            var editor = new FakeCodeEditorView { SourceCode = "public class Bruxo {}" };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
+
+            presenter.Preview();
+
+            Assert.That(arena.HasDeclaredClass, Is.False);
+            Assert.That(feedback.WasCleared, Is.True);
+            Assert.That(feedback.SuccessMessage, Is.Null);
+            Assert.That(feedback.Diagnostic, Is.Null);
         }
 
         private static GameplayPresenter CreatePresenter(
@@ -86,8 +100,7 @@ namespace PrograMago.Tests.Presentation
                 new CodeTokenizer(),
                 new ClassDeclarationValidator(),
                 session);
-            var restart = new RestartSessionUseCase(session);
-            return new GameplayPresenter(submit, restart, editor, feedback, arena, StarterCode);
+            return new GameplayPresenter(submit, editor, feedback, arena);
         }
 
         private sealed class FakeCodeEditorView : ICodeEditorView

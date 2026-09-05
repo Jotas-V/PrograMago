@@ -64,6 +64,30 @@ namespace PrograMago.Tests.Application
             Assert.That(session.HasDeclaredClass, Is.True);
         }
 
+        [Test]
+        public void CanPreview_ValidDeclaration_DoesNotAdvanceSession()
+        {
+            var session = CreateSession();
+            SubmitCodeUseCase useCase = CreateUseCase(session);
+
+            bool canPreview = useCase.CanPreview("public class Mago {}");
+
+            Assert.That(canPreview, Is.True);
+            Assert.That(session.HasDeclaredClass, Is.False);
+        }
+
+        [Test]
+        public void CanPreview_InvalidDeclaration_DoesNotAdvanceSession()
+        {
+            var session = CreateSession();
+            SubmitCodeUseCase useCase = CreateUseCase(session);
+
+            bool canPreview = useCase.CanPreview("public class Bruxo {}");
+
+            Assert.That(canPreview, Is.False);
+            Assert.That(session.HasDeclaredClass, Is.False);
+        }
+
         private static LearningSession CreateSession()
         {
             return new LearningSession(new ExerciseDefinition(

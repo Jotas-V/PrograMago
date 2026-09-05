@@ -14,8 +14,7 @@ namespace PrograMago.Tests.Integration
         private TMP_InputField codeInput;
         private TMP_Text feedbackText;
         private GameObject wizardPlaceholder;
-        private Button submitButton;
-        private Button restartButton;
+        private Button battleButton;
 
         [UnitySetUp]
         public IEnumerator LoadGameplayScene()
@@ -27,18 +26,78 @@ namespace PrograMago.Tests.Integration
             codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
             feedbackText = FindSceneComponent<TMP_Text>("RuntimeFeedbackText");
             wizardPlaceholder = FindSceneObject("WizardPlaceholder");
-            submitButton = FindSceneComponent<Button>("SubmitButton");
-            restartButton = FindSceneComponent<Button>("RestartButton");
+            battleButton = FindSceneComponent<Button>("BattleButton");
 
             Assert.That(wizardPlaceholder.activeSelf, Is.False);
         }
 
         [UnityTest]
-        public IEnumerator Submit_ValidDeclaration_ShowsSuccessAndWizardSilhouette()
+        public IEnumerator Editor_IsConfiguredForMultipleLines()
+        {
+            Assert.That(codeInput.lineType, Is.EqualTo(TMP_InputField.LineType.MultiLineNewline));
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Edit_ValidDeclaration_ShowsPreviewWithoutFeedback()
         {
             codeInput.text = "public class Mago {}";
 
-            submitButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(wizardPlaceholder.activeSelf, Is.True);
+            Assert.That(feedbackText.text, Is.Empty);
+        }
+
+        [UnityTest]
+        public IEnumerator Edit_InvalidDeclaration_HidesPreviewWithoutFeedback()
+        {
+            codeInput.text = "public class Mago {}";
+            yield return null;
+
+            codeInput.text = "public class Bruxo {}";
+            yield return null;
+
+            Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            Assert.That(feedbackText.text, Is.Empty);
+        }
+
+        [UnityTest]
+        public IEnumerator BattleButton_ValidatesCodeAndUsesBattleLabel()
+        {
+            GameObject battleObject = FindSceneObjectOrNull("BattleButton");
+            Assert.That(battleObject, Is.Not.Null);
+            var button = battleObject.GetComponent<Button>();
+            var label = battleObject.GetComponentInChildren<TMP_Text>();
+            Assert.That(button, Is.Not.Null);
+            Assert.That(label, Is.Not.Null);
+            Assert.That(label.text, Is.EqualTo("Batalhar"));
+            codeInput.text = "public class Mago {}";
+
+            button.onClick.Invoke();
+            yield return null;
+
+            Assert.That(feedbackText.text, Does.Contain("sucesso"));
+            Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
+        }
+
+        [UnityTest]
+        public IEnumerator EditorActions_ExposeOnlyBattleButton()
+        {
+            Assert.That(FindSceneObjectOrNull("BattleButton"), Is.Not.Null);
+            Assert.That(FindSceneObjectOrNull("SubmitButton"), Is.Null);
+            Assert.That(FindSceneObjectOrNull("RestartButton"), Is.Null);
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Battle_ValidDeclaration_ShowsSuccessAndWizardSilhouette()
+        {
+            codeInput.text = "public class Mago {}";
+
+            battleButton.onClick.Invoke();
             yield return null;
 
             Assert.That(feedbackText.text, Does.Contain("sucesso"));
@@ -46,31 +105,32 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator Submit_InvalidDeclarationAfterSuccess_ShowsErrorAndPreservesWizard()
+        public IEnumerator Battle_InvalidDeclarationAfterSuccess_ShowsErrorAndKeepsCurrentPreviewHidden()
         {
             codeInput.text = "public class Mago {}";
-            submitButton.onClick.Invoke();
+            battleButton.onClick.Invoke();
             yield return null;
             codeInput.text = "public class Bruxo {}";
 
-            submitButton.onClick.Invoke();
+            battleButton.onClick.Invoke();
             yield return null;
 
             Assert.That(feedbackText.text, Does.Contain("CLASS001"));
-            Assert.That(wizardPlaceholder.activeSelf, Is.True);
+            Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            Assert.That(codeInput.text, Is.EqualTo("public class Bruxo {}"));
         }
 
         [UnityTest]
-        public IEnumerator Restart_AfterSuccess_RestoresInitialSceneState()
+        public IEnumerator Edit_AfterBattleError_ClearsStaleFeedbackWithoutShowingAnotherError()
         {
-            codeInput.text = "public class Mago {}";
-            submitButton.onClick.Invoke();
+            codeInput.text = "public class Bruxo {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(feedbackText.text, Does.Contain("CLASS001"));
+
+            codeInput.text = "public class Mago {";
             yield return null;
 
-            restartButton.onClick.Invoke();
-            yield return null;
-
-            Assert.That(codeInput.text, Is.EqualTo("public class Mago {\n\n}"));
             Assert.That(feedbackText.text, Is.Empty);
             Assert.That(wizardPlaceholder.activeSelf, Is.False);
         }
@@ -85,6 +145,18 @@ namespace PrograMago.Tests.Integration
 
         private static GameObject FindSceneObject(string objectName)
         {
+            GameObject sceneObject = FindSceneObjectOrNull(objectName);
+            if (sceneObject != null)
+            {
+                return sceneObject;
+            }
+
+            Assert.Fail($"Objeto {objectName} não encontrado na cena.");
+            return null;
+        }
+
+        private static GameObject FindSceneObjectOrNull(string objectName)
+        {
             Transform[] transforms = Object.FindObjectsByType<Transform>(
                 FindObjectsInactive.Include,
                 FindObjectsSortMode.None);
@@ -96,7 +168,6 @@ namespace PrograMago.Tests.Integration
                 }
             }
 
-            Assert.Fail($"Objeto {objectName} não encontrado na cena.");
             return null;
         }
     }

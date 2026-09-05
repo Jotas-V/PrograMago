@@ -22,15 +22,7 @@ namespace PrograMago.Application
 
         public SubmitCodeResult Execute(string source)
         {
-            TokenizationResult tokenization = tokenizer.Tokenize(source);
-            if (!tokenization.IsSuccess)
-            {
-                return SubmitCodeResult.Failure(session.HasDeclaredClass, tokenization.Diagnostic);
-            }
-
-            ClassDeclarationValidationResult validation = validator.Validate(
-                tokenization.Tokens,
-                session.Exercise);
+            ClassDeclarationValidationResult validation = Validate(source);
             if (!validation.IsSuccess)
             {
                 return SubmitCodeResult.Failure(session.HasDeclaredClass, validation.Diagnostic);
@@ -38,6 +30,24 @@ namespace PrograMago.Application
 
             session.Apply(validation.Declaration);
             return SubmitCodeResult.Success(session.HasDeclaredClass);
+        }
+
+        public bool CanPreview(string source)
+        {
+            return Validate(source).IsSuccess;
+        }
+
+        private ClassDeclarationValidationResult Validate(string source)
+        {
+            TokenizationResult tokenization = tokenizer.Tokenize(source);
+            if (!tokenization.IsSuccess)
+            {
+                return ClassDeclarationValidationResult.Failure(tokenization.Diagnostic);
+            }
+
+            return validator.Validate(
+                tokenization.Tokens,
+                session.Exercise);
         }
     }
 }
