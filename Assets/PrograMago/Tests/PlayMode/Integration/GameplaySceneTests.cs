@@ -25,7 +25,7 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(Object.FindFirstObjectByType<GameplayBootstrapper>(), Is.Not.Null);
             codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
-            feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
+            feedbackText = FindSceneComponent<TMP_Text>("RuntimeFeedbackText");
             wizardPlaceholder = FindSceneObject("WizardPlaceholder");
             submitButton = FindSceneComponent<Button>("SubmitButton");
             restartButton = FindSceneComponent<Button>("RestartButton");
