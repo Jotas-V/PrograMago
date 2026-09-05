@@ -13,15 +13,18 @@
 4. Alterar os testes do presenter para substituir `Submit` e `Restart` pela ação
    `Battle`, garantindo validação explícita e preservação integral do texto.
    Confirmar RED e adaptar a apresentação.
-5. Adicionar testes Play Mode para campo multilinha, prévia por
-   `onValueChanged`, ausência de diagnóstico durante edição e existência de um
-   único botão `BattleButton` com rótulo **Batalhar**. Confirmar RED.
-6. Adaptar o `GameplayBootstrapper`: configurar o `TMP_InputField`, conectar os
-   eventos, criar o botão de batalha e remover da interface as ações de envio
-   genérico e reinício.
-7. Executar Edit Mode e Play Mode completos, corrigir somente regressões ligadas
+5. Adicionar um teste do presenter exigindo que o sucesso limpe o painel sem
+   apresentar mensagem textual. Confirmar RED e remover o feedback positivo.
+6. Adicionar testes da cena para referências serializadas, conteúdo e hierarquia
+   do `TutorialPanel`, botão `BattleButton` persistido e ausência de elementos
+   que bloqueiem o raycast do `CodeInput`. Confirmar RED.
+7. Corrigir a cena: configurar o editor, posicionar título, objetivo e feedback,
+   criar o botão **Batalhar** e ligar as referências do bootstrapper.
+8. Remover do `GameplayBootstrapper` a criação de controles em tempo de
+   execução e manter somente a conexão dos eventos.
+9. Executar Edit Mode e Play Mode completos, corrigir somente regressões ligadas
    à TCC-5 e revisar logs, XMLs e diff.
-8. Commitar a implementação e registrar testes e decisões finais na TCC-5.
+10. Commitar a implementação e registrar testes e decisões finais na TCC-5.
 
 ## Componentes previstos
 
@@ -29,10 +32,10 @@
   pode ser pré-visualizada, sem modificar a sessão.
 - `GameplayPresenter.Preview`: atualiza a arena e remove feedback antigo, sem
   apresentar erros.
-- `GameplayPresenter.Battle`: executa a submissão completa e apresenta sucesso
-  ou diagnóstico.
+- `GameplayPresenter.Battle`: executa a submissão completa, limpa o painel no
+  sucesso e apresenta diagnóstico somente na falha.
 - `GameplayBootstrapper`: conecta edição e batalha aos respectivos eventos da
-  Unity e configura o editor como multilinha.
+  Unity usando controles existentes e referenciados na cena.
 
 ## Verificação
 
