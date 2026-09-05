@@ -1,0 +1,13 @@
+{
+  "name": "PrograMago.Tests.PlayMode",
+  "rootNamespace": "PrograMago.Tests",
+  "references": [
+    "PrograMago.Unity",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "autoReferenced": false
+}

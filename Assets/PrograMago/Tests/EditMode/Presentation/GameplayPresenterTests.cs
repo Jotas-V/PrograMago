@@ -41,6 +41,38 @@ namespace PrograMago.Tests.Presentation
             Assert.That(arena.HasDeclaredClass, Is.False);
         }
 
+        [Test]
+        public void Submit_InvalidCode_ShowsDiagnosticAndKeepsWizardHidden()
+        {
+            var editor = new FakeCodeEditorView { SourceCode = "public class Bruxo {}" };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
+
+            presenter.Submit();
+
+            Assert.That(feedback.SuccessMessage, Is.Null);
+            Assert.That(feedback.Diagnostic.Code, Is.EqualTo("CLASS001"));
+            Assert.That(arena.HasDeclaredClass, Is.False);
+        }
+
+        [Test]
+        public void Submit_InvalidCodeAfterSuccess_PreservesWizardAndShowsDiagnostic()
+        {
+            var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
+            presenter.Submit();
+            editor.SourceCode = "class public Mago {}";
+
+            presenter.Submit();
+
+            Assert.That(feedback.SuccessMessage, Is.Null);
+            Assert.That(feedback.Diagnostic.Code, Is.EqualTo("SYN001"));
+            Assert.That(arena.HasDeclaredClass, Is.True);
+        }
+
         private static GameplayPresenter CreatePresenter(
             ICodeEditorView editor,
             IFeedbackView feedback,
