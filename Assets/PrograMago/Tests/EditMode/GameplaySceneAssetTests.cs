@@ -266,6 +266,7 @@ namespace PrograMago.Tests.UnityIntegration
             GameObject card = FindSceneObject("VictoryCard");
 
             Assert.That(overlay.activeSelf, Is.False);
+            Assert.That(card.activeSelf, Is.True);
             Assert.That(overlay.transform.parent, Is.SameAs(canvas.transform));
             AssertRectAnchors(overlay, Vector2.zero, Vector2.one);
             Color backdrop = ReadColor(overlay);
