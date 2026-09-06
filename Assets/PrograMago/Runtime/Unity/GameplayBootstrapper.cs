@@ -88,7 +88,7 @@ namespace PrograMago.UnityIntegration
                 this,
                 this);
             presenter = new GameplayPresenter(
-                new SubmitCodeUseCase(new CodeTokenizer(), new ClassDeclarationValidator(), session),
+                new SubmitCodeUseCase(new CodeTokenizer(), new ExerciseCodeValidator(), session),
                 this,
                 this,
                 this,

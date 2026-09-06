@@ -118,7 +118,7 @@ namespace PrograMago.Tests.Presentation
             var presenter = new GameplayPresenter(
                 new SubmitCodeUseCase(
                     new CodeTokenizer(),
-                    new ClassDeclarationValidator(),
+                    new ExerciseCodeValidator(),
                     session),
                 editor,
                 feedback,
@@ -128,6 +128,46 @@ namespace PrograMago.Tests.Presentation
             presenter.Battle();
 
             Assert.That(progress.Stage, Is.EqualTo(LearningStage.BattleInProgress));
+        }
+
+        [Test]
+        public void Battle_PrivateAttributeBattle_ValidatesAgainstCurrentCriterion()
+        {
+            var editor = new FakeCodeEditorView
+            {
+                SourceCode =
+                    "public class Mago { private int vida; private int dano; " +
+                    "private int alcance; private int iniciativa; private int velocidadeAtaque; }"
+            };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            var session = new LearningSession(new ExerciseDefinition(
+                "phase-one", "Mago", "Construa o Mago."));
+            var progress = new LearningProgress(new LearningPath(new[]
+            {
+                CreateLearningBattle(ValidationCriterion.AddPrivateAttributes)
+            }));
+            var learningFlow = new LearningFlowPresenter(
+                progress,
+                new HoldToRestartController(5f),
+                editor,
+                feedback,
+                arena,
+                new NoOpLearningFlowView());
+            var presenter = new GameplayPresenter(
+                new SubmitCodeUseCase(
+                    new CodeTokenizer(),
+                    new ExerciseCodeValidator(),
+                    session),
+                editor,
+                feedback,
+                arena,
+                learningFlow);
+
+            presenter.Battle();
+
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.BattleInProgress));
+            Assert.That(feedback.Diagnostic, Is.Null);
         }
 
         private static GameplayPresenter CreatePresenter(
@@ -141,12 +181,13 @@ namespace PrograMago.Tests.Presentation
                 "Declare a classe Mago."));
             var submit = new SubmitCodeUseCase(
                 new CodeTokenizer(),
-                new ClassDeclarationValidator(),
+                new ExerciseCodeValidator(),
                 session);
             return new GameplayPresenter(submit, editor, feedback, arena);
         }
 
-        private static BattleDefinition CreateLearningBattle()
+        private static BattleDefinition CreateLearningBattle(
+            ValidationCriterion criterion = ValidationCriterion.DeclareMagoClass)
         {
             return new BattleDefinition(
                 "mago-class",
@@ -156,7 +197,7 @@ namespace PrograMago.Tests.Presentation
                     "O nascimento do Mago", "Classes", "O que é.", "Para que serve.",
                     "Como usar.", "Efeito.", "Tarefa."),
                 new[] { "Dica" },
-                ValidationCriterion.DeclareMagoClass,
+                criterion,
                 new BattleVictoryContent("Vitória!", "Conquista.", "Revisão."));
         }
 

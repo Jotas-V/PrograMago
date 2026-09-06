@@ -236,6 +236,32 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
+        public void LearningPathAsset_PhaseOneContentUsesFiveIntegerAttributes()
+        {
+            const string assetPath = "Assets/PrograMago/Content/LearningPath.asset";
+            Type assetType = AppDomain.CurrentDomain.GetAssemblies()
+                .Select(assembly => assembly.GetType("PrograMago.UnityIntegration.LearningPathAsset"))
+                .Single(type => type != null);
+            UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, assetType);
+            var path = (LearningPath)assetType.GetMethod("ToDomain").Invoke(asset, null);
+            BattleDefinition attributeBattle = path.Battles[1];
+            BattleDefinition constructionBattle = path.Battles[2];
+            string attributeGuidance = string.Join(" ", attributeBattle.Hints);
+            string constructionGuidance = string.Join(" ", constructionBattle.Hints);
+
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("vida"));
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("dano"));
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("alcance"));
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("iniciativa"));
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("velocidadeAtaque"));
+            Assert.That(attributeGuidance, Does.Contain("private int iniciativa;"));
+            Assert.That(attributeGuidance, Does.Contain("private int velocidadeAtaque;"));
+            Assert.That(attributeGuidance, Does.Not.Contain("float"));
+            Assert.That(constructionGuidance, Does.Contain("25"));
+            Assert.That(constructionGuidance, Does.Contain("new Mago"));
+        }
+
+        [Test]
         public void TutorialPanel_PersistsAllPedagogicalTextAreas()
         {
             GameObject panel = FindSceneObject("TutorialPanel");

@@ -40,13 +40,13 @@ MonoBehaviour:
     whatItIs: Atributos guardam o estado de um objeto. Com private, esse estado só pode ser manipulado de maneira controlada pela própria classe.
     purpose: O encapsulamento protege dados internos e evita que outras partes do programa alterem o Mago de forma indevida.
     usageExample: private int vida;
-    gameEffect: Vida, dano, alcance e velocidade passam a representar as capacidades do Mago na arena.
-    task: Adicione ao Mago os atributos privados vida, dano, alcance e velocidade usando tipos adequados.
+    gameEffect: Vida, dano, alcance, iniciativa e velocidade de ataque passam a representar as capacidades do Mago na arena.
+    task: Adicione ao Mago os atributos privados int vida, dano, alcance, iniciativa e velocidadeAtaque.
     hints:
     - Cada atributo deve ficar dentro do corpo da classe Mago.
-    - Use private antes do tipo para proteger o estado.
-    - Declare vida e dano como int; alcance e velocidade podem usar float.
-    - 'Exemplo: private int vida; private int dano; private float alcance; private float velocidade;'
+    - Use private antes de int para proteger o estado.
+    - Declare os cinco atributos uma única vez; a ordem entre eles pode variar.
+    - 'Exemplo: private int vida; private int dano; private int alcance; private int iniciativa; private int velocidadeAtaque;'
     criterion: 1
     victoryTitle: Estado protegido!
     victoryAchievement: Seu Mago agora possui capacidades próprias e protegidas.
@@ -58,14 +58,14 @@ MonoBehaviour:
     concept: Construtor, this e objeto
     whatItIs: O construtor prepara um novo objeto. A palavra this diferencia os atributos do objeto dos parâmetros recebidos.
     purpose: Construtores garantem que cada Mago comece com um estado válido, enquanto new cria uma instância concreta da classe.
-    usageExample: 'public Mago(int vida) { this.vida = vida; } Mago mago = new Mago(100);'
+    usageExample: 'public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { this.vida = vida; } Mago mago = new Mago(5, 5, 5, 5, 5);'
     gameEffect: Os valores informados na instanciação definem as capacidades iniciais do Mago que aparece na arena.
-    task: Crie o construtor de Mago, atribua os parâmetros com this e instancie um objeto Mago.
+    task: Crie o construtor de Mago, atribua os cinco parâmetros int com this e instancie um objeto usando de 1 a 15 em cada atributo e no máximo 25 pontos no total.
     hints:
     - O construtor tem exatamente o mesmo nome da classe e não declara tipo de retorno.
-    - Receba valores por parâmetros para todos os atributos do Mago.
+    - Receba parâmetros int para vida, dano, alcance, iniciativa e velocidadeAtaque.
     - Use this.atributo = atributo para guardar cada parâmetro no objeto.
-    - 'Finalize criando o objeto com Mago mago = new Mago(...);'
+    - 'Finalize com new Mago(...); cada valor vai de 1 a 15 e a soma não pode ultrapassar 25.'
     criterion: 2
     victoryTitle: O Mago ganhou vida!
     victoryAchievement: Você construiu e instanciou um objeto completo.
