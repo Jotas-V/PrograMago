@@ -18,6 +18,9 @@ namespace PrograMago.Tests.Application
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.HasDeclaredClass, Is.True);
             Assert.That(result.Diagnostic, Is.Null);
+            Assert.That(
+                result.SatisfiedCriterion,
+                Is.EqualTo(ValidationCriterion.DeclareMagoClass));
             Assert.That(session.HasDeclaredClass, Is.True);
         }
 
@@ -32,6 +35,7 @@ namespace PrograMago.Tests.Application
             Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.HasDeclaredClass, Is.False);
             Assert.That(result.Diagnostic.Code, Is.EqualTo("CLASS001"));
+            Assert.That(result.SatisfiedCriterion, Is.Null);
             Assert.That(session.HasDeclaredClass, Is.False);
         }
 
@@ -86,6 +90,16 @@ namespace PrograMago.Tests.Application
 
             Assert.That(canPreview, Is.False);
             Assert.That(session.HasDeclaredClass, Is.False);
+        }
+
+        [Test]
+        public void SubmitCodeResult_ExposesSatisfiedValidationCriterion()
+        {
+            System.Reflection.PropertyInfo property = typeof(SubmitCodeResult).GetProperty(
+                "SatisfiedCriterion");
+
+            Assert.That(property, Is.Not.Null);
+            Assert.That(property.PropertyType, Is.EqualTo(typeof(ValidationCriterion?)));
         }
 
         private static LearningSession CreateSession()

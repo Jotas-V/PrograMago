@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e2f3a4b5c6478899aabbccddeeff01, type: 3}
+  m_Name: LearningPath
+  m_EditorClassIdentifier: PrograMago.Unity::PrograMago.UnityIntegration.LearningPathAsset
+  battles:
+  - id: mago-class
+    chapter: 1
+    order: 1
+    title: O nascimento do Mago
+    concept: Classes
+    whatItIs: Uma classe é um molde que descreve as características e os comportamentos que seus objetos podem ter.
+    purpose: Classes organizam o código e permitem criar vários objetos do mesmo tipo com responsabilidades bem definidas.
+    usageExample: public class Mago {}
+    gameEffect: A declaração válida apresenta o Mago na arena e prepara sua participação na batalha.
+    task: Declare uma classe pública chamada Mago com o corpo vazio.
+    hints:
+    - Comece indicando que a classe será pública.
+    - Use a palavra-chave class logo antes do nome.
+    - O nome esperado diferencia maiúsculas de minúsculas e deve ser Mago.
+    - 'Solução: public class Mago {}'
+    criterion: 0
+    victoryTitle: Primeira batalha concluída!
+    victoryAchievement: Você deu forma ao seu primeiro Mago.
+    victoryReview: Classes são moldes que reúnem o que objetos de um mesmo tipo têm e podem fazer.
+  - id: mago-private-state
+    chapter: 1
+    order: 2
+    title: Estado protegido
+    concept: Atributos e encapsulamento
+    whatItIs: Atributos guardam o estado de um objeto. Com private, esse estado só pode ser manipulado de maneira controlada pela própria classe.
+    purpose: O encapsulamento protege dados internos e evita que outras partes do programa alterem o Mago de forma indevida.
+    usageExample: private int vida;
+    gameEffect: Vida, dano, alcance e velocidade passam a representar as capacidades do Mago na arena.
+    task: Adicione ao Mago os atributos privados vida, dano, alcance e velocidade usando tipos adequados.
+    hints:
+    - Cada atributo deve ficar dentro do corpo da classe Mago.
+    - Use private antes do tipo para proteger o estado.
+    - Declare vida e dano como int; alcance e velocidade podem usar float.
+    - 'Exemplo: private int vida; private int dano; private float alcance; private float velocidade;'
+    criterion: 1
+    victoryTitle: Estado protegido!
+    victoryAchievement: Seu Mago agora possui capacidades próprias e protegidas.
+    victoryReview: Atributos representam o estado do objeto; private aplica encapsulamento e controla o acesso a esses dados.
+  - id: mago-constructor-object
+    chapter: 1
+    order: 3
+    title: Dando vida ao Mago
+    concept: Construtor, this e objeto
+    whatItIs: O construtor prepara um novo objeto. A palavra this diferencia os atributos do objeto dos parâmetros recebidos.
+    purpose: Construtores garantem que cada Mago comece com um estado válido, enquanto new cria uma instância concreta da classe.
+    usageExample: 'public Mago(int vida) { this.vida = vida; } Mago mago = new Mago(100);'
+    gameEffect: Os valores informados na instanciação definem as capacidades iniciais do Mago que aparece na arena.
+    task: Crie o construtor de Mago, atribua os parâmetros com this e instancie um objeto Mago.
+    hints:
+    - O construtor tem exatamente o mesmo nome da classe e não declara tipo de retorno.
+    - Receba valores por parâmetros para todos os atributos do Mago.
+    - Use this.atributo = atributo para guardar cada parâmetro no objeto.
+    - 'Finalize criando o objeto com Mago mago = new Mago(...);'
+    criterion: 2
+    victoryTitle: O Mago ganhou vida!
+    victoryAchievement: Você construiu e instanciou um objeto completo.
+    victoryReview: O construtor inicializa o objeto, this acessa seu próprio estado e new transforma a classe em uma instância.
+  - id: enemy-object
+    chapter: 2
+    order: 4
+    title: Surge um inimigo
+    concept: Classes e objetos em interação
+    whatItIs: Uma classe pode produzir muitos objetos com estados diferentes. O mesmo molde Inimigo representa adversários variados.
+    purpose: Reutilizar uma classe evita repetir estruturas e permite criar desafios diferentes apenas mudando os dados de cada objeto.
+    usageExample: Inimigo boneco = new Inimigo(...);
+    gameEffect: A instância criada define o adversário que aparece do outro lado da arena.
+    task: Declare Inimigo com nome, vida e elemento privados, crie seu construtor e instancie o Boneco de Treinamento.
+    hints:
+    - Comece com uma classe pública chamada Inimigo.
+    - Proteja nome, vida e elemento usando private.
+    - O construtor deve receber e guardar os três valores.
+    - 'Finalize com uma instanciação usando new Inimigo(...).'
+    criterion: 3
+    victoryTitle: Adversário derrotado!
+    victoryAchievement: Você criou um segundo tipo de objeto e o enfrentou na arena.
+    victoryReview: Uma classe é reutilizável; cada objeto criado por ela mantém seu próprio estado.
+  - id: first-spell-method
+    chapter: 2
+    order: 5
+    title: Primeira magia
+    concept: Métodos, parâmetros e chamadas
+    whatItIs: Métodos descrevem comportamentos. Parâmetros fornecem os objetos e valores necessários para executar uma ação.
+    purpose: Métodos permitem que objetos colaborem sem expor diretamente todos os detalhes de seu estado interno.
+    usageExample: 'public void lancarMagia(Inimigo inimigo) {} mago.lancarMagia(inimigo);'
+    gameEffect: Chamar lancarMagia faz o Mago atacar o Inimigo selecionado durante a batalha automática.
+    task: Declare lancarMagia com um parâmetro Inimigo e faça o objeto mago chamar esse método.
+    hints:
+    - O comportamento deve ser declarado dentro da classe Mago.
+    - Use void quando o método não precisa devolver um valor.
+    - Receba o alvo como parâmetro Inimigo inimigo.
+    - 'Depois da declaração, chame mago.lancarMagia(inimigo);'
+    criterion: 4
+    victoryTitle: A primeira magia funcionou!
+    victoryAchievement: Seu Mago agora possui e executa um comportamento.
+    victoryReview: Métodos representam ações; parâmetros levam informações para a ação e chamadas pedem ao objeto que a execute.
+  - id: elemental-inheritance
+    chapter: 3
+    order: 6
+    title: Especialização elemental
+    concept: Herança
+    whatItIs: Herança cria uma classe especializada a partir de outra. A subclasse recebe características e comportamentos da classe base.
+    purpose: Ela permite reutilizar o que todos os magos compartilham e concentrar em cada subclasse apenas sua especialidade.
+    usageExample: public class Piromante extends Mago {}
+    gameEffect: A subclasse muda o tipo elemental do Mago sem reconstruir todas as suas capacidades básicas.
+    task: Crie Piromante como uma subclasse pública que herda de Mago.
+    hints:
+    - A nova classe se chama Piromante.
+    - Em Java, a relação de herança usa a palavra-chave extends.
+    - Mago deve aparecer depois de extends como classe base.
+    - 'Solução estrutural: public class Piromante extends Mago {}'
+    criterion: 5
+    victoryTitle: Poder elemental desbloqueado!
+    victoryAchievement: Você especializou o Mago sem repetir toda a classe base.
+    victoryReview: Herança permite que uma subclasse reutilize membros da classe base e acrescente sua própria especialização.
+  - id: spell-override
+    chapter: 3
+    order: 7
+    title: Cada Mago, uma magia
+    concept: Sobrescrita e super
+    whatItIs: Sobrescrita redefine em uma subclasse um método herdado. super permite reutilizar explicitamente o comportamento da classe base.
+    purpose: Classes relacionadas podem responder de modos diferentes à mesma operação sem perder o comportamento comum quando ele ainda é útil.
+    usageExample: '@Override public void lancarMagia(Inimigo inimigo) { super.lancarMagia(inimigo); }'
+    gameEffect: Piromante, Hidromante e Eletromante produzem ataques visuais diferentes ao lançar a mesma ação.
+    task: Sobrescreva lancarMagia em uma subclasse elemental e reutilize a implementação base com super.
+    hints:
+    - Mantenha a mesma assinatura de lancarMagia definida em Mago.
+    - Marque a redefinição com @Override.
+    - Dentro do novo método, super acessa o comportamento herdado.
+    - 'Use super.lancarMagia(inimigo); antes de acrescentar o efeito elemental.'
+    criterion: 6
+    victoryTitle: Magia especializada!
+    victoryAchievement: Cada tipo de Mago agora responde à batalha à sua maneira.
+    victoryReview: Sobrescrita especializa um método herdado; super permite combinar o comportamento base com a nova implementação.
+  - id: final-polymorphism
+    chapter: 4
+    order: 8
+    title: Batalha final
+    concept: Polimorfismo
+    whatItIs: Polimorfismo permite tratar objetos de subclasses diferentes por uma referência do tipo da classe base.
+    purpose: O mesmo código pode trabalhar com vários tipos concretos e deixar cada objeto executar sua própria versão do comportamento.
+    usageExample: 'Mago magoAtivo = new Piromante(...); magoAtivo.lancarMagia(inimigo);'
+    gameEffect: A referência Mago seleciona diferentes especialistas e cada um lança a magia apropriada contra os inimigos elementais.
+    task: Use uma referência Mago para receber subclasses diferentes e chamar lancarMagia na estratégia da batalha final.
+    hints:
+    - Declare a variável usando o tipo da classe base Mago.
+    - Instancie uma das subclasses e atribua o objeto à referência base.
+    - Chame lancarMagia pela mesma variável, independentemente da subclasse concreta.
+    - 'Exemplo: Mago magoAtivo = new Piromante(...); magoAtivo.lancarMagia(inimigo);'
+    criterion: 7
+    victoryTitle: Jornada concluída!
+    victoryAchievement: Você reuniu classes, objetos, encapsulamento, herança e comportamento polimórfico em uma estratégia completa.
+    victoryReview: Polimorfismo usa uma referência comum para acionar comportamentos diferentes conforme o objeto concreto, tornando o código flexível e extensível.
