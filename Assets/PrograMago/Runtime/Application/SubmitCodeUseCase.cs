@@ -29,7 +29,9 @@ namespace PrograMago.Application
             }
 
             session.Apply(validation.Declaration);
-            return SubmitCodeResult.Success(session.HasDeclaredClass);
+            return SubmitCodeResult.Success(
+                session.HasDeclaredClass,
+                ValidationCriterion.DeclareMagoClass);
         }
 
         public bool CanPreview(string source)

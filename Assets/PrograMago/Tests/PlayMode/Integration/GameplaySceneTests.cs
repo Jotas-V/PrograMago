@@ -16,6 +16,15 @@ namespace PrograMago.Tests.Integration
         private Transform wizardSpawnPoint;
         private Camera arenaCamera;
         private Button battleButton;
+        private GameplayBootstrapper bootstrapper;
+        private TMP_Text battleProgressText;
+        private TMP_Text titleText;
+        private TMP_Text lessonText;
+        private TMP_Text objectiveText;
+        private TMP_Text hintText;
+        private GameObject victoryOverlay;
+        private Button nextBattleButton;
+        private GameObject restartProgressPanel;
 
         [UnitySetUp]
         public IEnumerator LoadGameplayScene()
@@ -23,15 +32,116 @@ namespace PrograMago.Tests.Integration
             SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
             yield return null;
 
-            Assert.That(Object.FindFirstObjectByType<GameplayBootstrapper>(), Is.Not.Null);
+            bootstrapper = Object.FindFirstObjectByType<GameplayBootstrapper>();
+            Assert.That(bootstrapper, Is.Not.Null);
             codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
             feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
             wizardSpawnPoint = FindSceneObject("WizardSpawnPoint").transform;
             arenaCamera = FindSceneComponent<Camera>("Main Camera");
             battleButton = FindSceneComponent<Button>("BattleButton");
+            battleProgressText = FindSceneComponent<TMP_Text>("BattleProgressText");
+            titleText = FindSceneComponent<TMP_Text>("Title");
+            lessonText = FindSceneComponent<TMP_Text>("LessonText");
+            objectiveText = FindSceneComponent<TMP_Text>("ObjectiveText");
+            hintText = FindSceneComponent<TMP_Text>("HintText");
+            victoryOverlay = FindSceneObject("VictoryOverlay");
+            nextBattleButton = FindSceneComponent<Button>("NextBattleButton");
+            restartProgressPanel = FindSceneObject("RestartProgressPanel");
 
             Assert.That(wizardSpawnPoint.childCount, Is.Zero);
             Assert.That(FindSceneObjectOrNull("RuntimeFeedbackText"), Is.Null);
+        }
+
+        [UnityTest]
+        public IEnumerator LearningFlow_LoadsFirstBattleContentAndKeepsOverlaysHidden()
+        {
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 1/8"));
+            Assert.That(titleText.text, Is.EqualTo("O nascimento do Mago"));
+            Assert.That(lessonText.text, Does.Contain("O QUE É"));
+            Assert.That(lessonText.text, Does.Contain("public class Mago"));
+            Assert.That(objectiveText.text, Does.Contain("TAREFA"));
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+            Assert.That(restartProgressPanel.activeSelf, Is.False);
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Battle_InvalidCode_RevealsProgressiveHint()
+        {
+            codeInput.text = "public class Bruxo {}";
+
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(feedbackText.text, Does.Contain("CLASS001"));
+            Assert.That(hintText.text, Does.StartWith("DICA"));
+            Assert.That(hintText.text, Does.Contain("classe será pública"));
+            Assert.That(codeInput.interactable, Is.True);
+            Assert.That(battleButton.interactable, Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator Battle_ValidCode_StartsBattleAndVictoryShowsReviewOverlay()
+        {
+            codeInput.text = "public class Mago {}";
+
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(codeInput.interactable, Is.False);
+            Assert.That(battleButton.interactable, Is.False);
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+
+            Assert.That(bootstrapper.ReportBattleVictory(), Is.True);
+            yield return null;
+
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            Assert.That(
+                FindSceneComponent<TMP_Text>("VictoryTitleText").text,
+                Is.EqualTo("Primeira batalha concluída!"));
+            Assert.That(FindSceneComponent<TMP_Text>("VictoryAchievementText").text, Is.Not.Empty);
+            Assert.That(
+                FindSceneComponent<TMP_Text>("VictoryReviewText").text,
+                Does.Contain("classe").IgnoreCase);
+            Assert.That(nextBattleButton.GetComponentInChildren<TMP_Text>().text, Is.EqualTo("Próxima batalha"));
+        }
+
+        [UnityTest]
+        public IEnumerator NextBattle_AfterVictory_AdvancesAndClearsEditor()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            Assert.That(bootstrapper.ReportBattleVictory(), Is.True);
+            yield return null;
+
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 2/8"));
+            Assert.That(titleText.text, Is.EqualTo("Estado protegido"));
+            Assert.That(codeInput.text, Is.Empty);
+            Assert.That(codeInput.interactable, Is.True);
+            Assert.That(battleButton.interactable, Is.True);
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator Defeat_ReturnsToEditingAndPreservesCurrentCode()
+        {
+            const string submittedCode = "public class Mago {}";
+            codeInput.text = submittedCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(bootstrapper.ReportBattleDefeat(), Is.True);
+            yield return null;
+
+            Assert.That(codeInput.text, Is.EqualTo(submittedCode));
+            Assert.That(codeInput.interactable, Is.True);
+            Assert.That(battleButton.interactable, Is.True);
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+            AssertWizardAtSpawn(active: false);
         }
 
         [UnityTest]

@@ -9,6 +9,7 @@ namespace PrograMago.Presentation
         private readonly ICodeEditorView editor;
         private readonly IFeedbackView feedback;
         private readonly IArenaView arena;
+        private readonly LearningFlowPresenter learningFlow;
 
         public GameplayPresenter(
             SubmitCodeUseCase submitCode,
@@ -22,6 +23,17 @@ namespace PrograMago.Presentation
             this.arena = arena ?? throw new ArgumentNullException(nameof(arena));
         }
 
+        public GameplayPresenter(
+            SubmitCodeUseCase submitCode,
+            ICodeEditorView editor,
+            IFeedbackView feedback,
+            IArenaView arena,
+            LearningFlowPresenter learningFlow)
+            : this(submitCode, editor, feedback, arena)
+        {
+            this.learningFlow = learningFlow ?? throw new ArgumentNullException(nameof(learningFlow));
+        }
+
         public void Battle()
         {
             SubmitCodeResult result = submitCode.Execute(editor.SourceCode);
@@ -30,10 +42,12 @@ namespace PrograMago.Presentation
             if (result.IsSuccess)
             {
                 feedback.Clear();
+                learningFlow?.HandleSubmission(result);
                 return;
             }
 
             feedback.ShowError(result.Diagnostic);
+            learningFlow?.HandleSubmission(result);
         }
 
         public void Preview()

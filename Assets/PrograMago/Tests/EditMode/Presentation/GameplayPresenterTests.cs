@@ -83,6 +83,53 @@ namespace PrograMago.Tests.Presentation
             Assert.That(feedback.Diagnostic, Is.Null);
         }
 
+        [Test]
+        public void GameplayPresenter_ExposesLearningFlowIntegrationConstructor()
+        {
+            Assert.That(typeof(GameplayPresenter).GetConstructor(new[]
+            {
+                typeof(SubmitCodeUseCase),
+                typeof(ICodeEditorView),
+                typeof(IFeedbackView),
+                typeof(IArenaView),
+                typeof(LearningFlowPresenter)
+            }), Is.Not.Null);
+        }
+
+        [Test]
+        public void Battle_ValidCode_ForwardsSatisfiedCriterionToLearningFlow()
+        {
+            var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            var session = new LearningSession(new ExerciseDefinition(
+                "declare-mago-class", "Mago", "Declare a classe Mago."));
+            var progress = new LearningProgress(new LearningPath(new[]
+            {
+                CreateLearningBattle()
+            }));
+            var learningFlow = new LearningFlowPresenter(
+                progress,
+                new HoldToRestartController(5f),
+                editor,
+                feedback,
+                arena,
+                new NoOpLearningFlowView());
+            var presenter = new GameplayPresenter(
+                new SubmitCodeUseCase(
+                    new CodeTokenizer(),
+                    new ClassDeclarationValidator(),
+                    session),
+                editor,
+                feedback,
+                arena,
+                learningFlow);
+
+            presenter.Battle();
+
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.BattleInProgress));
+        }
+
         private static GameplayPresenter CreatePresenter(
             ICodeEditorView editor,
             IFeedbackView feedback,
@@ -97,6 +144,20 @@ namespace PrograMago.Tests.Presentation
                 new ClassDeclarationValidator(),
                 session);
             return new GameplayPresenter(submit, editor, feedback, arena);
+        }
+
+        private static BattleDefinition CreateLearningBattle()
+        {
+            return new BattleDefinition(
+                "mago-class",
+                1,
+                1,
+                new BattleLessonContent(
+                    "O nascimento do Mago", "Classes", "O que é.", "Para que serve.",
+                    "Como usar.", "Efeito.", "Tarefa."),
+                new[] { "Dica" },
+                ValidationCriterion.DeclareMagoClass,
+                new BattleVictoryContent("Vitória!", "Conquista.", "Revisão."));
         }
 
         private sealed class FakeCodeEditorView : ICodeEditorView
@@ -129,6 +190,37 @@ namespace PrograMago.Tests.Presentation
             public void SetClassDeclared(bool hasDeclaredClass)
             {
                 HasDeclaredClass = hasDeclaredClass;
+            }
+        }
+
+        private sealed class NoOpLearningFlowView : ILearningFlowView
+        {
+            public void ShowBattle(BattleDefinition battle, int battleNumber, int battleCount)
+            {
+            }
+
+            public void ShowHint(string hint)
+            {
+            }
+
+            public void ShowVictory(BattleVictoryContent content, bool isFinalBattle)
+            {
+            }
+
+            public void HideVictory()
+            {
+            }
+
+            public void SetInteractionEnabled(bool isEnabled)
+            {
+            }
+
+            public void ShowRestartProgress(float progress)
+            {
+            }
+
+            public void HideRestartProgress()
+            {
             }
         }
     }
