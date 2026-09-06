@@ -29,7 +29,7 @@ namespace PrograMago.Presentation
 
             if (result.IsSuccess)
             {
-                feedback.ShowSuccess("Classe Mago declarada com sucesso!");
+                feedback.Clear();
                 return;
             }
 

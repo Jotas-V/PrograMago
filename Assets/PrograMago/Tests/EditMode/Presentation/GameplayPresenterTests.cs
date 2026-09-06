@@ -9,7 +9,7 @@ namespace PrograMago.Tests.Presentation
     public sealed class GameplayPresenterTests
     {
         [Test]
-        public void Battle_ValidCode_ShowsSuccessAndRevealsWizard()
+        public void Battle_ValidCode_ClearsFeedbackAndRevealsWizard()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
             var feedback = new FakeFeedbackView();
@@ -18,7 +18,7 @@ namespace PrograMago.Tests.Presentation
 
             presenter.Battle();
 
-            Assert.That(feedback.SuccessMessage, Is.Not.Empty);
+            Assert.That(feedback.WasCleared, Is.True);
             Assert.That(feedback.Diagnostic, Is.Null);
             Assert.That(arena.HasDeclaredClass, Is.True);
         }
@@ -33,7 +33,6 @@ namespace PrograMago.Tests.Presentation
 
             presenter.Battle();
 
-            Assert.That(feedback.SuccessMessage, Is.Null);
             Assert.That(feedback.Diagnostic.Code, Is.EqualTo("CLASS001"));
             Assert.That(arena.HasDeclaredClass, Is.False);
         }
@@ -50,7 +49,6 @@ namespace PrograMago.Tests.Presentation
 
             presenter.Battle();
 
-            Assert.That(feedback.SuccessMessage, Is.Null);
             Assert.That(feedback.Diagnostic.Code, Is.EqualTo("SYN001"));
             Assert.That(arena.HasDeclaredClass, Is.False);
         }
@@ -67,7 +65,6 @@ namespace PrograMago.Tests.Presentation
 
             Assert.That(arena.HasDeclaredClass, Is.True);
             Assert.That(feedback.WasCleared, Is.True);
-            Assert.That(feedback.SuccessMessage, Is.Null);
             Assert.That(feedback.Diagnostic, Is.Null);
         }
 
@@ -83,7 +80,6 @@ namespace PrograMago.Tests.Presentation
 
             Assert.That(arena.HasDeclaredClass, Is.False);
             Assert.That(feedback.WasCleared, Is.True);
-            Assert.That(feedback.SuccessMessage, Is.Null);
             Assert.That(feedback.Diagnostic, Is.Null);
         }
 
@@ -110,28 +106,18 @@ namespace PrograMago.Tests.Presentation
 
         private sealed class FakeFeedbackView : IFeedbackView
         {
-            public string SuccessMessage { get; private set; }
-
             public Diagnostic Diagnostic { get; private set; }
 
             public bool WasCleared { get; private set; }
 
-            public void ShowSuccess(string message)
-            {
-                SuccessMessage = message;
-                Diagnostic = null;
-            }
-
             public void ShowError(Diagnostic diagnostic)
             {
                 Diagnostic = diagnostic;
-                SuccessMessage = null;
             }
 
             public void Clear()
             {
                 WasCleared = true;
-                SuccessMessage = null;
                 Diagnostic = null;
             }
         }

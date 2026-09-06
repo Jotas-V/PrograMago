@@ -24,17 +24,21 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(Object.FindFirstObjectByType<GameplayBootstrapper>(), Is.Not.Null);
             codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
-            feedbackText = FindSceneComponent<TMP_Text>("RuntimeFeedbackText");
+            feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
             wizardPlaceholder = FindSceneObject("WizardPlaceholder");
             battleButton = FindSceneComponent<Button>("BattleButton");
 
             Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            Assert.That(FindSceneObjectOrNull("RuntimeFeedbackText"), Is.Null);
         }
 
         [UnityTest]
         public IEnumerator Editor_IsConfiguredForMultipleLines()
         {
             Assert.That(codeInput.lineType, Is.EqualTo(TMP_InputField.LineType.MultiLineNewline));
+            Assert.That(codeInput.interactable, Is.True);
+            Assert.That(codeInput.readOnly, Is.False);
+            Assert.That(codeInput.text, Is.Empty);
 
             yield return null;
         }
@@ -78,7 +82,7 @@ namespace PrograMago.Tests.Integration
             button.onClick.Invoke();
             yield return null;
 
-            Assert.That(feedbackText.text, Does.Contain("sucesso"));
+            Assert.That(feedbackText.text, Is.Empty);
             Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
         }
 
@@ -93,14 +97,14 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator Battle_ValidDeclaration_ShowsSuccessAndWizardSilhouette()
+        public IEnumerator Battle_ValidDeclaration_KeepsFeedbackEmptyAndWizardSilhouetteVisible()
         {
             codeInput.text = "public class Mago {}";
 
             battleButton.onClick.Invoke();
             yield return null;
 
-            Assert.That(feedbackText.text, Does.Contain("sucesso"));
+            Assert.That(feedbackText.text, Is.Empty);
             Assert.That(wizardPlaceholder.activeSelf, Is.True);
         }
 
