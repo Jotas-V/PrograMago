@@ -14,6 +14,7 @@ namespace PrograMago.Tests.Integration
         private TMP_InputField codeInput;
         private TMP_Text feedbackText;
         private Transform wizardSpawnPoint;
+        private Camera arenaCamera;
         private Button battleButton;
 
         [UnitySetUp]
@@ -26,10 +27,22 @@ namespace PrograMago.Tests.Integration
             codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
             feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
             wizardSpawnPoint = FindSceneObject("WizardSpawnPoint").transform;
+            arenaCamera = FindSceneComponent<Camera>("Main Camera");
             battleButton = FindSceneComponent<Button>("BattleButton");
 
             Assert.That(wizardSpawnPoint.childCount, Is.Zero);
             Assert.That(FindSceneObjectOrNull("RuntimeFeedbackText"), Is.Null);
+        }
+
+        [UnityTest]
+        public IEnumerator WizardSpawnPoint_TracksLeftSideOfArenaWhenAspectChanges()
+        {
+            AssertWizardViewportPosition(new Vector2(0.1f, 0.85f));
+
+            arenaCamera.aspect = 0.75f;
+            yield return null;
+
+            AssertWizardViewportPosition(new Vector2(0.1f, 0.85f));
         }
 
         [UnityTest]
@@ -166,6 +179,13 @@ namespace PrograMago.Tests.Integration
             Assert.That(wizard.localPosition, Is.EqualTo(Vector3.zero));
             Assert.That(wizard.gameObject.activeSelf, Is.EqualTo(active));
             Assert.That(wizard.GetComponentsInChildren<SpriteRenderer>(true), Has.Length.EqualTo(1));
+        }
+
+        private void AssertWizardViewportPosition(Vector2 expected)
+        {
+            Vector3 viewportPosition = arenaCamera.WorldToViewportPoint(wizardSpawnPoint.position);
+            Assert.That(viewportPosition.x, Is.EqualTo(expected.x).Within(0.001f));
+            Assert.That(viewportPosition.y, Is.EqualTo(expected.y).Within(0.001f));
         }
 
         private static T FindSceneComponent<T>(string objectName) where T : Component

@@ -12,7 +12,9 @@ namespace PrograMago.UnityIntegration
     {
         [SerializeField] private TMP_InputField codeInput;
         [SerializeField] private TMP_Text feedbackText;
+        [SerializeField] private Camera arenaCamera;
         [SerializeField] private Transform wizardSpawnPoint;
+        [SerializeField] private Vector2 wizardViewportPosition = new Vector2(0.1f, 0.85f);
         [SerializeField] private GameObject wizardPrefab;
         [SerializeField] private Button battleButton;
 
@@ -27,15 +29,17 @@ namespace PrograMago.UnityIntegration
 
         private void Awake()
         {
-            if (codeInput == null || feedbackText == null || wizardSpawnPoint == null ||
+            if (codeInput == null || feedbackText == null || arenaCamera == null || wizardSpawnPoint == null ||
                 wizardPrefab == null || battleButton == null)
             {
                 Debug.LogError(
                     "GameplayBootstrapper precisa das referências de CodeInput, FeedbackText, " +
-                    "WizardSpawnPoint, WizardPrefab e BattleButton configuradas na cena.");
+                    "ArenaCamera, WizardSpawnPoint, WizardPrefab e BattleButton configuradas na cena.");
                 enabled = false;
                 return;
             }
+
+            PositionWizardSpawnPoint();
 
             var session = new LearningSession(new ExerciseDefinition(
                 "declare-mago-class",
@@ -60,6 +64,11 @@ namespace PrograMago.UnityIntegration
 
             battleButton.onClick.RemoveListener(presenter.Battle);
             codeInput.onValueChanged.RemoveListener(HandleCodeChanged);
+        }
+
+        private void LateUpdate()
+        {
+            PositionWizardSpawnPoint();
         }
 
         public void ShowError(Diagnostic diagnostic)
@@ -93,6 +102,22 @@ namespace PrograMago.UnityIntegration
         private void HandleCodeChanged(string _)
         {
             presenter.Preview();
+        }
+
+        private void PositionWizardSpawnPoint()
+        {
+            if (arenaCamera == null || wizardSpawnPoint == null)
+            {
+                return;
+            }
+
+            float distanceFromCamera = Vector3.Dot(
+                wizardSpawnPoint.position - arenaCamera.transform.position,
+                arenaCamera.transform.forward);
+            wizardSpawnPoint.position = arenaCamera.ViewportToWorldPoint(new Vector3(
+                wizardViewportPosition.x,
+                wizardViewportPosition.y,
+                distanceFromCamera));
         }
 
     }

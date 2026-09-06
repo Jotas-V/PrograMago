@@ -1507,7 +1507,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: PrograMago.Unity::PrograMago.UnityIntegration.GameplayBootstrapper
   codeInput: {fileID: 270336642}
   feedbackText: {fileID: 56841089}
+  arenaCamera: {fileID: 519420031}
   wizardSpawnPoint: {fileID: 1385745137}
+  wizardViewportPosition: {x: 0.1, y: 0.85}
   wizardPrefab: {fileID: 2788560366493455143, guid: abeba216b95454244b5384792680dd85, type: 3}
   battleButton: {fileID: 1580682164}
 --- !u!1 &1495335285
