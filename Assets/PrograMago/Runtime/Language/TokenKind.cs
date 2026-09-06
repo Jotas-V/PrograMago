@@ -3,9 +3,29 @@ namespace PrograMago.Language
     public enum TokenKind
     {
         PublicKeyword,
+        PrivateKeyword,
         ClassKeyword,
+        NewKeyword,
+        ThisKeyword,
+        ExtendsKeyword,
+        SuperKeyword,
+        ReturnKeyword,
+        VoidKeyword,
+        IntKeyword,
+        FloatKeyword,
+        StringType,
         Identifier,
+        IntegerLiteral,
+        FloatLiteral,
+        StringLiteral,
         LeftBrace,
-        RightBrace
+        RightBrace,
+        LeftParenthesis,
+        RightParenthesis,
+        Semicolon,
+        Comma,
+        Dot,
+        Equals,
+        At
     }
 }
