@@ -94,6 +94,29 @@ O desenvolvimento seguirá RED–GREEN–REFACTOR em Edit Mode. A suíte cobrir�
 - integração dos três critérios com submissão e progressão;
 - regressão das suítes Edit Mode e Play Mode.
 
+## Conclusão das batalhas sem inimigo
+
+As batalhas devem declarar nos próprios dados como sua vitória é resolvida. O
+domínio terá dois modos:
+
+- `OnCodeValidated`: código válido conclui imediatamente a batalha;
+- `OnCombatVictory`: código válido inicia o combate e a vitória precisa ser
+  reportada posteriormente pelo sistema de batalha.
+
+As três batalhas da primeira fase (`mago-class`, `mago-private-state` e
+`mago-constructor-object`) usarão `OnCodeValidated`, pois ainda não possuem
+inimigo. As cinco seguintes usarão `OnCombatVictory` e preservarão o contrato
+necessário para a TCC-12.
+
+O presenter continuará iniciando a batalha somente depois de receber o critério
+correto. Em seguida, para `OnCodeValidated`, ele reportará a vitória pelo mesmo
+fluxo já usado por resultados externos. Isso exibirá a revisão e o botão de
+próxima batalha sem duplicar a montagem da interface.
+
+Não será usado número da batalha, capítulo ou critério para inferir o modo. A
+decisão explícita no conteúdo evita regras ocultas e permite alterar a trilha
+pedagógica posteriormente.
+
 ## Fora do escopo
 
 - mapear os valores para o personagem ou mostrar pontos restantes (TCC-9);
