@@ -98,8 +98,9 @@ Arquivos principais:
 
 ### 7. Cena e integração Unity
 
-1. Adicionar testes de cena exigindo os novos textos, overlay oculto, botão de
-   avanço e referências serializadas.
+1. Adicionar testes de cena exigindo os novos textos, overlay oculto, fundo
+   preto semitransparente em tela cheia, card opaco, botão de avanço e
+   referências serializadas.
 2. Confirmar RED antes de alterar `SampleScene.unity`.
 3. Atualizar a cena e o bootstrapper para carregar o asset e conectar as views.
 4. Integrar `Keyboard.current.rKey` ao controlador usando

@@ -94,15 +94,19 @@ editor. Dicas são liberadas gradualmente após tentativas inválidas e nunca
 substituem o diagnóstico específico do analisador.
 
 Um único overlay de vitória, oculto no estado inicial, é reutilizado em todas
-as batalhas. Seus dados variáveis são:
+as batalhas. Ele ocupa a tela inteira com um fundo preto semitransparente, que
+mantém a arena e o código perceptíveis, porém escurecidos. Um card opaco aparece
+centralizado sobre esse fundo e concentra a mensagem de conclusão. Seus dados
+variáveis são:
 
 - título de conclusão;
 - descrição da conquista;
 - resumo do conteúdo aprendido.
 
-O botão **Próxima batalha** permanece fixo no overlay. Ao avançar, o painel é
-atualizado com os dados seguintes e o editor inicia vazio. A cena não precisa
-ser alterada ou reconfigurada manualmente.
+O botão **Próxima batalha** permanece fixo no card. O fundo semitransparente
+bloqueia interações com o jogo enquanto a revisão estiver aberta. Ao avançar, o
+painel é atualizado com os dados seguintes e o editor inicia vazio. A cena não
+precisa ser alterada ou reconfigurada manualmente.
 
 O mapa de seleção, desbloqueio e replay foi separado na subissue TCC-37.
 
