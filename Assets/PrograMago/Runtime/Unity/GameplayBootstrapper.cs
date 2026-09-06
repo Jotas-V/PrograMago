@@ -12,10 +12,12 @@ namespace PrograMago.UnityIntegration
     {
         [SerializeField] private TMP_InputField codeInput;
         [SerializeField] private TMP_Text feedbackText;
-        [SerializeField] private GameObject wizardPlaceholder;
+        [SerializeField] private Transform wizardSpawnPoint;
+        [SerializeField] private GameObject wizardPrefab;
         [SerializeField] private Button battleButton;
 
         private GameplayPresenter presenter;
+        private GameObject wizardInstance;
 
         public string SourceCode
         {
@@ -25,16 +27,15 @@ namespace PrograMago.UnityIntegration
 
         private void Awake()
         {
-            if (codeInput == null || feedbackText == null || wizardPlaceholder == null || battleButton == null)
+            if (codeInput == null || feedbackText == null || wizardSpawnPoint == null ||
+                wizardPrefab == null || battleButton == null)
             {
                 Debug.LogError(
                     "GameplayBootstrapper precisa das referências de CodeInput, FeedbackText, " +
-                    "WizardPlaceholder e BattleButton configuradas na cena.");
+                    "WizardSpawnPoint, WizardPrefab e BattleButton configuradas na cena.");
                 enabled = false;
                 return;
             }
-
-            wizardPlaceholder.SetActive(false);
 
             var session = new LearningSession(new ExerciseDefinition(
                 "declare-mago-class",
@@ -76,7 +77,17 @@ namespace PrograMago.UnityIntegration
 
         public void SetClassDeclared(bool hasDeclaredClass)
         {
-            wizardPlaceholder.SetActive(hasDeclaredClass);
+            if (hasDeclaredClass && wizardInstance == null)
+            {
+                wizardInstance = Instantiate(wizardPrefab, wizardSpawnPoint);
+                wizardInstance.name = wizardPrefab.name;
+                wizardInstance.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            }
+
+            if (wizardInstance != null)
+            {
+                wizardInstance.SetActive(hasDeclaredClass);
+            }
         }
 
         private void HandleCodeChanged(string _)

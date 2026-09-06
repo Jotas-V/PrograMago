@@ -13,7 +13,7 @@ namespace PrograMago.Tests.Integration
     {
         private TMP_InputField codeInput;
         private TMP_Text feedbackText;
-        private GameObject wizardPlaceholder;
+        private Transform wizardSpawnPoint;
         private Button battleButton;
 
         [UnitySetUp]
@@ -25,10 +25,10 @@ namespace PrograMago.Tests.Integration
             Assert.That(Object.FindFirstObjectByType<GameplayBootstrapper>(), Is.Not.Null);
             codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
             feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
-            wizardPlaceholder = FindSceneObject("WizardPlaceholder");
+            wizardSpawnPoint = FindSceneObject("WizardSpawnPoint").transform;
             battleButton = FindSceneComponent<Button>("BattleButton");
 
-            Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            Assert.That(wizardSpawnPoint.childCount, Is.Zero);
             Assert.That(FindSceneObjectOrNull("RuntimeFeedbackText"), Is.Null);
         }
 
@@ -44,13 +44,27 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
+        public IEnumerator Editor_ReturnKey_InsertsNewLineAndKeepsEditing()
+        {
+            codeInput.ActivateInputField();
+            codeInput.text = "public";
+            codeInput.caretPosition = codeInput.text.Length;
+            codeInput.ProcessEvent(Event.KeyboardEvent("return"));
+
+            yield return null;
+
+            Assert.That(codeInput.text, Is.EqualTo("public\n"));
+            Assert.That(codeInput.isFocused, Is.True);
+        }
+
+        [UnityTest]
         public IEnumerator Edit_ValidDeclaration_ShowsPreviewWithoutFeedback()
         {
             codeInput.text = "public class Mago {}";
 
             yield return null;
 
-            Assert.That(wizardPlaceholder.activeSelf, Is.True);
+            AssertWizardAtSpawn(active: true);
             Assert.That(feedbackText.text, Is.Empty);
         }
 
@@ -63,7 +77,7 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Bruxo {}";
             yield return null;
 
-            Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            AssertWizardAtSpawn(active: false);
             Assert.That(feedbackText.text, Is.Empty);
         }
 
@@ -97,7 +111,7 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator Battle_ValidDeclaration_KeepsFeedbackEmptyAndWizardSilhouetteVisible()
+        public IEnumerator Battle_ValidDeclaration_KeepsFeedbackEmptyAndMagoPrefabVisible()
         {
             codeInput.text = "public class Mago {}";
 
@@ -105,7 +119,7 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(feedbackText.text, Is.Empty);
-            Assert.That(wizardPlaceholder.activeSelf, Is.True);
+            AssertWizardAtSpawn(active: true);
         }
 
         [UnityTest]
@@ -120,7 +134,7 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(feedbackText.text, Does.Contain("CLASS001"));
-            Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            AssertWizardAtSpawn(active: false);
             Assert.That(codeInput.text, Is.EqualTo("public class Bruxo {}"));
         }
 
@@ -136,7 +150,22 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(feedbackText.text, Is.Empty);
-            Assert.That(wizardPlaceholder.activeSelf, Is.False);
+            AssertWizardAtSpawn(active: false);
+        }
+
+        private void AssertWizardAtSpawn(bool active)
+        {
+            if (!active && wizardSpawnPoint.childCount == 0)
+            {
+                return;
+            }
+
+            Assert.That(wizardSpawnPoint.childCount, Is.EqualTo(1));
+            Transform wizard = wizardSpawnPoint.GetChild(0);
+            Assert.That(wizard.name, Does.StartWith("Mago"));
+            Assert.That(wizard.localPosition, Is.EqualTo(Vector3.zero));
+            Assert.That(wizard.gameObject.activeSelf, Is.EqualTo(active));
+            Assert.That(wizard.GetComponentsInChildren<SpriteRenderer>(true), Has.Length.EqualTo(1));
         }
 
         private static T FindSceneComponent<T>(string objectName) where T : Component

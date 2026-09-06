@@ -35,6 +35,7 @@ namespace PrograMago.Tests.UnityIntegration
             GameObject codeInput = FindSceneObject("CodeInput");
             GameObject feedbackText = FindSceneObject("FeedbackText");
             GameObject battleButton = FindSceneObject("BattleButton");
+            GameObject wizardSpawnPoint = FindSceneObject("WizardSpawnPoint");
             MonoBehaviour bootstrapper = FindBehaviourWithProperty("codeInput");
             var serializedBootstrapper = new SerializedObject(bootstrapper);
 
@@ -47,6 +48,13 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(
                 serializedBootstrapper.FindProperty("battleButton").objectReferenceValue,
                 Is.SameAs(FindBehaviourWithProperty(battleButton, "m_OnClick")));
+            Assert.That(
+                serializedBootstrapper.FindProperty("wizardSpawnPoint").objectReferenceValue,
+                Is.SameAs(wizardSpawnPoint.transform));
+
+            var wizardPrefab = serializedBootstrapper.FindProperty("wizardPrefab").objectReferenceValue as GameObject;
+            Assert.That(wizardPrefab, Is.Not.Null);
+            Assert.That(AssetDatabase.GetAssetPath(wizardPrefab), Is.EqualTo("Assets/PrograMago/Prefabs/Mago.prefab"));
         }
 
         [Test]
@@ -102,35 +110,55 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void WizardPlaceholder_ContainsAVisibleSilhouette()
+        public void WizardSpawnPoint_IsPreservedEmptyAndUsesASingleSquarePrefab()
         {
-            GameObject wizard = FindSceneObject("WizardPlaceholder");
-            MonoBehaviour[] renderers = wizard.GetComponentsInChildren<MonoBehaviour>(true)
-                .Where(candidate =>
-                    HasProperty(candidate, "m_Sprite") &&
-                    HasProperty(candidate, "m_Color") &&
-                    HasProperty(candidate, "m_RaycastTarget"))
-                .ToArray();
+            GameObject spawnPoint = FindSceneObject("WizardSpawnPoint");
+            MonoBehaviour bootstrapper = FindBehaviourWithProperty("wizardSpawnPoint");
+            var serializedBootstrapper = new SerializedObject(bootstrapper);
+            var wizardPrefab = serializedBootstrapper.FindProperty("wizardPrefab").objectReferenceValue as GameObject;
 
-            Assert.That(wizard.transform.parent.name, Is.EqualTo("ArenaFrame"));
-            Assert.That(wizard.GetComponent<RectTransform>(), Is.Not.Null);
-            Assert.That(renderers, Has.Length.GreaterThanOrEqualTo(3));
-            Assert.That(
-                renderers.All(renderer =>
-                    new SerializedObject(renderer).FindProperty("m_Sprite").objectReferenceValue != null),
-                Is.True);
-            Assert.That(renderers.All(renderer => renderer.enabled), Is.True);
+            Assert.That(spawnPoint.transform.parent.name, Is.EqualTo("ArenaWorld"));
+            Assert.That(spawnPoint.transform.childCount, Is.Zero);
+            Assert.That(FindSceneObjectOrNull("WizardPlaceholder"), Is.Null);
+            Assert.That(FindSceneObjectOrNull("WizardWorldAnchor"), Is.Null);
+            Assert.That(wizardPrefab, Is.Not.Null);
+            Assert.That(wizardPrefab.name, Is.EqualTo("Mago"));
+            Assert.That(wizardPrefab.transform.childCount, Is.Zero);
+            Assert.That(wizardPrefab.GetComponents<SpriteRenderer>(), Has.Length.EqualTo(1));
+            Assert.That(wizardPrefab.GetComponent<SpriteRenderer>().sprite, Is.Not.Null);
+        }
+
+        [Test]
+        public void CanvasAndPanels_UseResponsiveAnchors()
+        {
+            GameObject canvas = FindSceneObject("Canvas");
+            MonoBehaviour scaler = FindBehaviourWithProperty(canvas, "m_UiScaleMode");
+            var serializedScaler = new SerializedObject(scaler);
+
+            Assert.That(serializedScaler.FindProperty("m_UiScaleMode").enumValueIndex, Is.EqualTo(1));
+            Assert.That(serializedScaler.FindProperty("m_ReferenceResolution").vector2Value, Is.EqualTo(new Vector2(1920f, 1080f)));
+            Assert.That(serializedScaler.FindProperty("m_MatchWidthOrHeight").floatValue, Is.EqualTo(0.5f).Within(0.001f));
+
+            AssertRectAnchors(FindSceneObject("ArenaFrame"), new Vector2(0f, 0.70f), Vector2.one);
+            AssertRectAnchors(FindSceneObject("BottomArea"), Vector2.zero, new Vector2(1f, 0.70f));
+            AssertRectAnchors(FindSceneObject("CodeEditorPanel"), Vector2.zero, new Vector2(0.75f, 1f));
+            AssertRectAnchors(FindSceneObject("TutorialPanel"), new Vector2(0.75f, 0f), Vector2.one);
         }
 
         private GameObject FindSceneObject(string objectName)
         {
-            GameObject sceneObject = scene.GetRootGameObjects()
+            GameObject sceneObject = FindSceneObjectOrNull(objectName);
+            Assert.That(sceneObject, Is.Not.Null, $"Objeto {objectName} não encontrado na cena.");
+            return sceneObject;
+        }
+
+        private GameObject FindSceneObjectOrNull(string objectName)
+        {
+            return scene.GetRootGameObjects()
                 .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
                 .Where(candidate => candidate.name == objectName)
                 .Select(candidate => candidate.gameObject)
                 .SingleOrDefault();
-            Assert.That(sceneObject, Is.Not.Null, $"Objeto {objectName} não encontrado na cena.");
-            return sceneObject;
         }
 
         private MonoBehaviour FindBehaviourWithProperty(string propertyName)
@@ -183,6 +211,16 @@ namespace PrograMago.Tests.UnityIntegration
                 Assert.That(corner.x, Is.InRange(panelCorners[0].x - tolerance, panelCorners[2].x + tolerance));
                 Assert.That(corner.y, Is.InRange(panelCorners[0].y - tolerance, panelCorners[2].y + tolerance));
             }
+        }
+
+        private static void AssertRectAnchors(GameObject sceneObject, Vector2 expectedMin, Vector2 expectedMax)
+        {
+            RectTransform rect = sceneObject.GetComponent<RectTransform>();
+            Assert.That(rect, Is.Not.Null, $"{sceneObject.name} deve possuir RectTransform.");
+            Assert.That(rect.anchorMin.x, Is.EqualTo(expectedMin.x).Within(0.001f));
+            Assert.That(rect.anchorMin.y, Is.EqualTo(expectedMin.y).Within(0.001f));
+            Assert.That(rect.anchorMax.x, Is.EqualTo(expectedMax.x).Within(0.001f));
+            Assert.That(rect.anchorMax.y, Is.EqualTo(expectedMax.y).Within(0.001f));
         }
     }
 }
