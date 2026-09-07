@@ -13,6 +13,27 @@ namespace PrograMago.Domain
             IEnumerable<string> hints,
             ValidationCriterion criterion,
             BattleVictoryContent victory)
+            : this(
+                id,
+                chapter,
+                order,
+                lesson,
+                hints,
+                criterion,
+                victory,
+                BattleCompletionMode.OnCombatVictory)
+        {
+        }
+
+        public BattleDefinition(
+            string id,
+            int chapter,
+            int order,
+            BattleLessonContent lesson,
+            IEnumerable<string> hints,
+            ValidationCriterion criterion,
+            BattleVictoryContent victory,
+            BattleCompletionMode completionMode)
         {
             Id = RequireText(id, nameof(id));
             if (chapter <= 0)
@@ -49,9 +70,15 @@ namespace PrograMago.Domain
                 throw new ArgumentOutOfRangeException(nameof(criterion));
             }
 
+            if (!Enum.IsDefined(typeof(BattleCompletionMode), completionMode))
+            {
+                throw new ArgumentOutOfRangeException(nameof(completionMode));
+            }
+
             Hints = validatedHints.AsReadOnly();
             Criterion = criterion;
             Victory = victory ?? throw new ArgumentNullException(nameof(victory));
+            CompletionMode = completionMode;
         }
 
         public string Id { get; }
@@ -67,6 +94,8 @@ namespace PrograMago.Domain
         public ValidationCriterion Criterion { get; }
 
         public BattleVictoryContent Victory { get; }
+
+        public BattleCompletionMode CompletionMode { get; }
 
         private static string RequireText(string value, string parameterName)
         {

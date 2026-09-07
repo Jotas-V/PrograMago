@@ -1,5 +1,6 @@
 using System;
 using PrograMago.Application;
+using PrograMago.Domain;
 
 namespace PrograMago.Presentation
 {
@@ -36,7 +37,7 @@ namespace PrograMago.Presentation
 
         public void Battle()
         {
-            SubmitCodeResult result = submitCode.Execute(editor.SourceCode);
+            SubmitCodeResult result = submitCode.Execute(editor.SourceCode, CurrentCriterion);
             arena.SetClassDeclared(result.IsSuccess);
 
             if (result.IsSuccess)
@@ -53,7 +54,11 @@ namespace PrograMago.Presentation
         public void Preview()
         {
             feedback.Clear();
-            arena.SetClassDeclared(submitCode.CanPreview(editor.SourceCode));
+            arena.SetClassDeclared(submitCode.CanPreview(editor.SourceCode, CurrentCriterion));
         }
+
+        private ValidationCriterion CurrentCriterion => learningFlow == null
+            ? ValidationCriterion.DeclareMagoClass
+            : learningFlow.Progress.CurrentBattle.Criterion;
     }
 }

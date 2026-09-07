@@ -117,6 +117,34 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
+        public void HandleSubmission_CodeValidatedBattle_ShowsVictoryImmediately()
+        {
+            var view = new FakeLearningFlowView();
+            LearningFlowPresenter presenter = CreatePresenterForPath(
+                new LearningPath(new[]
+                {
+                    CreateBattle(
+                        "first",
+                        1,
+                        ValidationCriterion.DeclareMagoClass,
+                        BattleCompletionMode.OnCodeValidated)
+                }),
+                new FakeCodeEditorView(),
+                new FakeFeedbackView(),
+                new FakeArenaView(),
+                view);
+            presenter.Initialize();
+
+            presenter.HandleSubmission(SubmitCodeResult.Success(
+                true,
+                ValidationCriterion.DeclareMagoClass));
+
+            Assert.That(presenter.Progress.Stage, Is.EqualTo(LearningStage.VictoryReview));
+            Assert.That(view.InteractionEnabled, Is.False);
+            Assert.That(view.Victory.Title, Is.EqualTo("Vitória!"));
+        }
+
+        [Test]
         public void HandleSubmission_MismatchedCriterion_ShowsFlowDiagnosticAndStaysEditing()
         {
             var feedback = new FakeFeedbackView();
@@ -298,7 +326,8 @@ namespace PrograMago.Tests.Presentation
         private static BattleDefinition CreateBattle(
             string id,
             int order,
-            ValidationCriterion criterion)
+            ValidationCriterion criterion,
+            BattleCompletionMode completionMode = BattleCompletionMode.OnCombatVictory)
         {
             return new BattleDefinition(
                 id,
@@ -309,7 +338,8 @@ namespace PrograMago.Tests.Presentation
                     "Como usar.", "Efeito.", "Tarefa."),
                 new[] { "Dica 1", "Dica 2", "Dica 3", "Dica 4" },
                 criterion,
-                new BattleVictoryContent("Vitória!", "Conquista.", "Revisão."));
+                new BattleVictoryContent("Vitória!", "Conquista.", "Revisão."),
+                completionMode);
         }
 
         private sealed class FakeCodeEditorView : ICodeEditorView

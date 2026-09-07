@@ -82,7 +82,7 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator Battle_ValidCode_StartsBattleAndVictoryShowsReviewOverlay()
+        public IEnumerator Battle_ValidCodeWithoutEnemy_ShowsVictoryReviewImmediately()
         {
             codeInput.text = "public class Mago {}";
 
@@ -91,11 +91,6 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(codeInput.interactable, Is.False);
             Assert.That(battleButton.interactable, Is.False);
-            Assert.That(victoryOverlay.activeSelf, Is.False);
-
-            Assert.That(bootstrapper.ReportBattleVictory(), Is.True);
-            yield return null;
-
             Assert.That(victoryOverlay.activeSelf, Is.True);
             Assert.That(
                 FindSceneComponent<TMP_Text>("VictoryTitleText").text,
@@ -112,7 +107,6 @@ namespace PrograMago.Tests.Integration
         {
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
-            Assert.That(bootstrapper.ReportBattleVictory(), Is.True);
             yield return null;
 
             nextBattleButton.onClick.Invoke();
@@ -127,21 +121,20 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator Defeat_ReturnsToEditingAndPreservesCurrentCode()
+        public IEnumerator AutomaticVictory_CannotBeOverriddenByDefeat()
         {
             const string submittedCode = "public class Mago {}";
             codeInput.text = submittedCode;
             battleButton.onClick.Invoke();
             yield return null;
 
-            Assert.That(bootstrapper.ReportBattleDefeat(), Is.True);
+            Assert.That(bootstrapper.ReportBattleDefeat(), Is.False);
             yield return null;
 
             Assert.That(codeInput.text, Is.EqualTo(submittedCode));
-            Assert.That(codeInput.interactable, Is.True);
-            Assert.That(battleButton.interactable, Is.True);
-            Assert.That(victoryOverlay.activeSelf, Is.False);
-            AssertWizardAtSpawn(active: false);
+            Assert.That(codeInput.interactable, Is.False);
+            Assert.That(battleButton.interactable, Is.False);
+            Assert.That(victoryOverlay.activeSelf, Is.True);
         }
 
         [UnityTest]

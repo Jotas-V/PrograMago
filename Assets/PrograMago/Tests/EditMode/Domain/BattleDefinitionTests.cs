@@ -36,6 +36,16 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
+        public void BattleCompletionMode_DefinesCodeAndCombatResolution()
+        {
+            Assert.That(Enum.GetNames(typeof(BattleCompletionMode)), Is.EquivalentTo(new[]
+            {
+                "OnCodeValidated",
+                "OnCombatVictory"
+            }));
+        }
+
+        [Test]
         public void DomainAssembly_ExposesBattleLessonContent()
         {
             System.Type lessonContent = typeof(ExerciseDefinition).Assembly.GetType(
@@ -97,6 +107,9 @@ namespace PrograMago.Tests.Domain
             Assert.That(type.GetProperty("Hints")?.PropertyType, Is.EqualTo(typeof(IReadOnlyList<string>)));
             Assert.That(type.GetProperty("Criterion")?.PropertyType, Is.EqualTo(typeof(ValidationCriterion)));
             Assert.That(type.GetProperty("Victory")?.PropertyType, Is.EqualTo(typeof(BattleVictoryContent)));
+            Assert.That(
+                type.GetProperty("CompletionMode")?.PropertyType,
+                Is.EqualTo(typeof(BattleCompletionMode)));
         }
 
         [Test]
@@ -163,7 +176,8 @@ namespace PrograMago.Tests.Domain
                 lesson,
                 hints,
                 ValidationCriterion.DeclareMagoClass,
-                victory);
+                victory,
+                BattleCompletionMode.OnCodeValidated);
 
             hints[0] = "alterada externamente";
 
@@ -174,6 +188,7 @@ namespace PrograMago.Tests.Domain
             Assert.That(battle.Hints, Is.EqualTo(new[] { "Comece com public.", "Depois escreva class." }));
             Assert.That(battle.Criterion, Is.EqualTo(ValidationCriterion.DeclareMagoClass));
             Assert.That(battle.Victory, Is.SameAs(victory));
+            Assert.That(battle.CompletionMode, Is.EqualTo(BattleCompletionMode.OnCodeValidated));
         }
 
         [TestCase(0)]
@@ -260,6 +275,15 @@ namespace PrograMago.Tests.Domain
             Assert.Throws<ArgumentOutOfRangeException>(() => new BattleDefinition(
                 "battle", 1, 1, CreateLesson(), new[] { "Dica" },
                 (ValidationCriterion)999, CreateVictory()));
+        }
+
+        [Test]
+        public void BattleDefinition_UndefinedCompletionMode_Throws()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BattleDefinition(
+                "battle", 1, 1, CreateLesson(), new[] { "Dica" },
+                ValidationCriterion.DeclareMagoClass, CreateVictory(),
+                (BattleCompletionMode)999));
         }
 
         private static BattleLessonContent CreateLesson()

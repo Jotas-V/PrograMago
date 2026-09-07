@@ -7,12 +7,12 @@ namespace PrograMago.Application
     public sealed class SubmitCodeUseCase
     {
         private readonly CodeTokenizer tokenizer;
-        private readonly ClassDeclarationValidator validator;
+        private readonly ExerciseCodeValidator validator;
         private readonly LearningSession session;
 
         public SubmitCodeUseCase(
             CodeTokenizer tokenizer,
-            ClassDeclarationValidator validator,
+            ExerciseCodeValidator validator,
             LearningSession session)
         {
             this.tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
@@ -22,34 +22,46 @@ namespace PrograMago.Application
 
         public SubmitCodeResult Execute(string source)
         {
-            ClassDeclarationValidationResult validation = Validate(source);
+            return Execute(source, ValidationCriterion.DeclareMagoClass);
+        }
+
+        public SubmitCodeResult Execute(string source, ValidationCriterion criterion)
+        {
+            ExerciseValidationResult validation = Validate(source, criterion);
             if (!validation.IsSuccess)
             {
                 return SubmitCodeResult.Failure(session.HasDeclaredClass, validation.Diagnostic);
             }
 
-            session.Apply(validation.Declaration);
+            session.Apply(new ValidatedClassDeclaration(validation.Program.ClassName));
             return SubmitCodeResult.Success(
                 session.HasDeclaredClass,
-                ValidationCriterion.DeclareMagoClass);
+                validation.SatisfiedCriterion.Value,
+                validation.Program);
         }
 
         public bool CanPreview(string source)
         {
-            return Validate(source).IsSuccess;
+            return CanPreview(source, ValidationCriterion.DeclareMagoClass);
         }
 
-        private ClassDeclarationValidationResult Validate(string source)
+        public bool CanPreview(string source, ValidationCriterion criterion)
+        {
+            return Validate(source, criterion).IsSuccess;
+        }
+
+        private ExerciseValidationResult Validate(string source, ValidationCriterion criterion)
         {
             TokenizationResult tokenization = tokenizer.Tokenize(source);
             if (!tokenization.IsSuccess)
             {
-                return ClassDeclarationValidationResult.Failure(tokenization.Diagnostic);
+                return ExerciseValidationResult.Failure(tokenization.Diagnostic);
             }
 
             return validator.Validate(
                 tokenization.Tokens,
-                session.Exercise);
+                session.Exercise,
+                criterion);
         }
     }
 }
