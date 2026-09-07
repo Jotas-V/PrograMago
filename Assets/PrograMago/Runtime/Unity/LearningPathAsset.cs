@@ -31,6 +31,7 @@ namespace PrograMago.UnityIntegration
             [SerializeField] private string task;
             [SerializeField] private string[] hints = Array.Empty<string>();
             [SerializeField] private ValidationCriterion criterion;
+            [SerializeField] private BattleCompletionMode completionMode;
             [SerializeField] private string victoryTitle;
             [SerializeField] private string victoryAchievement;
             [SerializeField] private string victoryReview;
@@ -54,7 +55,8 @@ namespace PrograMago.UnityIntegration
                     new BattleVictoryContent(
                         victoryTitle,
                         victoryAchievement,
-                        victoryReview));
+                        victoryReview),
+                    completionMode);
             }
         }
     }

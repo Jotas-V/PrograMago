@@ -29,6 +29,7 @@ MonoBehaviour:
     - O nome esperado diferencia maiúsculas de minúsculas e deve ser Mago.
     - 'Solução: public class Mago {}'
     criterion: 0
+    completionMode: 1
     victoryTitle: Primeira batalha concluída!
     victoryAchievement: Você deu forma ao seu primeiro Mago.
     victoryReview: Classes são moldes que reúnem o que objetos de um mesmo tipo têm e podem fazer.
@@ -48,6 +49,7 @@ MonoBehaviour:
     - Declare os cinco atributos uma única vez; a ordem entre eles pode variar.
     - 'Exemplo: private int vida; private int dano; private int alcance; private int iniciativa; private int velocidadeAtaque;'
     criterion: 1
+    completionMode: 1
     victoryTitle: Estado protegido!
     victoryAchievement: Seu Mago agora possui capacidades próprias e protegidas.
     victoryReview: Atributos representam o estado do objeto; private aplica encapsulamento e controla o acesso a esses dados.
@@ -67,6 +69,7 @@ MonoBehaviour:
     - Use this.atributo = atributo para guardar cada parâmetro no objeto.
     - 'Finalize com new Mago(...); cada valor vai de 1 a 15 e a soma não pode ultrapassar 25.'
     criterion: 2
+    completionMode: 1
     victoryTitle: O Mago ganhou vida!
     victoryAchievement: Você construiu e instanciou um objeto completo.
     victoryReview: O construtor inicializa o objeto, this acessa seu próprio estado e new transforma a classe em uma instância.
@@ -86,6 +89,7 @@ MonoBehaviour:
     - O construtor deve receber e guardar os três valores.
     - 'Finalize com uma instanciação usando new Inimigo(...).'
     criterion: 3
+    completionMode: 0
     victoryTitle: Adversário derrotado!
     victoryAchievement: Você criou um segundo tipo de objeto e o enfrentou na arena.
     victoryReview: Uma classe é reutilizável; cada objeto criado por ela mantém seu próprio estado.
@@ -105,6 +109,7 @@ MonoBehaviour:
     - Receba o alvo como parâmetro Inimigo inimigo.
     - 'Depois da declaração, chame mago.lancarMagia(inimigo);'
     criterion: 4
+    completionMode: 0
     victoryTitle: A primeira magia funcionou!
     victoryAchievement: Seu Mago agora possui e executa um comportamento.
     victoryReview: Métodos representam ações; parâmetros levam informações para a ação e chamadas pedem ao objeto que a execute.
@@ -124,6 +129,7 @@ MonoBehaviour:
     - Mago deve aparecer depois de extends como classe base.
     - 'Solução estrutural: public class Piromante extends Mago {}'
     criterion: 5
+    completionMode: 0
     victoryTitle: Poder elemental desbloqueado!
     victoryAchievement: Você especializou o Mago sem repetir toda a classe base.
     victoryReview: Herança permite que uma subclasse reutilize membros da classe base e acrescente sua própria especialização.
@@ -143,6 +149,7 @@ MonoBehaviour:
     - Dentro do novo método, super acessa o comportamento herdado.
     - 'Use super.lancarMagia(inimigo); antes de acrescentar o efeito elemental.'
     criterion: 6
+    completionMode: 0
     victoryTitle: Magia especializada!
     victoryAchievement: Cada tipo de Mago agora responde à batalha à sua maneira.
     victoryReview: Sobrescrita especializa um método herdado; super permite combinar o comportamento base com a nova implementação.
@@ -162,6 +169,7 @@ MonoBehaviour:
     - Chame lancarMagia pela mesma variável, independentemente da subclasse concreta.
     - 'Exemplo: Mago magoAtivo = new Piromante(...); magoAtivo.lancarMagia(inimigo);'
     criterion: 7
+    completionMode: 0
     victoryTitle: Jornada concluída!
     victoryAchievement: Você reuniu classes, objetos, encapsulamento, herança e comportamento polimórfico em uma estratégia completa.
     victoryReview: Polimorfismo usa uma referência comum para acionar comportamentos diferentes conforme o objeto concreto, tornando o código flexível e extensível.

@@ -64,6 +64,10 @@ namespace PrograMago.Presentation
             }
 
             view.SetInteractionEnabled(false);
+            if (Progress.CurrentBattle.CompletionMode == BattleCompletionMode.OnCodeValidated)
+            {
+                ReportBattleVictory();
+            }
         }
 
         public bool ReportBattleVictory()

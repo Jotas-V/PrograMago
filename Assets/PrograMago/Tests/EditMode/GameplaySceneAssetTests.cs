@@ -224,6 +224,17 @@ namespace PrograMago.Tests.UnityIntegration
                 ValidationCriterion.OverrideSpellWithSuper,
                 ValidationCriterion.UsePolymorphicMagoReference
             }));
+            Assert.That(path.Battles.Select(battle => battle.CompletionMode), Is.EqualTo(new[]
+            {
+                BattleCompletionMode.OnCodeValidated,
+                BattleCompletionMode.OnCodeValidated,
+                BattleCompletionMode.OnCodeValidated,
+                BattleCompletionMode.OnCombatVictory,
+                BattleCompletionMode.OnCombatVictory,
+                BattleCompletionMode.OnCombatVictory,
+                BattleCompletionMode.OnCombatVictory,
+                BattleCompletionMode.OnCombatVictory
+            }));
             Assert.That(path.Battles.All(battle => battle.Hints.Count == 4), Is.True);
             Assert.That(path.Battles.All(battle =>
                 !string.IsNullOrWhiteSpace(battle.Lesson.Title) &&
