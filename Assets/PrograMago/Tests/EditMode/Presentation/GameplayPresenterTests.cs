@@ -320,7 +320,7 @@ namespace PrograMago.Tests.Presentation
             {
             }
 
-            public void ShowVictory(BattleVictoryContent content, bool isFinalBattle)
+            public void ShowVictory(BattleVictoryContent content, bool isFinalBattle, bool isPhaseComplete)
             {
             }
 

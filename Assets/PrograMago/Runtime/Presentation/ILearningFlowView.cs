@@ -8,7 +8,7 @@ namespace PrograMago.Presentation
 
         void ShowHint(string hint);
 
-        void ShowVictory(BattleVictoryContent content, bool isFinalBattle);
+        void ShowVictory(BattleVictoryContent content, bool isFinalBattle, bool isPhaseComplete);
 
         void HideVictory();
 

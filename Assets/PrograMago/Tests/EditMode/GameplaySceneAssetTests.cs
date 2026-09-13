@@ -142,6 +142,18 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
+        public void MagoPrefab_UsesProjectPixelArtWithPointFiltering()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/PrograMago/Prefabs/Mago.prefab");
+            Sprite sprite = prefab.GetComponent<SpriteRenderer>().sprite;
+
+            Assert.That(AssetDatabase.GetAssetPath(sprite),
+                Is.EqualTo("Assets/PrograMago/Art/Mago-pixel.png"));
+            Assert.That(sprite.texture.filterMode, Is.EqualTo(FilterMode.Point));
+        }
+
+        [Test]
         public void CanvasAndPanels_UseResponsiveAnchors()
         {
             GameObject canvas = FindSceneObject("Canvas");

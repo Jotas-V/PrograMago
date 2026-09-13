@@ -1,4 +1,5 @@
 using System.Collections;
+using System.IO;
 using NUnit.Framework;
 using PrograMago.UnityIntegration;
 using TMPro;
@@ -25,10 +26,22 @@ namespace PrograMago.Tests.Integration
         private GameObject victoryOverlay;
         private Button nextBattleButton;
         private GameObject restartProgressPanel;
+        private string progressSavePath;
+        private byte[] previousProgressSave;
 
         [UnitySetUp]
         public IEnumerator LoadGameplayScene()
         {
+            progressSavePath = Path.Combine(
+                UnityEngine.Application.persistentDataPath, "programago-phase1.json");
+            previousProgressSave = File.Exists(progressSavePath)
+                ? File.ReadAllBytes(progressSavePath)
+                : null;
+            if (File.Exists(progressSavePath))
+            {
+                File.Delete(progressSavePath);
+            }
+
             SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
             yield return null;
 
@@ -50,6 +63,32 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(wizardSpawnPoint.childCount, Is.Zero);
             Assert.That(FindSceneObjectOrNull("RuntimeFeedbackText"), Is.Null);
+        }
+
+        [UnityTearDown]
+        public IEnumerator RestoreProgressSave()
+        {
+            GameplayBootstrapper liveBootstrapper =
+                Object.FindFirstObjectByType<GameplayBootstrapper>();
+            if (liveBootstrapper != null)
+            {
+                Object.Destroy(liveBootstrapper.gameObject);
+                yield return null;
+            }
+
+            if (previousProgressSave == null)
+            {
+                if (File.Exists(progressSavePath))
+                {
+                    File.Delete(progressSavePath);
+                }
+            }
+            else
+            {
+                File.WriteAllBytes(progressSavePath, previousProgressSave);
+            }
+
+            yield return null;
         }
 
         [UnityTest]
@@ -307,6 +346,105 @@ namespace PrograMago.Tests.Integration
 
             TMP_Text stats = FindSceneComponent<TMP_Text>("MagoStatsText");
             Assert.That(stats.text, Does.Contain("Pontos restantes: 0"));
+        }
+
+        [UnityTest]
+        public IEnumerator PhaseOne_ThreeValidatedTasks_EndWithSavedCompletionAndMappedMago()
+        {
+            codeInput.text = "public class Bruxo {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(hintText.text, Does.StartWith("DICA"));
+
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            const string approvedCode =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                "Mago heroi = new Mago(5, 7, 3, 4, 2);";
+            codeInput.text = approvedCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
+                Does.Contain("Fase 1 concluída"));
+            Assert.That(nextBattleButton.interactable, Is.False);
+            Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
+                Does.Contain("Vida: 5"));
+            Assert.That(File.Exists(progressSavePath), Is.True);
+
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            yield return null;
+
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo(approvedCode));
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
+                Does.Contain("Fase 1 concluída"));
+            Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
+                Does.Contain("Pontos restantes: 4"));
+        }
+
+        [UnityTest]
+        public IEnumerator PhaseOne_ReloadAfterFirstVictory_ResumesAttributesWithCode()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            yield return null;
+
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text,
+                Is.EqualTo("Estado protegido"));
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo("public class Mago {}"));
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.False);
+            Assert.That(FindSceneObject("WizardSpawnPoint").transform.childCount,
+                Is.EqualTo(1));
+        }
+
+        [UnityTest]
+        public IEnumerator PhaseOne_ReloadAfterRestart_KeepsArenaClearedAndEditorCode()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            var field = typeof(GameplayBootstrapper).GetField(
+                "learningFlowPresenter",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic);
+            object flow = field.GetValue(bootstrapper);
+            bool restarted = (bool)flow.GetType().GetMethod("RestartCurrentBattle")
+                .Invoke(flow, null);
+            Assert.That(restarted, Is.True);
+            Assert.That(wizardSpawnPoint.GetChild(0).gameObject.activeSelf, Is.False);
+
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            yield return null;
+
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo("public class Mago {}"));
+            Transform restoredSpawn = FindSceneObject("WizardSpawnPoint").transform;
+            Assert.That(restoredSpawn.childCount, Is.Zero);
         }
 
         [UnityTest]

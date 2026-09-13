@@ -100,6 +100,39 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
+        public void HandleSubmission_FailureThenSuccess_RecordsBothAttemptsForBattle()
+        {
+            LearningFlowPresenter presenter = CreatePresenter(
+                new FakeCodeEditorView(), new FakeFeedbackView(), new FakeArenaView(),
+                new FakeLearningFlowView());
+            presenter.Initialize();
+            presenter.HandleSubmission(SubmitCodeResult.Failure(
+                false, new Diagnostic("CLASS001", new SourcePosition(0, 1, 1), "Nome inválido.")));
+            presenter.HandleSubmission(SubmitCodeResult.Success(
+                true, ValidationCriterion.DeclareMagoClass));
+
+            var getter = typeof(LearningProgress).GetMethod("GetAttemptCount", new[] { typeof(string) });
+            Assert.That(getter, Is.Not.Null);
+            Assert.That(getter.Invoke(presenter.Progress, new object[] { "first" }), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void ReportBattleVictory_MarksCompletedBattleBeforeAdvancing()
+        {
+            LearningFlowPresenter presenter = CreatePresenter(
+                new FakeCodeEditorView(), new FakeFeedbackView(), new FakeArenaView(),
+                new FakeLearningFlowView());
+            presenter.Initialize();
+            presenter.HandleSubmission(SubmitCodeResult.Success(
+                true, ValidationCriterion.DeclareMagoClass));
+            presenter.ReportBattleVictory();
+
+            var getter = typeof(LearningProgress).GetMethod("IsCompleted", new[] { typeof(string) });
+            Assert.That(getter, Is.Not.Null);
+            Assert.That(getter.Invoke(presenter.Progress, new object[] { "first" }), Is.EqualTo(true));
+        }
+
+        [Test]
         public void HandleSubmission_MatchingCriterion_StartsBattleWithoutVictory()
         {
             var view = new FakeLearningFlowView();
@@ -424,7 +457,7 @@ namespace PrograMago.Tests.Presentation
                 Hint = hint;
             }
 
-            public void ShowVictory(BattleVictoryContent content, bool isFinalBattle)
+            public void ShowVictory(BattleVictoryContent content, bool isFinalBattle, bool isPhaseComplete)
             {
                 Victory = content;
                 IsFinalBattle = isFinalBattle;
