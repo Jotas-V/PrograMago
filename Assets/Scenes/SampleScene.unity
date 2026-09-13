@@ -2363,6 +2363,7 @@ MonoBehaviour:
   restartProgressPanel: {fileID: 1791087321}
   restartProgressText: {fileID: 40355713}
   arenaCamera: {fileID: 519420031}
+  arenaFrame: {fileID: 123959039}
   wizardSpawnPoint: {fileID: 1385745137}
   wizardViewportPosition: {x: 0.1, y: 0.85}
   wizardPrefab: {fileID: 2788560366493455143, guid: abeba216b95454244b5384792680dd85, type: 3}

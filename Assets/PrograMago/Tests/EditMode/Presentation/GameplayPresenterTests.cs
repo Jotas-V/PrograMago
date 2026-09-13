@@ -38,7 +38,7 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
-        public void Battle_InvalidCodeAfterSuccess_PreservesSessionButHidesCurrentPreview()
+        public void Battle_InvalidCodeAfterSuccess_PreservesApprovedWizard()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
             var feedback = new FakeFeedbackView();
@@ -50,7 +50,22 @@ namespace PrograMago.Tests.Presentation
             presenter.Battle();
 
             Assert.That(feedback.Diagnostic.Code, Is.EqualTo("SYN001"));
-            Assert.That(arena.HasDeclaredClass, Is.False);
+            Assert.That(arena.HasDeclaredClass, Is.True);
+        }
+
+        [Test]
+        public void Preview_InvalidCodeAfterSuccess_PreservesApprovedWizard()
+        {
+            var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            GameplayPresenter presenter = CreatePresenter(editor, feedback, arena);
+            presenter.Battle();
+            editor.SourceCode = "public class Bruxo {}";
+
+            presenter.Preview();
+
+            Assert.That(arena.HasDeclaredClass, Is.True);
         }
 
         [Test]
@@ -170,6 +185,43 @@ namespace PrograMago.Tests.Presentation
             Assert.That(feedback.Diagnostic, Is.Null);
         }
 
+        [Test]
+        public void Battle_ValidInstantiation_MapsMagoBeforeSendingItToArena()
+        {
+            var editor = new FakeCodeEditorView
+            {
+                SourceCode =
+                    "public class Mago { private int vida; private int dano; " +
+                    "private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                    "public Mago(int dano, int vida, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                    "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                    "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                    "Mago heroi = new Mago(7, 5, 3, 4, 2);"
+            };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            var session = new LearningSession(new ExerciseDefinition(
+                "phase-one", "Mago", "Construa o Mago."));
+            var progress = new LearningProgress(new LearningPath(new[]
+            {
+                CreateLearningBattle(ValidationCriterion.ConstructAndInstantiateMago)
+            }));
+            var learningFlow = new LearningFlowPresenter(
+                progress, new HoldToRestartController(5f), editor, feedback, arena,
+                new NoOpLearningFlowView());
+            var presenter = new GameplayPresenter(
+                new SubmitCodeUseCase(new CodeTokenizer(), new ExerciseCodeValidator(), session),
+                editor, feedback, arena, learningFlow);
+
+            presenter.Battle();
+
+            Assert.That(arena.Mago, Is.Not.Null);
+            Assert.That(arena.Mago.InstanceName, Is.EqualTo("heroi"));
+            Assert.That(arena.Mago.Vida, Is.EqualTo(5));
+            Assert.That(arena.Mago.Dano, Is.EqualTo(7));
+            Assert.That(arena.Mago.RemainingPoints, Is.EqualTo(4));
+        }
+
         private static GameplayPresenter CreatePresenter(
             ICodeEditorView editor,
             IFeedbackView feedback,
@@ -228,9 +280,33 @@ namespace PrograMago.Tests.Presentation
         {
             public bool HasDeclaredClass { get; private set; }
 
+            public MagoState Mago { get; private set; }
+
+            private bool approved;
+
             public void SetClassDeclared(bool hasDeclaredClass)
             {
-                HasDeclaredClass = hasDeclaredClass;
+                HasDeclaredClass = approved || hasDeclaredClass;
+            }
+
+            public void CommitSilhouette()
+            {
+                approved = true;
+                HasDeclaredClass = true;
+            }
+
+            public void ShowMago(MagoState mago)
+            {
+                Mago = mago;
+                approved = true;
+                HasDeclaredClass = true;
+            }
+
+            public void Reset()
+            {
+                approved = false;
+                HasDeclaredClass = false;
+                Mago = null;
             }
         }
 

@@ -182,7 +182,7 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
-        public void NextBattle_AfterVictory_ClearsEditorAndLoadsNextContent()
+        public void NextBattle_AfterVictory_ClearsEditorAndPreservesApprovedWizard()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
             var feedback = new FakeFeedbackView();
@@ -199,7 +199,7 @@ namespace PrograMago.Tests.Presentation
 
             Assert.That(advanced, Is.True);
             Assert.That(editor.SourceCode, Is.Empty);
-            Assert.That(arena.HasDeclaredClass, Is.False);
+            Assert.That(arena.HasDeclaredClass, Is.True);
             Assert.That(feedback.WasCleared, Is.True);
             Assert.That(view.VictoryHidden, Is.True);
             Assert.That(view.Battle.Id, Is.EqualTo("second"));
@@ -372,6 +372,21 @@ namespace PrograMago.Tests.Presentation
             public void SetClassDeclared(bool hasDeclaredClass)
             {
                 HasDeclaredClass = hasDeclaredClass;
+            }
+
+            public void CommitSilhouette()
+            {
+                HasDeclaredClass = true;
+            }
+
+            public void ShowMago(MagoState mago)
+            {
+                HasDeclaredClass = true;
+            }
+
+            public void Reset()
+            {
+                HasDeclaredClass = false;
             }
         }
 

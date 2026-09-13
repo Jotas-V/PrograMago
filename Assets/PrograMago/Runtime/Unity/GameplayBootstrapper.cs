@@ -29,6 +29,7 @@ namespace PrograMago.UnityIntegration
         [SerializeField] private GameObject restartProgressPanel;
         [SerializeField] private TMP_Text restartProgressText;
         [SerializeField] private Camera arenaCamera;
+        [SerializeField] private RectTransform arenaFrame;
         [SerializeField] private Transform wizardSpawnPoint;
         [SerializeField] private Vector2 wizardViewportPosition = new Vector2(0.1f, 0.85f);
         [SerializeField] private GameObject wizardPrefab;
@@ -37,6 +38,11 @@ namespace PrograMago.UnityIntegration
         private GameplayPresenter presenter;
         private LearningFlowPresenter learningFlowPresenter;
         private GameObject wizardInstance;
+        private TMP_Text magoStatsText;
+        private bool approvedClass;
+        private bool classPreview;
+
+        public MagoState CurrentMago { get; private set; }
 
         public string SourceCode
         {
@@ -52,7 +58,7 @@ namespace PrograMago.UnityIntegration
                 victoryTitleText == null || victoryAchievementText == null ||
                 victoryReviewText == null || nextBattleButton == null ||
                 restartProgressPanel == null || restartProgressText == null ||
-                arenaCamera == null || wizardSpawnPoint == null || wizardPrefab == null ||
+                arenaCamera == null || arenaFrame == null || wizardSpawnPoint == null || wizardPrefab == null ||
                 battleButton == null)
             {
                 Debug.LogError(
@@ -63,6 +69,7 @@ namespace PrograMago.UnityIntegration
             }
 
             PositionWizardSpawnPoint();
+            CreateMagoStatsText();
 
             LearningPath path;
             try
@@ -143,7 +150,36 @@ namespace PrograMago.UnityIntegration
 
         public void SetClassDeclared(bool hasDeclaredClass)
         {
-            if (hasDeclaredClass && wizardInstance == null)
+            classPreview = hasDeclaredClass;
+            RenderWizard();
+        }
+
+        public void CommitSilhouette()
+        {
+            approvedClass = true;
+            CurrentMago = null;
+            RenderWizard();
+        }
+
+        public void ShowMago(MagoState mago)
+        {
+            CurrentMago = mago ?? throw new ArgumentNullException(nameof(mago));
+            approvedClass = true;
+            RenderWizard();
+        }
+
+        public void Reset()
+        {
+            approvedClass = false;
+            classPreview = false;
+            CurrentMago = null;
+            RenderWizard();
+        }
+
+        private void RenderWizard()
+        {
+            bool visible = approvedClass || classPreview;
+            if (visible && wizardInstance == null)
             {
                 wizardInstance = Instantiate(wizardPrefab, wizardSpawnPoint);
                 wizardInstance.name = wizardPrefab.name;
@@ -152,8 +188,48 @@ namespace PrograMago.UnityIntegration
 
             if (wizardInstance != null)
             {
-                wizardInstance.SetActive(hasDeclaredClass);
+                wizardInstance.SetActive(visible);
+                SpriteRenderer sprite = wizardInstance.GetComponent<SpriteRenderer>();
+                if (sprite != null)
+                {
+                    Color color = wizardPrefab.GetComponent<SpriteRenderer>().color;
+                    color.a = CurrentMago == null ? 0.35f : 1f;
+                    sprite.color = color;
+                }
             }
+
+            if (magoStatsText != null)
+            {
+                magoStatsText.text = CurrentMago == null
+                    ? string.Empty
+                    : $"Mago {CurrentMago.InstanceName}\n" +
+                      $"Vida: {CurrentMago.Vida}   Dano: {CurrentMago.Dano}\n" +
+                      $"Alcance: {CurrentMago.Alcance}   Iniciativa: {CurrentMago.Iniciativa}\n" +
+                      $"Velocidade de ataque: {CurrentMago.VelocidadeAtaque}\n" +
+                      $"Pontos restantes: {CurrentMago.RemainingPoints}";
+            }
+        }
+
+        private void CreateMagoStatsText()
+        {
+            var statsObject = new GameObject(
+                "MagoStatsText", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            statsObject.transform.SetParent(arenaFrame, false);
+            var rect = statsObject.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.43f, 0.08f);
+            rect.anchorMax = new Vector2(0.98f, 0.77f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            magoStatsText = statsObject.GetComponent<TextMeshProUGUI>();
+            magoStatsText.font = battleProgressText.font;
+            magoStatsText.color = Color.white;
+            magoStatsText.alignment = TextAlignmentOptions.TopLeft;
+            magoStatsText.enableAutoSizing = true;
+            magoStatsText.fontSizeMin = 11;
+            magoStatsText.fontSizeMax = 20;
+            magoStatsText.raycastTarget = false;
+            magoStatsText.text = string.Empty;
         }
 
         public void ShowBattle(BattleDefinition battle, int battleNumber, int battleCount)

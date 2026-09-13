@@ -37,6 +37,7 @@ namespace PrograMago.Tests.UnityIntegration
             GameObject feedbackText = FindSceneObject("FeedbackText");
             GameObject battleButton = FindSceneObject("BattleButton");
             GameObject wizardSpawnPoint = FindSceneObject("WizardSpawnPoint");
+            GameObject arenaFrame = FindSceneObject("ArenaFrame");
             GameObject mainCamera = FindSceneObject("Main Camera");
             MonoBehaviour bootstrapper = FindBehaviourWithProperty("codeInput");
             var serializedBootstrapper = new SerializedObject(bootstrapper);
@@ -53,6 +54,9 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(
                 serializedBootstrapper.FindProperty("wizardSpawnPoint").objectReferenceValue,
                 Is.SameAs(wizardSpawnPoint.transform));
+            Assert.That(
+                serializedBootstrapper.FindProperty("arenaFrame")?.objectReferenceValue,
+                Is.SameAs(arenaFrame.GetComponent<RectTransform>()));
 
             SerializedProperty arenaCamera = serializedBootstrapper.FindProperty("arenaCamera");
             SerializedProperty wizardViewportPosition = serializedBootstrapper.FindProperty("wizardViewportPosition");

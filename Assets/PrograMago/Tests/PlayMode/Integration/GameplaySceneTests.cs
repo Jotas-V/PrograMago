@@ -239,7 +239,60 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator Battle_InvalidDeclarationAfterSuccess_ShowsErrorAndKeepsCurrentPreviewHidden()
+        public IEnumerator Battle_ValidatedInstance_ShowsMappedAttributesAndRemainingPoints()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int dano, int vida, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                "Mago heroi = new Mago(7, 5, 3, 4, 2);";
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            TMP_Text stats = FindSceneComponent<TMP_Text>("MagoStatsText");
+            Assert.That(stats.text, Does.Contain("Vida: 5"));
+            Assert.That(stats.text, Does.Contain("Dano: 7"));
+            Assert.That(stats.text, Does.Contain("Alcance: 3"));
+            Assert.That(stats.text, Does.Contain("Iniciativa: 4"));
+            Assert.That(stats.text, Does.Contain("Velocidade de ataque: 2"));
+            Assert.That(stats.text, Does.Contain("Pontos restantes: 4"));
+            Assert.That(wizardSpawnPoint.GetChild(0).GetComponent<SpriteRenderer>().color.a,
+                Is.EqualTo(1f).Within(0.01f));
+        }
+
+        [UnityTest]
+        public IEnumerator Edit_InvalidCodeAfterApprovedClass_KeepsSilhouetteVisible()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text = "public class Bruxo {}";
+            yield return null;
+
+            AssertWizardAtSpawn(active: true);
+        }
+
+        [UnityTest]
+        public IEnumerator Battle_InvalidDeclarationAfterSuccess_ShowsErrorAndPreservesApprovedSilhouette()
         {
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
@@ -250,7 +303,7 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(feedbackText.text, Does.Contain("CLASS001"));
-            AssertWizardAtSpawn(active: false);
+            AssertWizardAtSpawn(active: true);
             Assert.That(codeInput.text, Is.EqualTo("public class Bruxo {}"));
         }
 

@@ -101,7 +101,6 @@ namespace PrograMago.Presentation
             }
 
             editor.SourceCode = string.Empty;
-            arena.SetClassDeclared(false);
             feedback.Clear();
             view.HideVictory();
             view.ShowHint(string.Empty);
@@ -171,7 +170,7 @@ namespace PrograMago.Presentation
 
         private void ResetCurrentBattleViews()
         {
-            arena.SetClassDeclared(false);
+            arena.Reset();
             feedback.Clear();
             view.HideVictory();
             view.HideRestartProgress();

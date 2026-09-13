@@ -38,10 +38,18 @@ namespace PrograMago.Presentation
         public void Battle()
         {
             SubmitCodeResult result = submitCode.Execute(editor.SourceCode, CurrentCriterion);
-            arena.SetClassDeclared(result.IsSuccess);
 
             if (result.IsSuccess)
             {
+                if (string.IsNullOrWhiteSpace(result.Program.InstanceName))
+                {
+                    arena.CommitSilhouette();
+                }
+                else
+                {
+                    arena.ShowMago(MagoState.FromValidatedProgram(result.Program));
+                }
+
                 feedback.Clear();
                 learningFlow?.HandleSubmission(result);
                 return;
