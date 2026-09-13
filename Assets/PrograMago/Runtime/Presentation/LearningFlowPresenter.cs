@@ -34,9 +34,21 @@ namespace PrograMago.Presentation
         public void Initialize()
         {
             RenderCurrentBattle();
-            view.HideVictory();
             view.HideRestartProgress();
-            view.SetInteractionEnabled(true);
+            if (Progress.Stage == LearningStage.VictoryReview)
+            {
+                RenderVictory();
+                view.SetInteractionEnabled(false);
+            }
+            else
+            {
+                view.HideVictory();
+                view.SetInteractionEnabled(true);
+                if (Progress.CurrentHint != null)
+                {
+                    view.ShowHint(Progress.CurrentHint);
+                }
+            }
         }
 
         public void HandleSubmission(SubmitCodeResult result)
@@ -45,6 +57,13 @@ namespace PrograMago.Presentation
             {
                 throw new ArgumentNullException(nameof(result));
             }
+
+            if (Progress.Stage != LearningStage.Editing)
+            {
+                return;
+            }
+
+            Progress.RegisterSubmission();
 
             if (!result.IsSuccess)
             {
@@ -77,8 +96,7 @@ namespace PrograMago.Presentation
                 return false;
             }
 
-            bool isFinalBattle = Progress.CurrentBattleIndex == Progress.Path.Battles.Count - 1;
-            view.ShowVictory(Progress.CurrentBattle.Victory, isFinalBattle);
+            RenderVictory();
             return true;
         }
 
@@ -156,6 +174,22 @@ namespace PrograMago.Presentation
                 Progress.CurrentBattle,
                 Progress.CurrentBattleIndex + 1,
                 Progress.Path.Battles.Count);
+        }
+
+        private void RenderVictory()
+        {
+            bool isFinalBattle = Progress.CurrentBattleIndex == Progress.Path.Battles.Count - 1;
+            bool isPhaseComplete = Progress.IsPhaseOneBoundary && Progress.HasCompletedPhaseOne;
+            BattleVictoryContent content = Progress.CurrentBattle.Victory;
+            if (isPhaseComplete)
+            {
+                content = new BattleVictoryContent(
+                    "Fase 1 concluída!",
+                    $"{content.Achievement} Tentativas na fase: {Progress.TotalPhaseOneAttempts}.",
+                    content.Review);
+            }
+
+            view.ShowVictory(content, isFinalBattle, isPhaseComplete);
         }
 
         private void RevealNextHint()

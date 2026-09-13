@@ -218,6 +218,63 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
+        public void ContinueAfterVictory_NextChapterIsNotPlayable_KeepsPhaseOneReview()
+        {
+            var progress = new LearningProgress(new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2)
+            }));
+            progress.TryStartBattle(ValidationCriterion.DeclareMagoClass);
+            progress.ReportVictory();
+
+            bool advanced = progress.ContinueAfterVictory();
+
+            Assert.That(advanced, Is.False);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("mago"));
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.VictoryReview));
+        }
+
+        [Test]
+        public void PhaseOneSnapshot_RestoresAttemptsHintsAndFirstPendingBattle()
+        {
+            LearningPath path = CreateTwoBattlePath();
+            var original = new LearningProgress(path);
+            var submit = typeof(LearningProgress).GetMethod("RegisterSubmission");
+            var capture = typeof(LearningProgress).GetMethod("CapturePhaseOne",
+                new[] { typeof(string), typeof(string) });
+            Assert.That(submit, Is.Not.Null);
+            Assert.That(capture, Is.Not.Null);
+
+            submit.Invoke(original, null);
+            original.RegisterFailedAttempt();
+            submit.Invoke(original, null);
+            original.TryStartBattle(ValidationCriterion.DeclareMagoClass);
+            original.ReportVictory();
+            original.ContinueAfterVictory();
+            submit.Invoke(original, null);
+            original.RegisterFailedAttempt();
+
+            object snapshot = capture.Invoke(original, new object[]
+            {
+                "public class Mago { private int vida; }", "public class Mago {}"
+            });
+            var restored = new LearningProgress(path);
+            var restore = typeof(LearningProgress).GetMethod("RestorePhaseOne",
+                new[] { snapshot.GetType() });
+            Assert.That(restore, Is.Not.Null);
+            restore.Invoke(restored, new[] { snapshot });
+
+            Assert.That(restored.CurrentBattle.Id, Is.EqualTo("second"));
+            Assert.That(restored.FailedAttempts, Is.EqualTo(1));
+            Assert.That(restored.CurrentHint, Is.EqualTo("Dica 1"));
+            Assert.That(typeof(LearningProgress).GetMethod("GetAttemptCount")
+                .Invoke(restored, new object[] { "first" }), Is.EqualTo(2));
+            Assert.That(snapshot.GetType().GetField("sourceCode").GetValue(snapshot),
+                Is.EqualTo("public class Mago { private int vida; }"));
+        }
+
+        [Test]
         public void ContinueAfterVictory_WhileEditing_IsRejectedWithoutAdvancing()
         {
             var progress = new LearningProgress(CreateTwoBattlePath());
@@ -304,11 +361,12 @@ namespace PrograMago.Tests.Domain
         private static BattleDefinition CreateBattle(
             string id,
             int order,
-            ValidationCriterion criterion)
+            ValidationCriterion criterion,
+            int chapter = 1)
         {
             return new BattleDefinition(
                 id,
-                1,
+                chapter,
                 order,
                 new BattleLessonContent(
                     $"Batalha {order}",

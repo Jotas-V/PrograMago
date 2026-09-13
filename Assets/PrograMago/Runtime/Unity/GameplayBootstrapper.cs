@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using PrograMago.Application;
 using PrograMago.Domain;
 using PrograMago.Language;
@@ -39,6 +40,10 @@ namespace PrograMago.UnityIntegration
         private LearningFlowPresenter learningFlowPresenter;
         private GameObject wizardInstance;
         private TMP_Text magoStatsText;
+        private PhaseOneSaveStore progressStore;
+        private string approvedCode = string.Empty;
+        private bool pendingCodeSave;
+        private float nextCodeSaveTime;
         private bool approvedClass;
         private bool classPreview;
 
@@ -87,21 +92,83 @@ namespace PrograMago.UnityIntegration
                 "declare-mago-class",
                 "Mago",
                 "Declare a classe Mago."));
+            var submitCode = new SubmitCodeUseCase(
+                new CodeTokenizer(), new ExerciseCodeValidator(), session);
+            var progress = new LearningProgress(path);
+            progressStore = new PhaseOneSaveStore(Path.Combine(
+                UnityEngine.Application.persistentDataPath, "programago-phase1.json"));
+            PhaseOneSaveData saved = null;
+            SubmitCodeResult restoredProgram = null;
+            try
+            {
+                saved = progressStore.Load();
+                if (saved != null)
+                {
+                    progress.RestorePhaseOne(saved);
+                    for (int index = saved.completed.Length - 1; index >= 0; index--)
+                    {
+                        if (!saved.completed[index])
+                        {
+                            continue;
+                        }
+
+                        if (string.IsNullOrEmpty(saved.approvedCode))
+                        {
+                            break;
+                        }
+
+                        restoredProgram = submitCode.Execute(
+                            saved.approvedCode, path.Battles[index].Criterion);
+                        if (!restoredProgram.IsSuccess)
+                        {
+                            throw new InvalidDataException("Código aprovado não confere com o progresso.");
+                        }
+
+                        break;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"Registro da fase 1 ignorado: {exception.Message}");
+                saved = null;
+                restoredProgram = null;
+                progress = new LearningProgress(path);
+            }
+
             learningFlowPresenter = new LearningFlowPresenter(
-                new LearningProgress(path),
+                progress,
                 new HoldToRestartController(5f),
                 this,
                 this,
                 this,
                 this);
             presenter = new GameplayPresenter(
-                new SubmitCodeUseCase(new CodeTokenizer(), new ExerciseCodeValidator(), session),
+                submitCode,
                 this,
                 this,
                 this,
                 learningFlowPresenter);
 
-            battleButton.onClick.AddListener(presenter.Battle);
+            if (saved != null)
+            {
+                SourceCode = saved.sourceCode ?? string.Empty;
+                if (restoredProgram != null)
+                {
+                    if (string.IsNullOrWhiteSpace(restoredProgram.Program.InstanceName))
+                    {
+                        CommitSilhouette();
+                    }
+                    else
+                    {
+                        ShowMago(MagoState.FromValidatedProgram(restoredProgram.Program));
+                    }
+                }
+
+                approvedCode = saved.approvedCode ?? string.Empty;
+            }
+
+            battleButton.onClick.AddListener(HandleBattle);
             nextBattleButton.onClick.AddListener(HandleNextBattle);
             codeInput.onValueChanged.AddListener(HandleCodeChanged);
             learningFlowPresenter.Initialize();
@@ -114,9 +181,23 @@ namespace PrograMago.UnityIntegration
                 return;
             }
 
-            battleButton.onClick.RemoveListener(presenter.Battle);
+            SaveProgress();
+            battleButton.onClick.RemoveListener(HandleBattle);
             nextBattleButton.onClick.RemoveListener(HandleNextBattle);
             codeInput.onValueChanged.RemoveListener(HandleCodeChanged);
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused)
+            {
+                SaveProgress();
+            }
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveProgress();
         }
 
         private void Update()
@@ -127,7 +208,15 @@ namespace PrograMago.UnityIntegration
             }
 
             bool isRestartPressed = Keyboard.current?.rKey.isPressed == true;
-            learningFlowPresenter.UpdateRestartHold(isRestartPressed, Time.unscaledDeltaTime);
+            if (learningFlowPresenter.UpdateRestartHold(isRestartPressed, Time.unscaledDeltaTime))
+            {
+                SaveProgress();
+            }
+
+            if (pendingCodeSave && Time.unscaledTime >= nextCodeSaveTime)
+            {
+                SaveProgress();
+            }
         }
 
         private void LateUpdate()
@@ -158,6 +247,7 @@ namespace PrograMago.UnityIntegration
         {
             approvedClass = true;
             CurrentMago = null;
+            approvedCode = SourceCode;
             RenderWizard();
         }
 
@@ -165,6 +255,7 @@ namespace PrograMago.UnityIntegration
         {
             CurrentMago = mago ?? throw new ArgumentNullException(nameof(mago));
             approvedClass = true;
+            approvedCode = SourceCode;
             RenderWizard();
         }
 
@@ -173,6 +264,7 @@ namespace PrograMago.UnityIntegration
             approvedClass = false;
             classPreview = false;
             CurrentMago = null;
+            approvedCode = string.Empty;
             RenderWizard();
         }
 
@@ -252,7 +344,7 @@ namespace PrograMago.UnityIntegration
                 : $"DICA\n{hint}";
         }
 
-        public void ShowVictory(BattleVictoryContent content, bool isFinalBattle)
+        public void ShowVictory(BattleVictoryContent content, bool isFinalBattle, bool isPhaseComplete)
         {
             victoryTitleText.text = content.Title;
             victoryAchievementText.text = content.Achievement;
@@ -260,15 +352,19 @@ namespace PrograMago.UnityIntegration
             TMP_Text buttonLabel = nextBattleButton.GetComponentInChildren<TMP_Text>();
             if (buttonLabel != null)
             {
-                buttonLabel.text = isFinalBattle ? "Concluir jornada" : "Próxima batalha";
+                buttonLabel.text = isPhaseComplete
+                    ? "Fase 1 concluída"
+                    : isFinalBattle ? "Concluir jornada" : "Próxima batalha";
             }
 
+            nextBattleButton.interactable = !isPhaseComplete;
             victoryOverlay.SetActive(true);
         }
 
         public void HideVictory()
         {
             victoryOverlay.SetActive(false);
+            nextBattleButton.interactable = true;
         }
 
         public void SetInteractionEnabled(bool isEnabled)
@@ -297,22 +393,64 @@ namespace PrograMago.UnityIntegration
 
         public bool ReportBattleVictory()
         {
-            return learningFlowPresenter != null && learningFlowPresenter.ReportBattleVictory();
+            bool accepted = learningFlowPresenter != null && learningFlowPresenter.ReportBattleVictory();
+            if (accepted)
+            {
+                SaveProgress();
+            }
+
+            return accepted;
         }
 
         public bool ReportBattleDefeat()
         {
-            return learningFlowPresenter != null && learningFlowPresenter.ReportBattleDefeat();
+            bool accepted = learningFlowPresenter != null && learningFlowPresenter.ReportBattleDefeat();
+            if (accepted)
+            {
+                SaveProgress();
+            }
+
+            return accepted;
+        }
+
+        private void HandleBattle()
+        {
+            presenter.Battle();
+            SaveProgress();
         }
 
         private void HandleCodeChanged(string _)
         {
             presenter.Preview();
+            pendingCodeSave = true;
+            nextCodeSaveTime = Time.unscaledTime + 0.5f;
         }
 
         private void HandleNextBattle()
         {
-            learningFlowPresenter.NextBattle();
+            if (learningFlowPresenter.NextBattle())
+            {
+                SaveProgress();
+            }
+        }
+
+        private void SaveProgress()
+        {
+            if (progressStore == null || learningFlowPresenter == null)
+            {
+                return;
+            }
+
+            try
+            {
+                progressStore.Save(learningFlowPresenter.Progress.CapturePhaseOne(
+                    SourceCode, approvedCode));
+                pendingCodeSave = false;
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"Não foi possível salvar a fase 1: {exception.Message}");
+            }
         }
 
         private void PositionWizardSpawnPoint()
