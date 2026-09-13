@@ -100,7 +100,6 @@ namespace PrograMago.Presentation
                 return false;
             }
 
-            editor.SourceCode = string.Empty;
             feedback.Clear();
             view.HideVictory();
             view.ShowHint(string.Empty);

@@ -182,7 +182,7 @@ namespace PrograMago.Tests.Presentation
         }
 
         [Test]
-        public void NextBattle_AfterVictory_ClearsEditorAndPreservesApprovedWizard()
+        public void NextBattle_AfterVictory_PreservesCodeAndApprovedWizard()
         {
             var editor = new FakeCodeEditorView { SourceCode = "public class Mago {}" };
             var feedback = new FakeFeedbackView();
@@ -198,7 +198,7 @@ namespace PrograMago.Tests.Presentation
             bool advanced = presenter.NextBattle();
 
             Assert.That(advanced, Is.True);
-            Assert.That(editor.SourceCode, Is.Empty);
+            Assert.That(editor.SourceCode, Is.EqualTo("public class Mago {}"));
             Assert.That(arena.HasDeclaredClass, Is.True);
             Assert.That(feedback.WasCleared, Is.True);
             Assert.That(view.VictoryHidden, Is.True);

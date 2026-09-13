@@ -103,7 +103,7 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator NextBattle_AfterVictory_AdvancesAndClearsEditor()
+        public IEnumerator NextBattle_AfterVictory_AdvancesAndPreservesEditorCode()
         {
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
@@ -114,7 +114,7 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(battleProgressText.text, Does.Contain("Batalha 2/8"));
             Assert.That(titleText.text, Is.EqualTo("Estado protegido"));
-            Assert.That(codeInput.text, Is.Empty);
+            Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
             Assert.That(codeInput.interactable, Is.True);
             Assert.That(battleButton.interactable, Is.True);
             Assert.That(victoryOverlay.activeSelf, Is.False);
@@ -247,13 +247,15 @@ namespace PrograMago.Tests.Integration
             nextBattleButton.onClick.Invoke();
             yield return null;
 
-            codeInput.text =
+            const string attributeCode =
                 "public class Mago { private int vida; private int dano; " +
                 "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
+            codeInput.text = attributeCode;
             battleButton.onClick.Invoke();
             yield return null;
             nextBattleButton.onClick.Invoke();
             yield return null;
+            Assert.That(codeInput.text, Is.EqualTo(attributeCode));
 
             codeInput.text =
                 "public class Mago { private int vida; private int dano; " +
@@ -274,6 +276,37 @@ namespace PrograMago.Tests.Integration
             Assert.That(stats.text, Does.Contain("Pontos restantes: 4"));
             Assert.That(wizardSpawnPoint.GetChild(0).GetComponent<SpriteRenderer>().color.a,
                 Is.EqualTo(1f).Within(0.01f));
+        }
+
+        [UnityTest]
+        public IEnumerator Battle_ExactPointBudget_ShowsZeroRemainingPoints()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int dano, int vida, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                "Mago heroi = new Mago(5, 5, 5, 5, 5);";
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            TMP_Text stats = FindSceneComponent<TMP_Text>("MagoStatsText");
+            Assert.That(stats.text, Does.Contain("Pontos restantes: 0"));
         }
 
         [UnityTest]
