@@ -9,3 +9,10 @@
    atributos e o saldo de pontos no quadro da arena.
 6. Testar o fluxo completo e o reinício em Play Mode.
 7. Executar as suítes, revisar o diff e registrar o resultado na TCC-9.
+
+## Ajuste solicitado após validação
+
+8. Manter o código digitado ao avançar de batalha; testar a progressão com o
+   mesmo texto acumulado nas três atividades da fase 1.
+9. Confirmar na interface que o saldo de pontos aceita distribuição parcial e
+   chega a zero com 25 pontos, sem mudar após entrada inválida.

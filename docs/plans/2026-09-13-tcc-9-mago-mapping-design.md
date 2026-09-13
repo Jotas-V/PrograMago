@@ -21,8 +21,10 @@ valores na interface, incluindo `Pontos restantes: X`.
 
 A prévia da primeira atividade é temporária. Digitar ou submeter código inválido
 não modifica o último estado aprovado. O Mago aprovado permanece visível ao
-avançar entre as batalhas da fase 1. Reiniciar a batalha/fase limpa o estado da
-arena; o código do editor segue a regra de reinício já existente.
+avançar entre as batalhas da fase 1. O texto do editor também permanece: o
+jogador acrescenta atributos e construtor ao que já escreveu. Reiniciar a
+batalha/fase limpa o estado da arena, mas preserva o texto para correção, como
+no fluxo existente. Um desafio final de reescrita completa fica para outra issue.
 
 ## Representação
 
@@ -38,3 +40,7 @@ fluxo de submissão, erro após sucesso, prévia e persistência entre batalhas.
 Testes Play Mode confirmarão a mudança visual, o texto e o reinício na cena real.
 Cada comportamento novo seguirá teste falhando, implementação mínima e teste
 passando.
+
+O saldo de pontos é informativo: cinco atributos podem somar menos de 25. A
+interface mostra `Pontos restantes: X` após uma instanciação válida, inclusive
+zero. Uma distribuição inválida mantém os valores e o saldo aprovados antes.
