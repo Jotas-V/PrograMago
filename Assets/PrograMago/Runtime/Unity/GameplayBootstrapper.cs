@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using PrograMago.Application;
 using PrograMago.Domain;
 using PrograMago.Language;
@@ -40,6 +42,11 @@ namespace PrograMago.UnityIntegration
         private LearningFlowPresenter learningFlowPresenter;
         private GameObject wizardInstance;
         private TMP_Text magoStatsText;
+        private TMP_Text enemyStatsText;
+        private readonly List<GameObject> enemyMarkers = new List<GameObject>();
+        private static Sprite enemyPlaceholderSprite;
+        private readonly CodeBlockDocument codeBlocks = new CodeBlockDocument();
+        private readonly Button[] codeBlockButtons = new Button[CodeBlockDocument.BlockCount];
         private PhaseOneSaveStore progressStore;
         private string approvedCode = string.Empty;
         private bool pendingCodeSave;
@@ -49,10 +56,16 @@ namespace PrograMago.UnityIntegration
 
         public MagoState CurrentMago { get; private set; }
 
+        public IReadOnlyList<EnemyState> CurrentEnemies { get; private set; } = Array.Empty<EnemyState>();
+
         public string SourceCode
         {
-            get => codeInput.text;
-            set => codeInput.text = value;
+            get => codeBlocks.SourceCode;
+            set
+            {
+                codeBlocks.SetActiveText(value);
+                codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+            }
         }
 
         private void Awake()
@@ -75,6 +88,8 @@ namespace PrograMago.UnityIntegration
 
             PositionWizardSpawnPoint();
             CreateMagoStatsText();
+            CreateEnemyStatsText();
+            CreateCodeBlockButtons();
 
             LearningPath path;
             try
@@ -152,7 +167,16 @@ namespace PrograMago.UnityIntegration
 
             if (saved != null)
             {
-                SourceCode = saved.sourceCode ?? string.Empty;
+                if (saved.version == 2)
+                {
+                    codeBlocks.Restore(saved.sourceBlocks, saved.activeBlock);
+                    codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+                    RefreshCodeBlockButtons();
+                }
+                else
+                {
+                    SourceCode = saved.sourceCode ?? string.Empty;
+                }
                 if (restoredProgram != null)
                 {
                     if (string.IsNullOrWhiteSpace(restoredProgram.Program.InstanceName))
@@ -227,9 +251,15 @@ namespace PrograMago.UnityIntegration
         public void ShowError(Diagnostic diagnostic)
         {
             feedbackText.color = new Color32(255, 120, 120, 255);
-            feedbackText.text = diagnostic == null
-                ? "Não foi possível validar o código."
-                : $"{diagnostic.Code} — linha {diagnostic.Position.Line}, coluna {diagnostic.Position.Column}: {diagnostic.Detail}";
+            if (diagnostic == null)
+            {
+                feedbackText.text = "Não foi possível validar o código.";
+                return;
+            }
+
+            CodeBlockLocation location = codeBlocks.Locate(diagnostic.Position.Offset);
+            feedbackText.text = $"{diagnostic.Code} — bloco {location.BlockNumber}, " +
+                $"linha {location.Line}, coluna {location.Column}: {diagnostic.Detail}";
         }
 
         public void Clear()
@@ -259,11 +289,25 @@ namespace PrograMago.UnityIntegration
             RenderWizard();
         }
 
+        public void ShowEnemies(IReadOnlyList<EnemyState> enemies)
+        {
+            CurrentEnemies = new List<EnemyState>(enemies ??
+                throw new ArgumentNullException(nameof(enemies))).AsReadOnly();
+            RenderEnemies();
+        }
+
         public void Reset()
         {
             approvedClass = false;
             classPreview = false;
             CurrentMago = null;
+            CurrentEnemies = Array.Empty<EnemyState>();
+            ClearEnemyMarkers();
+            if (enemyStatsText != null) enemyStatsText.text = string.Empty;
+            if (magoStatsText != null)
+            {
+                ((RectTransform)magoStatsText.transform).anchorMax = new Vector2(0.98f, 0.77f);
+            }
             approvedCode = string.Empty;
             RenderWizard();
         }
@@ -322,6 +366,90 @@ namespace PrograMago.UnityIntegration
             magoStatsText.fontSizeMax = 20;
             magoStatsText.raycastTarget = false;
             magoStatsText.text = string.Empty;
+        }
+
+        private void CreateEnemyStatsText()
+        {
+            var statsObject = new GameObject(
+                "EnemyStatsText", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            statsObject.transform.SetParent(arenaFrame, false);
+            var rect = statsObject.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.66f, 0.08f);
+            rect.anchorMax = new Vector2(0.98f, 0.70f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            enemyStatsText = statsObject.GetComponent<TextMeshProUGUI>();
+            enemyStatsText.font = battleProgressText.font;
+            enemyStatsText.color = Color.white;
+            enemyStatsText.alignment = TextAlignmentOptions.TopLeft;
+            enemyStatsText.enableAutoSizing = true;
+            enemyStatsText.fontSizeMin = 10;
+            enemyStatsText.fontSizeMax = 18;
+            enemyStatsText.raycastTarget = false;
+            enemyStatsText.text = string.Empty;
+        }
+
+        private void RenderEnemies()
+        {
+            ClearEnemyMarkers();
+            var summary = new StringBuilder();
+            for (int index = 0; index < CurrentEnemies.Count; index++)
+            {
+                EnemyState enemy = CurrentEnemies[index];
+                var marker = new GameObject($"EnemyMarker-{enemy.VariableName}", typeof(SpriteRenderer));
+                SpriteRenderer renderer = marker.GetComponent<SpriteRenderer>();
+                renderer.sprite = GetEnemyPlaceholderSprite();
+                renderer.color = EnemyColor(enemy.Elemento);
+                renderer.sortingOrder = 10;
+                marker.transform.localScale = new Vector3(0.65f, 0.85f, 1f);
+                float distance = Vector3.Dot(
+                    wizardSpawnPoint.position - arenaCamera.transform.position,
+                    arenaCamera.transform.forward);
+                marker.transform.position = arenaCamera.ViewportToWorldPoint(new Vector3(
+                    0.65f + index * 0.09f, 0.80f, distance));
+                enemyMarkers.Add(marker);
+
+                if (summary.Length > 0) summary.Append('\n');
+                summary.Append(enemy.Name).Append(" — Vida: ").Append(enemy.Vida)
+                    .Append(" — ").Append(enemy.Elemento);
+            }
+
+            enemyStatsText.text = summary.ToString();
+            ((RectTransform)magoStatsText.transform).anchorMax =
+                CurrentEnemies.Count == 0 ? new Vector2(0.98f, 0.77f) : new Vector2(0.64f, 0.77f);
+        }
+
+        private void ClearEnemyMarkers()
+        {
+            foreach (GameObject marker in enemyMarkers)
+            {
+                if (marker != null) Destroy(marker);
+            }
+
+            enemyMarkers.Clear();
+        }
+
+        private static Sprite GetEnemyPlaceholderSprite()
+        {
+            if (enemyPlaceholderSprite == null)
+            {
+                enemyPlaceholderSprite = Sprite.Create(Texture2D.whiteTexture,
+                    new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+            }
+
+            return enemyPlaceholderSprite;
+        }
+
+        private static Color EnemyColor(string elemento)
+        {
+            switch (elemento)
+            {
+                case "gelo": return new Color32(126, 211, 242, 255);
+                case "fogo": return new Color32(242, 132, 79, 255);
+                case "água": return new Color32(82, 149, 235, 255);
+                default: return new Color32(191, 177, 145, 255);
+            }
         }
 
         public void ShowBattle(BattleDefinition battle, int battleNumber, int battleCount)
@@ -421,9 +549,61 @@ namespace PrograMago.UnityIntegration
 
         private void HandleCodeChanged(string _)
         {
+            codeBlocks.SetActiveText(codeInput.text);
             presenter.Preview();
             pendingCodeSave = true;
             nextCodeSaveTime = Time.unscaledTime + 0.5f;
+        }
+
+        private void CreateCodeBlockButtons()
+        {
+            for (int index = 0; index < codeBlockButtons.Length; index++)
+            {
+                Button button = Instantiate(battleButton, battleButton.transform.parent);
+                button.gameObject.name = $"CodeBlockButton{index + 1}";
+                button.onClick.RemoveAllListeners();
+                RectTransform rect = button.GetComponent<RectTransform>();
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.zero;
+                rect.pivot = Vector2.zero;
+                rect.anchoredPosition = new Vector2(12 + index * 74, 14);
+                rect.sizeDelta = new Vector2(62, 46);
+                TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+                if (label != null)
+                {
+                    label.text = (index + 1).ToString();
+                    label.fontSize = 25;
+                }
+
+                int selected = index;
+                button.onClick.AddListener(() => SelectCodeBlock(selected));
+                codeBlockButtons[index] = button;
+            }
+
+            RefreshCodeBlockButtons();
+        }
+
+        private void SelectCodeBlock(int index)
+        {
+            if (codeBlocks.ActiveIndex == index) return;
+
+            codeBlocks.SetActiveText(codeInput.text);
+            codeBlocks.Select(index);
+            codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+            RefreshCodeBlockButtons();
+            presenter?.Preview();
+            SaveProgress();
+        }
+
+        private void RefreshCodeBlockButtons()
+        {
+            for (int index = 0; index < codeBlockButtons.Length; index++)
+            {
+                Image background = codeBlockButtons[index].GetComponent<Image>();
+                background.color = index == codeBlocks.ActiveIndex
+                    ? new Color32(91, 74, 190, 255)
+                    : new Color32(69, 70, 90, 255);
+            }
         }
 
         private void HandleNextBattle()
@@ -444,7 +624,7 @@ namespace PrograMago.UnityIntegration
             try
             {
                 progressStore.Save(learningFlowPresenter.Progress.CapturePhaseOne(
-                    SourceCode, approvedCode));
+                    SourceCode, approvedCode, codeBlocks.Snapshot(), codeBlocks.ActiveIndex));
                 pendingCodeSave = false;
             }
             catch (Exception exception)

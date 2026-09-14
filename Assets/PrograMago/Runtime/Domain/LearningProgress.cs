@@ -160,6 +160,19 @@ namespace PrograMago.Domain
 
         public PhaseOneSaveData CapturePhaseOne(string sourceCode, string approvedCode)
         {
+            return CapturePhaseOne(sourceCode, approvedCode,
+                new[] { sourceCode ?? string.Empty, string.Empty, string.Empty }, 0);
+        }
+
+        public PhaseOneSaveData CapturePhaseOne(
+            string sourceCode, string approvedCode, string[] sourceBlocks, int activeBlock)
+        {
+            if (sourceBlocks == null || sourceBlocks.Length != 3 ||
+                activeBlock < 0 || activeBlock >= 3)
+            {
+                throw new ArgumentException("Registro dos blocos de código inválido.");
+            }
+
             var ids = new string[playableBattleCount];
             for (int index = 0; index < ids.Length; index++)
             {
@@ -173,17 +186,21 @@ namespace PrograMago.Domain
                 failedCounts = (int[])failedCounts.Clone(),
                 completed = (bool[])completed.Clone(),
                 sourceCode = sourceCode ?? string.Empty,
-                approvedCode = approvedCode ?? string.Empty
+                approvedCode = approvedCode ?? string.Empty,
+                sourceBlocks = (string[])sourceBlocks.Clone(),
+                activeBlock = activeBlock
             };
         }
 
         public void RestorePhaseOne(PhaseOneSaveData data)
         {
-            if (data == null || data.version != 1 ||
+            if (data == null || (data.version != 1 && data.version != 2) ||
                 data.battleIds?.Length != playableBattleCount ||
                 data.attemptCounts?.Length != playableBattleCount ||
                 data.failedCounts?.Length != playableBattleCount ||
-                data.completed?.Length != playableBattleCount)
+                data.completed?.Length != playableBattleCount ||
+                (data.version == 2 &&
+                    (data.sourceBlocks?.Length != 3 || data.activeBlock < 0 || data.activeBlock >= 3)))
             {
                 throw new ArgumentException("Registro da fase 1 inválido.", nameof(data));
             }

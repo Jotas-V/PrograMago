@@ -37,7 +37,8 @@ namespace PrograMago.Application
             return SubmitCodeResult.Success(
                 session.HasDeclaredClass,
                 validation.SatisfiedCriterion.Value,
-                validation.Program);
+                validation.Program,
+                validation.Enemies);
         }
 
         public bool CanPreview(string source)

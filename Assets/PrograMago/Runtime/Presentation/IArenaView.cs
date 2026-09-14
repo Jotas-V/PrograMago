@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PrograMago.Domain;
 
 namespace PrograMago.Presentation
@@ -9,6 +10,8 @@ namespace PrograMago.Presentation
         void CommitSilhouette();
 
         void ShowMago(MagoState mago);
+
+        void ShowEnemies(IReadOnlyList<EnemyState> enemies);
 
         void Reset();
     }

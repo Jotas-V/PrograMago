@@ -165,17 +165,43 @@ namespace PrograMago.Tests.Application
         }
 
         [Test]
-        public void Execute_CriterionOutsideTcc8_ReturnsControlledFailure()
+        public void Execute_UnimplementedSpellCriterion_ReturnsControlledFailure()
         {
             var session = CreateSession();
             SubmitCodeUseCase useCase = CreateUseCase(session);
             SubmitCodeResult result = null;
 
             Assert.DoesNotThrow(() => result = useCase.Execute(
-                "public class Inimigo {}",
-                ValidationCriterion.ConstructAndInstantiateEnemy));
+                "public class Mago {}",
+                ValidationCriterion.DefineAndCallSpellMethod));
             Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Diagnostic.Code, Is.EqualTo("VALID001"));
+        }
+
+        [Test]
+        public void Execute_ValidEnemyProgram_PassesApprovedEnemyToApplicationResult()
+        {
+            const string source =
+                "public class Inimigo { private String nome; private int vida; " +
+                "private String elemento; public Inimigo(String nome, int vida, String elemento) { " +
+                "this.nome = nome; this.vida = vida; this.elemento = elemento; } " +
+                "public String getElemento() { return elemento; } } " +
+                "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\"); " +
+                "public class Mago { private int vida; private int dano; private int alcance; " +
+                "private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                "Mago mago = new Mago(5, 4, 6, 3, 2);";
+            SubmitCodeResult result = CreateUseCase(CreateSession()).Execute(
+                source, ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.True, result.Diagnostic?.Detail);
+            var property = typeof(SubmitCodeResult).GetProperty("Enemies");
+            Assert.That(property, Is.Not.Null);
+            var enemies = property.GetValue(result) as System.Collections.Generic.IReadOnlyList<EnemyState>;
+            Assert.That(enemies, Has.Count.EqualTo(1));
+            Assert.That(enemies[0].Name, Is.EqualTo("Boneco de Treinamento"));
         }
 
         private static LearningSession CreateSession()

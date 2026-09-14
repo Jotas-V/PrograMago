@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using NUnit.Framework;
+using PrograMago.Domain;
 using PrograMago.UnityIntegration;
 using TMPro;
 using UnityEngine;
@@ -103,6 +104,132 @@ namespace PrograMago.Tests.Integration
             Assert.That(restartProgressPanel.activeSelf, Is.False);
 
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CodeBlocks_SwitchingPreservesEachTextInTheVisibleEditor()
+        {
+            Button first = FindSceneComponent<Button>("CodeBlockButton1");
+            Button second = FindSceneComponent<Button>("CodeBlockButton2");
+            Button third = FindSceneComponent<Button>("CodeBlockButton3");
+
+            codeInput.text = "public class Mago {}";
+            second.onClick.Invoke();
+            yield return null;
+            Assert.That(codeInput.text, Is.Empty);
+
+            codeInput.text = "public class Inimigo {}";
+            third.onClick.Invoke();
+            yield return null;
+            Assert.That(codeInput.text, Is.Empty);
+
+            first.onClick.Invoke();
+            yield return null;
+            Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
+            second.onClick.Invoke();
+            yield return null;
+            Assert.That(codeInput.text, Is.EqualTo("public class Inimigo {}"));
+        }
+
+        [UnityTest]
+        public IEnumerator CodeBlocks_ReloadRestoresThreeTextsAndSelectedBlock()
+        {
+            Button second = FindSceneComponent<Button>("CodeBlockButton2");
+            Button third = FindSceneComponent<Button>("CodeBlockButton3");
+            codeInput.text = "public class Mago {}";
+            second.onClick.Invoke();
+            codeInput.text = "public class Inimigo {}";
+            third.onClick.Invoke();
+            codeInput.text = "Mago mago = new Mago();";
+
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            yield return null;
+
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo("Mago mago = new Mago();"));
+            FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo("public class Mago {}"));
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo("public class Inimigo {}"));
+        }
+
+        [UnityTest]
+        public IEnumerator CodeBlocks_BattleReadsCodeFromHiddenBlock()
+        {
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            codeInput.text = "public class Mago {}";
+            FindSceneComponent<Button>("CodeBlockButton3").onClick.Invoke();
+            Assert.That(codeInput.text, Is.Empty);
+
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
+                Does.Contain("Primeira batalha concluída"));
+        }
+
+        [UnityTest]
+        public IEnumerator CodeBlocks_BattleErrorPointsToHiddenBlockAndLocalLine()
+        {
+            codeInput.text = "public class Mago {}";
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            codeInput.text = "\n#";
+            FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
+
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(feedbackText.text, Does.Contain("LEX001"));
+            Assert.That(feedbackText.text, Does.Contain("bloco 2, linha 2, coluna 1"));
+            Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator CodeBlocks_LegacySingleTextSaveOpensInFirstBlock()
+        {
+            codeInput.text = "public class Mago {}";
+            Object.DestroyImmediate(bootstrapper);
+            PhaseOneSaveData legacy = JsonUtility.FromJson<PhaseOneSaveData>(
+                File.ReadAllText(progressSavePath));
+            legacy.version = 1;
+            legacy.sourceBlocks = null;
+            legacy.activeBlock = 0;
+            File.WriteAllText(progressSavePath, JsonUtility.ToJson(legacy));
+
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            yield return null;
+
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo("public class Mago {}"));
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.Empty);
+        }
+
+        [UnityTest]
+        public IEnumerator Arena_ApprovedEnemiesAppearOnRightAndResetRemovesThem()
+        {
+            bootstrapper.ShowEnemies(new[]
+            {
+                new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro"),
+                new EnemyState("golem", "Golem de Gelo", 12, "gelo")
+            });
+            yield return null;
+
+            GameObject marker = GameObject.Find("EnemyMarker-boneco");
+            Assert.That(marker, Is.Not.Null);
+            Assert.That(marker.GetComponent<SpriteRenderer>(), Is.Not.Null);
+            Assert.That(Camera.main.WorldToViewportPoint(marker.transform.position).x,
+                Is.GreaterThan(0.5f));
+            Assert.That(FindSceneComponent<TMP_Text>("EnemyStatsText").text,
+                Does.Contain("Boneco de Treinamento"));
+
+            bootstrapper.Reset();
+            yield return null;
+            Assert.That(GameObject.Find("EnemyMarker-boneco"), Is.Null);
         }
 
         [UnityTest]

@@ -289,6 +289,28 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
+        public void LearningPathAsset_EnemyLessonExplainsRequiredClassAndTrainingDummy()
+        {
+            const string assetPath = "Assets/PrograMago/Content/LearningPath.asset";
+            Type assetType = AppDomain.CurrentDomain.GetAssemblies()
+                .Select(assembly => assembly.GetType("PrograMago.UnityIntegration.LearningPathAsset"))
+                .Single(type => type != null);
+            UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, assetType);
+            var path = (LearningPath)assetType.GetMethod("ToDomain").Invoke(asset, null);
+            BattleDefinition enemyBattle = path.Battles[3];
+            string guidance = string.Join(" ", enemyBattle.Hints);
+
+            Assert.That(enemyBattle.Lesson.Task, Does.Contain("getElemento"));
+            Assert.That(enemyBattle.Lesson.Task, Does.Contain("Boneco de Treinamento"));
+            Assert.That(enemyBattle.Lesson.UsageExample, Does.Contain("10"));
+            Assert.That(enemyBattle.Lesson.UsageExample, Does.Contain("neutro"));
+            Assert.That(guidance, Does.Contain("private String nome;"));
+            Assert.That(guidance, Does.Contain("private int vida;"));
+            Assert.That(guidance, Does.Contain("private String elemento;"));
+            Assert.That(guidance, Does.Contain("public String getElemento()"));
+        }
+
+        [Test]
         public void TutorialPanel_PersistsAllPedagogicalTextAreas()
         {
             GameObject panel = FindSceneObject("TutorialPanel");

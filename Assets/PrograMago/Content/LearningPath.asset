@@ -80,14 +80,14 @@ MonoBehaviour:
     concept: Classes e objetos em interação
     whatItIs: Uma classe pode produzir muitos objetos com estados diferentes. O mesmo molde Inimigo representa adversários variados.
     purpose: Reutilizar uma classe evita repetir estruturas e permite criar desafios diferentes apenas mudando os dados de cada objeto.
-    usageExample: Inimigo boneco = new Inimigo(...);
+    usageExample: 'Inimigo boneco = new Inimigo("Boneco de Treinamento", 10, "neutro");'
     gameEffect: A instância criada define o adversário que aparece do outro lado da arena.
-    task: Declare Inimigo com nome, vida e elemento privados, crie seu construtor e instancie o Boneco de Treinamento.
+    task: Declare Inimigo com nome, vida e elemento privados, construtor, getElemento() e instancie o Boneco de Treinamento com 10 de vida e elemento neutro.
     hints:
-    - Comece com uma classe pública chamada Inimigo.
-    - Proteja nome, vida e elemento usando private.
-    - O construtor deve receber e guardar os três valores.
-    - 'Finalize com uma instanciação usando new Inimigo(...).'
+    - 'Dentro de public class Inimigo, declare private String nome; private int vida; private String elemento;.'
+    - O construtor público Inimigo(String nome, int vida, String elemento) deve guardar os três valores com this.
+    - 'Declare public String getElemento() { return elemento; } dentro de Inimigo.'
+    - 'Finalize com new Inimigo("Boneco de Treinamento", 10, "neutro").'
     criterion: 3
     completionMode: 0
     victoryTitle: Adversário derrotado!
