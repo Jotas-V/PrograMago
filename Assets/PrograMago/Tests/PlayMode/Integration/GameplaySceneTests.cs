@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using PrograMago.Domain;
@@ -6,6 +7,7 @@ using PrograMago.UnityIntegration;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
@@ -104,6 +106,125 @@ namespace PrograMago.Tests.Integration
             Assert.That(restartProgressPanel.activeSelf, Is.False);
 
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CombatControls_ArePreparedWithoutChangingTheFirstPhase()
+        {
+            GameObject actionPanel = FindSceneObject("CombatActionPanel");
+            Button pauseButton = FindSceneComponent<Button>("PauseCombatButton");
+            GameObject defeatOverlay = FindSceneObject("CombatDefeatOverlay");
+
+            Assert.That(actionPanel.activeSelf, Is.False);
+            Assert.That(pauseButton.gameObject.activeSelf, Is.False);
+            Assert.That(defeatOverlay.activeSelf, Is.False);
+            Assert.That(codeInput.interactable, Is.True);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CombatControls_AttackUpdatesVisibleLifeAndBlocksCodeEditing()
+        {
+            PrepareCombatMago(8, 3, 4, 10, 5);
+            bootstrapper.ShowEnemies(new[]
+            {
+                new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro")
+            });
+            bootstrapper.StartCombat();
+            bootstrapper.AdvanceCombatTick();
+
+            Assert.That(codeInput.interactable, Is.False);
+            Assert.That(FindSceneObject("CombatActionPanel").activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("EnemyStatsText").text,
+                Does.Contain("7/10"));
+            Assert.That(FindSceneComponent<TMP_Text>("CombatStatusText").text,
+                Does.Contain("3 de neutro"));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CombatControls_ElementalWeaknessChangesDamageAndFeedbackColor()
+        {
+            PrepareCombatMago(8, 3, 4, 10, 5);
+            bootstrapper.ShowEnemies(new[]
+            {
+                new EnemyState("golem", "Golem de Gelo", 12, "gelo")
+            });
+            bootstrapper.StartCombat(CombatElement.Fire);
+            bootstrapper.AdvanceCombatTick();
+
+            Assert.That(FindSceneComponent<TMP_Text>("EnemyStatsText").text,
+                Does.Contain("6/12"));
+            TMP_Text status = FindSceneComponent<TMP_Text>("CombatStatusText");
+            Assert.That(status.text, Does.Contain("6 de fogo"));
+            Assert.That(status.color.r, Is.GreaterThan(status.color.b));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CombatControls_PauseAndDragReordersTheNextCycle()
+        {
+            PrepareCombatMago(8, 3, 4, 10, 5);
+            bootstrapper.ShowEnemies(new[]
+            {
+                new EnemyState("golem", "Golem de Gelo", 12, "gelo")
+            });
+            bootstrapper.StartCombat();
+            FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
+            var pointer = new PointerEventData(EventSystem.current);
+            ExecuteEvents.Execute<IBeginDragHandler>(FindSceneObject("CombatAction3"),
+                pointer, ExecuteEvents.beginDragHandler);
+            ExecuteEvents.Execute<IDropHandler>(FindSceneObject("CombatAction1"),
+                pointer, ExecuteEvents.dropHandler);
+
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction1Label").text,
+                Is.EqualTo("Atacar"));
+            FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
+            bootstrapper.AdvanceCombatTick();
+            Assert.That(FindSceneComponent<TMP_Text>("CombatStatusText").text,
+                Does.Contain("sem analisar"));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CombatControls_DefeatOffersARestartWithFullLife()
+        {
+            PrepareCombatMago(1, 1, 1, 1, 1);
+            bootstrapper.ShowEnemies(new[]
+            {
+                new EnemyState("golem", "Golem de Gelo", 12, "gelo")
+            });
+            bootstrapper.StartCombat();
+            FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
+            bootstrapper.ReorderCombatAction(2, 0);
+            FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
+            for (int tick = 0; tick < 100 &&
+                !FindSceneObject("CombatDefeatOverlay").activeSelf; tick++)
+                bootstrapper.AdvanceCombatTick();
+
+            Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.True);
+            FindSceneComponent<Button>("RetryCombatButton").onClick.Invoke();
+            Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.False);
+            Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
+                Does.Contain("Vida: 1/1"));
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction1Label").text,
+                Is.EqualTo("Atacar"));
+            yield return null;
+        }
+
+        private void PrepareCombatMago(int life, int damage, int range,
+            int initiative, int attackSpeed)
+        {
+            var values = new Dictionary<string, int>
+            {
+                ["vida"] = life,
+                ["dano"] = damage,
+                ["alcance"] = range,
+                ["iniciativa"] = initiative,
+                ["velocidadeAtaque"] = attackSpeed
+            };
+            bootstrapper.ShowMago(MagoState.FromValidatedProgram(new ValidatedMagoProgram(
+                "Mago", values.Keys, "heroi", values, 25)));
         }
 
         [UnityTest]

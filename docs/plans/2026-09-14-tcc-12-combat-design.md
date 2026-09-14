@@ -47,8 +47,9 @@ no primeiro bloco recorrente, sem repetir a configuração. A arena informa
 vida, alvo, alcance, dano e elemento por cor/efeito.
 
 Vitória chama o fluxo pedagógico existente. Derrota apresenta nova tentativa
-com o código aprovado ou retorno à edição; a tentativa recomeça do estado
-inicial. As três atividades da Fase 1 continuam concluídas por validação. A
+com o código aprovado ou retorno à edição; a tentativa recomeça com vida,
+posições e relógio iniciais, preservando a ordem escolhida para a fila. As três
+atividades da Fase 1 continuam concluídas por validação. A
 Fase 2 permanece bloqueada até a issue de progressão, mas suas batalhas com
 `OnCombatVictory` já podem usar o motor quando liberadas.
 

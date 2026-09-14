@@ -53,8 +53,19 @@ namespace PrograMago.UnityIntegration
         private float nextCodeSaveTime;
         private bool approvedClass;
         private bool classPreview;
+        private CombatEngine combat;
+        private float combatAccumulator;
+        private RectTransform editorPanel;
+        private GameObject combatActionPanel;
+        private GameObject combatDefeatOverlay;
+        private Button pauseCombatButton;
+        private TMP_Text combatStatusText;
+        private readonly Button[] combatActionButtons = new Button[3];
+        private float editorAnchorMaxX;
+        private CombatElement[] activeExtraSpells = Array.Empty<CombatElement>();
 
         public MagoState CurrentMago { get; private set; }
+        public bool CanReorderCombatActions => combat != null && combat.IsPaused;
 
         public IReadOnlyList<EnemyState> CurrentEnemies { get; private set; } = Array.Empty<EnemyState>();
 
@@ -90,6 +101,7 @@ namespace PrograMago.UnityIntegration
             CreateMagoStatsText();
             CreateEnemyStatsText();
             CreateCodeBlockButtons();
+            CreateCombatControls();
 
             LearningPath path;
             try
@@ -241,11 +253,24 @@ namespace PrograMago.UnityIntegration
             {
                 SaveProgress();
             }
+
+            if (combat != null && !combat.IsPaused &&
+                combat.Outcome == CombatOutcome.InProgress)
+            {
+                combatAccumulator += Time.unscaledDeltaTime;
+                while (combatAccumulator >= 0.2f && combat != null &&
+                       combat.Outcome == CombatOutcome.InProgress)
+                {
+                    combatAccumulator -= 0.2f;
+                    AdvanceCombatTick();
+                }
+            }
         }
 
         private void LateUpdate()
         {
             PositionWizardSpawnPoint();
+            PositionCombatActors();
         }
 
         public void ShowError(Diagnostic diagnostic)
@@ -298,6 +323,8 @@ namespace PrograMago.UnityIntegration
 
         public void Reset()
         {
+            HideCombatControls();
+            combat = null;
             approvedClass = false;
             classPreview = false;
             CurrentMago = null;
@@ -499,6 +526,8 @@ namespace PrograMago.UnityIntegration
         {
             codeInput.interactable = isEnabled;
             battleButton.interactable = isEnabled;
+            foreach (Button button in codeBlockButtons)
+                if (button != null) button.interactable = isEnabled;
         }
 
         public void ShowRestartProgress(float progress)
@@ -544,6 +573,11 @@ namespace PrograMago.UnityIntegration
         private void HandleBattle()
         {
             presenter.Battle();
+            if (learningFlowPresenter.Progress.Stage == LearningStage.BattleInProgress &&
+                CurrentMago != null && CurrentEnemies.Count > 0)
+            {
+                StartCombat();
+            }
             SaveProgress();
         }
 
@@ -611,6 +645,307 @@ namespace PrograMago.UnityIntegration
             if (learningFlowPresenter.NextBattle())
             {
                 SaveProgress();
+            }
+        }
+
+        public void StartCombat(params CombatElement[] extraSpells)
+        {
+            if (CurrentMago == null || CurrentEnemies.Count == 0)
+                throw new InvalidOperationException("Mago e inimigos aprovados são necessários.");
+            activeExtraSpells = extraSpells == null
+                ? Array.Empty<CombatElement>()
+                : (CombatElement[])extraSpells.Clone();
+            combat = new CombatEngine(CombatWizard.FromMago(CurrentMago,
+                activeExtraSpells), CurrentEnemies);
+            combatAccumulator = 0f;
+            combatActionPanel.SetActive(true);
+            combatDefeatOverlay.SetActive(false);
+            pauseCombatButton.gameObject.SetActive(true);
+            pauseCombatButton.GetComponentInChildren<TMP_Text>().text = "Pausar";
+            editorPanel.anchorMax = new Vector2(0.56f, editorPanel.anchorMax.y);
+            combatStatusText.gameObject.SetActive(true);
+            combatStatusText.text = "Combate iniciado";
+            RefreshCombatActionButtons();
+            SetInteractionEnabled(false);
+            RenderCombatState();
+            PositionCombatActors();
+        }
+
+        public CombatEvent AdvanceCombatTick()
+        {
+            if (combat == null) return null;
+            CombatEvent action = combat.Tick();
+            if (action != null) RenderCombatEvent(action);
+            RenderCombatState();
+            PositionCombatActors();
+            if (combat.Outcome == CombatOutcome.Victory)
+            {
+                HideCombatControls();
+                if (!ReportBattleVictory()) SetInteractionEnabled(true);
+                combat = null;
+            }
+            else if (combat.Outcome == CombatOutcome.Defeat)
+            {
+                combatDefeatOverlay.SetActive(true);
+                pauseCombatButton.gameObject.SetActive(false);
+                combatStatusText.text = "Derrota — tente novamente ou edite o código";
+            }
+            return action;
+        }
+
+        public void ToggleCombatPause()
+        {
+            if (combat == null || combat.Outcome != CombatOutcome.InProgress) return;
+            if (combat.IsPaused)
+            {
+                combat.Resume();
+                combatStatusText.text = "Combate retomado";
+            }
+            else
+            {
+                combat.Pause();
+                combatStatusText.text = "Pausado — arraste os blocos para mudar a ordem";
+            }
+            pauseCombatButton.GetComponentInChildren<TMP_Text>().text =
+                combat.IsPaused ? "Continuar" : "Pausar";
+        }
+
+        public void ReorderCombatAction(int fromIndex, int toIndex)
+        {
+            if (combat == null) return;
+            combat.MoveAction(fromIndex, toIndex);
+            RefreshCombatActionButtons();
+        }
+
+        private void RetryCombat()
+        {
+            if (combat == null || combat.Outcome != CombatOutcome.Defeat) return;
+            combat.Restart();
+            combatAccumulator = 0f;
+            combatDefeatOverlay.SetActive(false);
+            pauseCombatButton.gameObject.SetActive(true);
+            pauseCombatButton.GetComponentInChildren<TMP_Text>().text = "Pausar";
+            combatStatusText.text = "Nova tentativa";
+            RefreshCombatActionButtons();
+            RenderCombatState();
+            PositionCombatActors();
+        }
+
+        private void EditAfterDefeat()
+        {
+            if (!ReportBattleDefeat())
+            {
+                HideCombatControls();
+                combat = null;
+                SetInteractionEnabled(true);
+            }
+        }
+
+        private void CreateCombatControls()
+        {
+            editorPanel = GameObject.Find("CodeEditorPanel").GetComponent<RectTransform>();
+            editorAnchorMaxX = editorPanel.anchorMax.x;
+            RectTransform bottomArea = (RectTransform)editorPanel.parent;
+            combatActionPanel = CreatePanel("CombatActionPanel", bottomArea,
+                new Vector2(0.56f, 0.02f), new Vector2(0.75f, 0.98f),
+                new Color32(31, 28, 48, 245)).gameObject;
+            CreateLabel("CombatActionTitle", combatActionPanel.transform,
+                "FILA DE AÇÕES", new Vector2(0.05f, 0.82f),
+                new Vector2(0.95f, 0.98f));
+            for (int index = 0; index < combatActionButtons.Length; index++)
+            {
+                float top = 0.78f - index * 0.22f;
+                combatActionButtons[index] = CreateButton($"CombatAction{index + 1}",
+                    combatActionPanel.transform, string.Empty,
+                    new Vector2(0.06f, top - 0.17f), new Vector2(0.94f, top));
+                combatActionButtons[index].gameObject
+                    .AddComponent<CombatActionDragHandle>().Configure(this, index);
+            }
+            CreateLabel("CombatActionHint", combatActionPanel.transform,
+                "Pause para reordenar", new Vector2(0.05f, 0.03f),
+                new Vector2(0.95f, 0.16f));
+            combatActionPanel.SetActive(false);
+
+            pauseCombatButton = CreateButton("PauseCombatButton", arenaFrame,
+                "Pausar", new Vector2(0.80f, 0.82f), new Vector2(0.98f, 0.98f));
+            pauseCombatButton.onClick.AddListener(ToggleCombatPause);
+            pauseCombatButton.gameObject.SetActive(false);
+
+            combatStatusText = CreateLabel("CombatStatusText", arenaFrame,
+                string.Empty, new Vector2(0.23f, 0.01f), new Vector2(0.78f, 0.20f));
+            combatStatusText.gameObject.SetActive(false);
+
+            combatDefeatOverlay = CreatePanel("CombatDefeatOverlay", arenaFrame,
+                new Vector2(0.28f, 0.12f), new Vector2(0.72f, 0.88f),
+                new Color32(40, 29, 45, 245)).gameObject;
+            CreateLabel("CombatDefeatTitle", combatDefeatOverlay.transform,
+                "Derrota", new Vector2(0.08f, 0.64f), new Vector2(0.92f, 0.95f));
+            CreateButton("RetryCombatButton", combatDefeatOverlay.transform,
+                "Tentar novamente", new Vector2(0.08f, 0.36f),
+                new Vector2(0.92f, 0.60f)).onClick.AddListener(RetryCombat);
+            CreateButton("EditAfterDefeatButton", combatDefeatOverlay.transform,
+                "Editar código", new Vector2(0.08f, 0.08f),
+                new Vector2(0.92f, 0.32f)).onClick.AddListener(EditAfterDefeat);
+            combatDefeatOverlay.SetActive(false);
+        }
+
+        private RectTransform CreatePanel(string name, Transform parent,
+            Vector2 anchorMin, Vector2 anchorMax, Color color)
+        {
+            var item = new GameObject(name, typeof(RectTransform),
+                typeof(CanvasRenderer), typeof(Image));
+            item.transform.SetParent(parent, false);
+            RectTransform rect = item.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            item.GetComponent<Image>().color = color;
+            return rect;
+        }
+
+        private Button CreateButton(string name, Transform parent, string label,
+            Vector2 anchorMin, Vector2 anchorMax)
+        {
+            RectTransform rect = CreatePanel(name, parent, anchorMin, anchorMax,
+                new Color32(83, 67, 152, 255));
+            Button button = rect.gameObject.AddComponent<Button>();
+            CreateLabel(name + "Label", rect, label, Vector2.zero, Vector2.one);
+            return button;
+        }
+
+        private TMP_Text CreateLabel(string name, Transform parent, string value,
+            Vector2 anchorMin, Vector2 anchorMax)
+        {
+            var item = new GameObject(name, typeof(RectTransform),
+                typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            item.transform.SetParent(parent, false);
+            RectTransform rect = item.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            TextMeshProUGUI text = item.GetComponent<TextMeshProUGUI>();
+            text.font = battleProgressText.font;
+            text.text = value;
+            text.color = Color.white;
+            text.alignment = TextAlignmentOptions.Center;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 10;
+            text.fontSizeMax = 24;
+            text.raycastTarget = false;
+            return text;
+        }
+
+        private void RefreshCombatActionButtons()
+        {
+            if (combat == null) return;
+            for (int index = 0; index < combatActionButtons.Length; index++)
+            {
+                string label;
+                switch (combat.ActionOrder[index])
+                {
+                    case CombatAction.AnalyzeTarget: label = "Analisar alvo"; break;
+                    case CombatAction.SelectSpell: label = "Selecionar magia"; break;
+                    default: label = "Atacar"; break;
+                }
+                combatActionButtons[index].GetComponentInChildren<TMP_Text>().text = label;
+            }
+        }
+
+        private void RenderCombatEvent(CombatEvent action)
+        {
+            string actor = action.Actor == "Mago" ? "Mago" : action.Actor;
+            switch (action.Kind)
+            {
+                case CombatEventKind.Move:
+                    combatStatusText.text = $"{actor} avança: alvo fora do alcance";
+                    combatStatusText.color = new Color32(245, 221, 151, 255);
+                    break;
+                case CombatEventKind.NoTarget:
+                    combatStatusText.text = "Mago atacou sem analisar um alvo";
+                    combatStatusText.color = new Color32(255, 169, 139, 255);
+                    break;
+                case CombatEventKind.Ineffective:
+                    combatStatusText.text = $"Magia {ElementLabel(action.Element)} ineficaz contra {action.Target}";
+                    combatStatusText.color = new Color32(255, 169, 139, 255);
+                    break;
+                default:
+                    combatStatusText.text = $"{actor} causa {action.Amount} de " +
+                        $"{ElementLabel(action.Element)} em {action.Target}";
+                    combatStatusText.color = ElementColor(action.Element);
+                    break;
+            }
+        }
+
+        private void RenderCombatState()
+        {
+            if (combat == null) return;
+            magoStatsText.text = $"Mago {CurrentMago.InstanceName} — Vida: {combat.WizardLife}/{CurrentMago.Vida}\n" +
+                $"Dano: {CurrentMago.Dano}  Alcance: {CurrentMago.Alcance}\n" +
+                $"Iniciativa: {CurrentMago.Iniciativa}  Velocidade: {CurrentMago.VelocidadeAtaque}";
+            var summary = new StringBuilder();
+            foreach (CombatEnemy enemy in combat.Enemies)
+            {
+                if (summary.Length > 0) summary.Append('\n');
+                summary.Append(enemy.Source.Name).Append(" — Vida: ")
+                    .Append(enemy.Life).Append('/').Append(enemy.Source.Vida)
+                    .Append(" — ").Append(enemy.Source.Elemento);
+            }
+            enemyStatsText.text = summary.ToString();
+        }
+
+        private void PositionCombatActors()
+        {
+            if (combat == null || arenaCamera == null) return;
+            float depth = Vector3.Dot(wizardSpawnPoint.position - arenaCamera.transform.position,
+                arenaCamera.transform.forward);
+            if (wizardInstance != null)
+            {
+                wizardInstance.transform.position = arenaCamera.ViewportToWorldPoint(
+                    new Vector3(0.1f + combat.WizardPosition * 0.075f, 0.85f, depth));
+            }
+            for (int index = 0; index < enemyMarkers.Count && index < combat.Enemies.Count; index++)
+            {
+                GameObject marker = enemyMarkers[index];
+                CombatEnemy enemy = combat.Enemies[index];
+                if (marker == null) continue;
+                marker.SetActive(enemy.Life > 0);
+                marker.transform.position = arenaCamera.ViewportToWorldPoint(
+                    new Vector3(0.1f + enemy.Position * 0.075f, 0.80f, depth));
+            }
+        }
+
+        private void HideCombatControls()
+        {
+            if (combatActionPanel != null) combatActionPanel.SetActive(false);
+            if (combatDefeatOverlay != null) combatDefeatOverlay.SetActive(false);
+            if (pauseCombatButton != null) pauseCombatButton.gameObject.SetActive(false);
+            if (combatStatusText != null) combatStatusText.gameObject.SetActive(false);
+            if (editorPanel != null)
+                editorPanel.anchorMax = new Vector2(editorAnchorMaxX, editorPanel.anchorMax.y);
+            if (wizardInstance != null) wizardInstance.transform.localPosition = Vector3.zero;
+        }
+
+        private static string ElementLabel(CombatElement element)
+        {
+            switch (element)
+            {
+                case CombatElement.Fire: return "fogo";
+                case CombatElement.Water: return "água";
+                case CombatElement.Electric: return "eletricidade";
+                default: return "neutro";
+            }
+        }
+
+        private static Color ElementColor(CombatElement element)
+        {
+            switch (element)
+            {
+                case CombatElement.Fire: return new Color32(255, 142, 88, 255);
+                case CombatElement.Water: return new Color32(112, 190, 255, 255);
+                case CombatElement.Electric: return new Color32(255, 233, 120, 255);
+                default: return Color.white;
             }
         }
 
