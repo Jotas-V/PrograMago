@@ -18,6 +18,116 @@ namespace PrograMago.Tests.Language
             "}\n}\n" +
             "Mago mago = new Mago(5, 4, 6, 3, 2);";
 
+        private const string EnemyProgram = CompleteProgram + "\n" +
+            "public class Inimigo {\n" +
+            "private String nome; private int vida; private String elemento;\n" +
+            "public Inimigo(String nome, int vida, String elemento) {\n" +
+            "this.nome = nome; this.vida = vida; this.elemento = elemento;\n" +
+            "}\n" +
+            "public String getElemento() { return elemento; }\n" +
+            "}\n" +
+            "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
+
+        [Test]
+        public void Validate_EnemyAfterApprovedMago_AcceptsConstructionAndInstantiation()
+        {
+            ExerciseValidationResult result = Validate(
+                EnemyProgram,
+                ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.True, result.Diagnostic?.Detail);
+            Assert.That(result.SatisfiedCriterion,
+                Is.EqualTo(ValidationCriterion.ConstructAndInstantiateEnemy));
+            Assert.That(result.Program.InstanceName, Is.EqualTo("mago"));
+            Assert.That(result.Enemies, Has.Count.EqualTo(1));
+            Assert.That(result.Enemies[0].VariableName, Is.EqualTo("boneco"));
+            Assert.That(result.Enemies[0].Name, Is.EqualTo("Boneco de Treinamento"));
+            Assert.That(result.Enemies[0].Vida, Is.EqualTo(10));
+            Assert.That(result.Enemies[0].Elemento, Is.EqualTo("neutro"));
+        }
+
+        [Test]
+        public void Validate_EnemyClassBeforeMago_AcceptsEitherClassOrder()
+        {
+            int split = EnemyProgram.IndexOf("public class Inimigo", StringComparison.Ordinal);
+            string source = EnemyProgram.Substring(split) + "\n" + EnemyProgram.Substring(0, split);
+
+            ExerciseValidationResult result = Validate(
+                source,
+                ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.True, result.Diagnostic?.Detail);
+        }
+
+        [Test]
+        public void ExerciseValidationResult_ExposesValidatedEnemyInstances()
+        {
+            Assert.That(typeof(ExerciseValidationResult).GetProperty("Enemies"), Is.Not.Null);
+        }
+
+        [Test]
+        public void Validate_EnemyFieldInsideMago_RejectsWrongClassScope()
+        {
+            string source = EnemyProgram.Replace(
+                "private int vida; private int dano;",
+                "private String elemento; private int vida; private int dano;");
+
+            ExerciseValidationResult result = Validate(
+                source,
+                ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Diagnostic.Code, Is.Not.EqualTo("VALID001"));
+        }
+
+        [Test]
+        public void Validate_FourEnemyProfiles_MapsDistinctObjectsFromOneClass()
+        {
+            string source = EnemyProgram + "\n" +
+                "Inimigo golem = new Inimigo(\"Golem de Gelo\", 12, \"gelo\");\n" +
+                "Inimigo elemental = new Inimigo(\"Elemental de Fogo\", 12, \"fogo\");\n" +
+                "Inimigo slime = new Inimigo(\"Slime Aquático\", 12, \"água\");";
+
+            ExerciseValidationResult result = Validate(
+                source,
+                ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.True, result.Diagnostic?.Detail);
+            Assert.That(result.Enemies, Has.Count.EqualTo(4));
+            Assert.That(result.Enemies[1].Name, Is.EqualTo("Golem de Gelo"));
+            Assert.That(result.Enemies[2].Elemento, Is.EqualTo("fogo"));
+            Assert.That(result.Enemies[3].Elemento, Is.EqualTo("água"));
+        }
+
+        [TestCase("private String elemento;", "public String elemento;", "ENEMY004")]
+        [TestCase("this.elemento = elemento;", "this.elemento = nome;", "ENEMY006")]
+        [TestCase("return elemento;", "return nome;", "ENEMY007")]
+        [TestCase("getElemento()", "getElemento(String valor)", "ENEMY007")]
+        [TestCase("\"neutro\"", "\"fogo\"", "ENEMY010")]
+        [TestCase("\"Boneco de Treinamento\"", "\"Outro\"", "ENEMY010")]
+        [TestCase("\"Boneco de Treinamento\", 10", "\"Boneco de Treinamento\", 11", "ENEMY010")]
+        public void Validate_InvalidEnemyDefinitionOrProfile_ReportsSpecificFailure(
+            string oldText, string newText, string code)
+        {
+            ExerciseValidationResult result = Validate(
+                EnemyProgram.Replace(oldText, newText),
+                ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Diagnostic.Code, Is.EqualTo(code));
+        }
+
+        [Test]
+        public void Validate_DuplicateEnemyVariable_RejectsSecondInstance()
+        {
+            ExerciseValidationResult result = Validate(
+                EnemyProgram + "\nInimigo boneco = new Inimigo(\"Golem de Gelo\", 12, \"gelo\");",
+                ValidationCriterion.ConstructAndInstantiateEnemy);
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Diagnostic.Code, Is.EqualTo("ENEMY008"));
+        }
+
         [Test]
         public void Validate_DeclareMagoClassCriterion_ReturnsGeneralSuccess()
         {

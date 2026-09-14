@@ -3,6 +3,7 @@
   "rootNamespace": "PrograMago.Tests",
   "references": [
     "PrograMago.Unity",
+    "PrograMago.Domain",
     "UnityEngine.UI",
     "Unity.TextMeshPro"
   ],

@@ -22,11 +22,19 @@ conforme a TCC-41; seus membros precisam permanecer dentro das próprias chaves.
 O parser continua restrito ao subconjunto Java do jogo. Ele confirma nomes e
 tipos de campos, parâmetros, atribuições `this`, corpo de `getElemento()` e
 argumentos de cada `new Inimigo(...)`, rejeitando conteúdo adicional e nomes de
-variáveis duplicados. As quatro fichas de inimigo aceitas são Boneco de
-Treinamento (neutro), Golem de Gelo (gelo), Elemental de Fogo (fogo) e Slime
-Aquático (água); vida e disponibilidade são definidas por ficha, não por código
-arbitrário do jogador. A batalha `enemy-object` exige o Boneco; as demais
-fichas ficam prontas para as batalhas posteriores.
+variáveis duplicados. As fichas aceitas nesta versão são:
+
+| Nome | Vida | Elemento |
+| --- | ---: | --- |
+| Boneco de Treinamento | 10 | neutro |
+| Golem de Gelo | 12 | gelo |
+| Elemental de Fogo | 12 | fogo |
+| Slime Aquático | 12 | água |
+
+Os valores de vida são provisórios para a integração do combate na TCC-12.
+A batalha `enemy-object` exige o Boneco; as demais fichas ficam prontas para
+as batalhas posteriores. O jogador não pode substituir os dados da ficha por
+valores arbitrários.
 
 ## Integração
 

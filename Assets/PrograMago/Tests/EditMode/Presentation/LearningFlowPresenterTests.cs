@@ -417,6 +417,10 @@ namespace PrograMago.Tests.Presentation
                 HasDeclaredClass = true;
             }
 
+            public void ShowEnemies(System.Collections.Generic.IReadOnlyList<EnemyState> enemies)
+            {
+            }
+
             public void Reset()
             {
                 HasDeclaredClass = false;

@@ -50,6 +50,11 @@ namespace PrograMago.Presentation
                     arena.ShowMago(MagoState.FromValidatedProgram(result.Program));
                 }
 
+                if (result.Enemies != null && result.Enemies.Count > 0)
+                {
+                    arena.ShowEnemies(result.Enemies);
+                }
+
                 feedback.Clear();
                 learningFlow?.HandleSubmission(result);
                 return;

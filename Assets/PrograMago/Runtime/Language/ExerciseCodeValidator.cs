@@ -43,6 +43,11 @@ namespace PrograMago.Language
                 return new MagoConstructionValidator(rules).Validate(tokens, exercise);
             }
 
+            if (criterion == ValidationCriterion.ConstructAndInstantiateEnemy)
+            {
+                return new EnemyConstructionValidator(rules).Validate(tokens, exercise);
+            }
+
             if (criterion == ValidationCriterion.DeclareMagoClass)
             {
                 ClassDeclarationValidationResult result = new ClassDeclarationValidator().Validate(

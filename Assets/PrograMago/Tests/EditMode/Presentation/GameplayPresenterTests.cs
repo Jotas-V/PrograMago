@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using PrograMago.Application;
 using PrograMago.Domain;
@@ -222,6 +223,46 @@ namespace PrograMago.Tests.Presentation
             Assert.That(arena.Mago.RemainingPoints, Is.EqualTo(4));
         }
 
+        [Test]
+        public void Battle_ValidEnemyProgram_MapsEnemyOnlyAfterFullValidation()
+        {
+            const string source =
+                "public class Mago { private int vida; private int dano; private int alcance; " +
+                "private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                "Mago mago = new Mago(5, 4, 6, 3, 2); " +
+                "public class Inimigo { private String nome; private int vida; " +
+                "private String elemento; public Inimigo(String nome, int vida, String elemento) { " +
+                "this.nome = nome; this.vida = vida; this.elemento = elemento; } " +
+                "public String getElemento() { return elemento; } } " +
+                "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
+            var editor = new FakeCodeEditorView { SourceCode = source };
+            var feedback = new FakeFeedbackView();
+            var arena = new FakeArenaView();
+            var progress = new LearningProgress(new LearningPath(new[]
+            {
+                CreateLearningBattle(ValidationCriterion.ConstructAndInstantiateEnemy)
+            }));
+            var flow = new LearningFlowPresenter(
+                progress, new HoldToRestartController(5f), editor, feedback, arena,
+                new NoOpLearningFlowView());
+            var presenter = new GameplayPresenter(
+                new SubmitCodeUseCase(new CodeTokenizer(), new ExerciseCodeValidator(),
+                    new LearningSession(new ExerciseDefinition("enemy-object", "Mago", "Crie Inimigo."))),
+                editor, feedback, arena, flow);
+
+            presenter.Battle();
+            Assert.That(arena.Enemies, Has.Count.EqualTo(1));
+            Assert.That(arena.Enemies[0].Name, Is.EqualTo("Boneco de Treinamento"));
+
+            editor.SourceCode = source.Replace("\"neutro\"", "\"fogo\"");
+            presenter.Battle();
+            Assert.That(feedback.Diagnostic.Code, Is.EqualTo("ENEMY010"));
+            Assert.That(arena.Enemies, Has.Count.EqualTo(1));
+        }
+
         private static GameplayPresenter CreatePresenter(
             ICodeEditorView editor,
             IFeedbackView feedback,
@@ -282,6 +323,8 @@ namespace PrograMago.Tests.Presentation
 
             public MagoState Mago { get; private set; }
 
+            public IReadOnlyList<EnemyState> Enemies { get; private set; }
+
             private bool approved;
 
             public void SetClassDeclared(bool hasDeclaredClass)
@@ -302,11 +345,17 @@ namespace PrograMago.Tests.Presentation
                 HasDeclaredClass = true;
             }
 
+            public void ShowEnemies(IReadOnlyList<EnemyState> enemies)
+            {
+                Enemies = enemies;
+            }
+
             public void Reset()
             {
                 approved = false;
                 HasDeclaredClass = false;
                 Mago = null;
+                Enemies = null;
             }
         }
 
