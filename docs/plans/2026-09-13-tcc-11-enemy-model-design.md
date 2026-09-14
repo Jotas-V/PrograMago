@@ -16,7 +16,9 @@ inválida preserva o último estado aprovado.
 ## Sintaxe e dados
 
 O editor mantém o código da Fase 1, então o validador desta atividade aceita o
-programa validado do Mago seguido da classe `Inimigo` e de suas instanciações.
+programa validado do Mago junto da classe `Inimigo` e de suas instanciações.
+As classes podem aparecer em qualquer ordem e em qualquer bloco do editor,
+conforme a TCC-41; seus membros precisam permanecer dentro das próprias chaves.
 O parser continua restrito ao subconjunto Java do jogo. Ele confirma nomes e
 tipos de campos, parâmetros, atribuições `this`, corpo de `getElemento()` e
 argumentos de cada `new Inimigo(...)`, rejeitando conteúdo adicional e nomes de
