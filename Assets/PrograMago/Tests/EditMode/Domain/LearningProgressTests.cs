@@ -218,7 +218,7 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
-        public void ContinueAfterVictory_NextChapterIsNotPlayable_KeepsPhaseOneReview()
+        public void ContinueAfterVictory_EnemyBattleOpensAfterPhaseOne()
         {
             var progress = new LearningProgress(new LearningPath(new[]
             {
@@ -228,11 +228,118 @@ namespace PrograMago.Tests.Domain
             progress.TryStartBattle(ValidationCriterion.DeclareMagoClass);
             progress.ReportVictory();
 
+            Assert.That(progress.HasCompletedPhaseOne, Is.True);
+            Assert.That(progress.IsPhaseOneBoundary, Is.True);
+            Assert.That(progress.CanContinueAfterVictory, Is.True);
             bool advanced = progress.ContinueAfterVictory();
+            Assert.That(advanced, Is.True);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("enemy"));
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.Editing));
+        }
 
-            Assert.That(advanced, Is.False);
-            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("mago"));
+        [Test]
+        public void ContinueAfterVictory_NextMethodBattleStaysLocked()
+        {
+            var progress = new LearningProgress(new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2),
+                CreateBattle("method", 3, ValidationCriterion.DefineAndCallSpellMethod, 2)
+            }));
+            progress.RegisterSubmission();
+            progress.TryStartBattle(ValidationCriterion.DeclareMagoClass);
+            progress.ReportVictory();
+            progress.ContinueAfterVictory();
+            progress.RegisterSubmission();
+            progress.TryStartBattle(ValidationCriterion.ConstructAndInstantiateEnemy);
+            progress.ReportVictory();
+
+            Assert.That(progress.HasCompletedPhaseOne, Is.True);
+            Assert.That(progress.TotalPhaseOneAttempts, Is.EqualTo(1));
+            Assert.That(progress.CanContinueAfterVictory, Is.False);
+            Assert.That(progress.ContinueAfterVictory(), Is.False);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("enemy"));
             Assert.That(progress.Stage, Is.EqualTo(LearningStage.VictoryReview));
+        }
+
+        [Test]
+        public void SnapshotV3_RestoresEnemyEditingAndVictoryReview()
+        {
+            LearningPath path = new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2),
+                CreateBattle("method", 3, ValidationCriterion.DefineAndCallSpellMethod, 2)
+            });
+            var progress = new LearningProgress(path);
+            progress.RegisterSubmission();
+            progress.TryStartBattle(ValidationCriterion.DeclareMagoClass);
+            progress.ReportVictory();
+            progress.ContinueAfterVictory();
+            progress.RegisterSubmission();
+            progress.RegisterFailedAttempt();
+            PhaseOneSaveData editing = progress.CapturePhaseOne("source", "approved");
+            var restored = new LearningProgress(path);
+            restored.RestorePhaseOne(editing);
+
+            Assert.That(editing.version, Is.EqualTo(3));
+            Assert.That(restored.CurrentBattle.Id, Is.EqualTo("enemy"));
+            Assert.That(restored.Stage, Is.EqualTo(LearningStage.Editing));
+            Assert.That(restored.FailedAttempts, Is.EqualTo(1));
+            Assert.That(restored.HasCompletedPhaseOne, Is.True);
+
+            progress.TryStartBattle(ValidationCriterion.ConstructAndInstantiateEnemy);
+            PhaseOneSaveData fighting = progress.CapturePhaseOne("source", "approved");
+            restored.RestorePhaseOne(fighting);
+            Assert.That(restored.Stage, Is.EqualTo(LearningStage.Editing));
+
+            progress.ReportVictory();
+            PhaseOneSaveData victory = progress.CapturePhaseOne("source", "approved");
+            restored.RestorePhaseOne(victory);
+            Assert.That(restored.CurrentBattle.Id, Is.EqualTo("enemy"));
+            Assert.That(restored.Stage, Is.EqualTo(LearningStage.VictoryReview));
+        }
+
+        [Test]
+        public void LegacySnapshot_AfterPhaseOneResumesAtBoundary()
+        {
+            LearningPath path = new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2)
+            });
+            var legacy = new PhaseOneSaveData
+            {
+                version = 2,
+                battleIds = new[] { "mago" },
+                attemptCounts = new[] { 1 },
+                failedCounts = new[] { 0 },
+                completed = new[] { true },
+                sourceBlocks = new[] { "code", "", "" },
+                activeBlock = 0
+            };
+            var restored = new LearningProgress(path);
+            restored.RestorePhaseOne(legacy);
+
+            Assert.That(restored.CurrentBattle.Id, Is.EqualTo("mago"));
+            Assert.That(restored.Stage, Is.EqualTo(LearningStage.VictoryReview));
+            Assert.That(restored.CanContinueAfterVictory, Is.True);
+        }
+
+        [Test]
+        public void SnapshotV3_InconsistentBattleIndexIsRejected()
+        {
+            LearningPath path = new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2)
+            });
+            PhaseOneSaveData snapshot = new LearningProgress(path)
+                .CapturePhaseOne("", "");
+            snapshot.currentBattleIndex = 1;
+
+            Assert.Throws<ArgumentException>(() =>
+                new LearningProgress(path).RestorePhaseOne(snapshot));
         }
 
         [Test]

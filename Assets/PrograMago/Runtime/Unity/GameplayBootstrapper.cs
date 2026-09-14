@@ -132,26 +132,27 @@ namespace PrograMago.UnityIntegration
                 if (saved != null)
                 {
                     progress.RestorePhaseOne(saved);
-                    for (int index = saved.completed.Length - 1; index >= 0; index--)
+                    if (!string.IsNullOrEmpty(saved.approvedCode))
                     {
-                        if (!saved.completed[index])
+                        for (int index = progress.CurrentBattleIndex; index >= 0; index--)
                         {
-                            continue;
+                            SubmitCodeResult candidate = submitCode.Execute(
+                                saved.approvedCode, path.Battles[index].Criterion);
+                            if (candidate.IsSuccess)
+                            {
+                                restoredProgram = candidate;
+                                break;
+                            }
+                            if (saved.completed[index])
+                            {
+                                break;
+                            }
                         }
 
-                        if (string.IsNullOrEmpty(saved.approvedCode))
-                        {
-                            break;
-                        }
-
-                        restoredProgram = submitCode.Execute(
-                            saved.approvedCode, path.Battles[index].Criterion);
-                        if (!restoredProgram.IsSuccess)
+                        if (restoredProgram == null)
                         {
                             throw new InvalidDataException("Código aprovado não confere com o progresso.");
                         }
-
-                        break;
                     }
                 }
             }
@@ -179,7 +180,7 @@ namespace PrograMago.UnityIntegration
 
             if (saved != null)
             {
-                if (saved.version == 2)
+                if (saved.version >= 2)
                 {
                     codeBlocks.Restore(saved.sourceBlocks, saved.activeBlock);
                     codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
@@ -198,6 +199,10 @@ namespace PrograMago.UnityIntegration
                     else
                     {
                         ShowMago(MagoState.FromValidatedProgram(restoredProgram.Program));
+                    }
+                    if (restoredProgram.Enemies != null && restoredProgram.Enemies.Count > 0)
+                    {
+                        ShowEnemies(restoredProgram.Enemies);
                     }
                 }
 
@@ -507,12 +512,14 @@ namespace PrograMago.UnityIntegration
             TMP_Text buttonLabel = nextBattleButton.GetComponentInChildren<TMP_Text>();
             if (buttonLabel != null)
             {
-                buttonLabel.text = isPhaseComplete
-                    ? "Fase 1 concluída"
+                buttonLabel.text = learningFlowPresenter != null &&
+                                   !learningFlowPresenter.Progress.CanContinueAfterVictory
+                    ? "Continuação em breve"
                     : isFinalBattle ? "Concluir jornada" : "Próxima batalha";
             }
 
-            nextBattleButton.interactable = !isPhaseComplete;
+            nextBattleButton.interactable = learningFlowPresenter == null ||
+                learningFlowPresenter.Progress.CanContinueAfterVictory;
             victoryOverlay.SetActive(true);
         }
 

@@ -4,6 +4,7 @@ namespace PrograMago.Domain
 {
     public sealed class LearningProgress
     {
+        private readonly int phaseOneBattleCount;
         private readonly int playableBattleCount;
         private readonly int[] attemptCounts;
         private readonly int[] failedCounts;
@@ -13,8 +14,16 @@ namespace PrograMago.Domain
         {
             Path = path ?? throw new ArgumentNullException(nameof(path));
             int firstChapter = path.Battles[0].Chapter;
-            while (playableBattleCount < path.Battles.Count &&
-                   path.Battles[playableBattleCount].Chapter == firstChapter)
+            while (phaseOneBattleCount < path.Battles.Count &&
+                   path.Battles[phaseOneBattleCount].Chapter == firstChapter)
+            {
+                phaseOneBattleCount++;
+            }
+
+            playableBattleCount = phaseOneBattleCount;
+            if (playableBattleCount < path.Battles.Count &&
+                path.Battles[playableBattleCount].Criterion ==
+                    ValidationCriterion.ConstructAndInstantiateEnemy)
             {
                 playableBattleCount++;
             }
@@ -42,19 +51,23 @@ namespace PrograMago.Domain
             get
             {
                 int total = 0;
-                foreach (int count in attemptCounts)
+                for (int index = 0; index < phaseOneBattleCount; index++)
                 {
-                    total += count;
+                    total += attemptCounts[index];
                 }
 
                 return total;
             }
         }
 
-        public bool HasCompletedPhaseOne => completed[playableBattleCount - 1];
+        public bool HasCompletedPhaseOne => completed[phaseOneBattleCount - 1];
 
-        public bool IsPhaseOneBoundary => CurrentBattleIndex == playableBattleCount - 1 &&
-                                          playableBattleCount < Path.Battles.Count;
+        public bool IsPhaseOneBoundary => CurrentBattleIndex == phaseOneBattleCount - 1 &&
+                                          phaseOneBattleCount < Path.Battles.Count;
+
+        public bool CanContinueAfterVictory => Stage == LearningStage.VictoryReview &&
+            (CurrentBattleIndex == Path.Battles.Count - 1 ||
+             CurrentBattleIndex + 1 < playableBattleCount);
 
         public int GetAttemptCount(string battleId)
         {
@@ -132,7 +145,7 @@ namespace PrograMago.Domain
                 return false;
             }
 
-            if (Path.Battles[CurrentBattleIndex + 1].Chapter != CurrentBattle.Chapter)
+            if (CurrentBattleIndex + 1 >= playableBattleCount)
             {
                 return false;
             }
@@ -188,26 +201,30 @@ namespace PrograMago.Domain
                 sourceCode = sourceCode ?? string.Empty,
                 approvedCode = approvedCode ?? string.Empty,
                 sourceBlocks = (string[])sourceBlocks.Clone(),
-                activeBlock = activeBlock
+                activeBlock = activeBlock,
+                currentBattleIndex = CurrentBattleIndex,
+                stage = Stage
             };
         }
 
         public void RestorePhaseOne(PhaseOneSaveData data)
         {
-            if (data == null || (data.version != 1 && data.version != 2) ||
-                data.battleIds?.Length != playableBattleCount ||
-                data.attemptCounts?.Length != playableBattleCount ||
-                data.failedCounts?.Length != playableBattleCount ||
-                data.completed?.Length != playableBattleCount ||
-                (data.version == 2 &&
+            int expectedCount = data != null && data.version == 3
+                ? playableBattleCount : phaseOneBattleCount;
+            if (data == null || (data.version != 1 && data.version != 2 && data.version != 3) ||
+                data.battleIds?.Length != expectedCount ||
+                data.attemptCounts?.Length != expectedCount ||
+                data.failedCounts?.Length != expectedCount ||
+                data.completed?.Length != expectedCount ||
+                (data.version >= 2 &&
                     (data.sourceBlocks?.Length != 3 || data.activeBlock < 0 || data.activeBlock >= 3)))
             {
                 throw new ArgumentException("Registro da fase 1 inválido.", nameof(data));
             }
 
             bool foundPendingBattle = false;
-            int firstPendingBattle = playableBattleCount;
-            for (int index = 0; index < playableBattleCount; index++)
+            int firstPendingBattle = expectedCount;
+            for (int index = 0; index < expectedCount; index++)
             {
                 if (!string.Equals(data.battleIds[index], Path.Battles[index].Id,
                         StringComparison.Ordinal) ||
@@ -226,17 +243,37 @@ namespace PrograMago.Domain
                 }
             }
 
-            Array.Copy(data.attemptCounts, attemptCounts, playableBattleCount);
-            Array.Copy(data.failedCounts, failedCounts, playableBattleCount);
-            Array.Copy(data.completed, completed, playableBattleCount);
-            CurrentBattleIndex = foundPendingBattle ? firstPendingBattle : playableBattleCount - 1;
-            FailedAttempts = foundPendingBattle ? failedCounts[CurrentBattleIndex] : 0;
+            if (data.version == 3 &&
+                (data.currentBattleIndex < 0 || data.currentBattleIndex >= playableBattleCount ||
+                 !Enum.IsDefined(typeof(LearningStage), data.stage) ||
+                 (data.stage == LearningStage.VictoryReview &&
+                     (!data.completed[data.currentBattleIndex] ||
+                      data.currentBattleIndex != firstPendingBattle - 1)) ||
+                 ((data.stage == LearningStage.Editing ||
+                   data.stage == LearningStage.BattleInProgress) &&
+                     (data.currentBattleIndex != firstPendingBattle ||
+                      data.currentBattleIndex >= playableBattleCount)) ||
+                 (data.stage == LearningStage.JourneyCompleted &&
+                     (firstPendingBattle != playableBattleCount ||
+                      playableBattleCount != Path.Battles.Count ||
+                      data.currentBattleIndex != playableBattleCount - 1))))
+            {
+                throw new ArgumentException("Registro da fase 1 incompatível.", nameof(data));
+            }
+
+            Array.Copy(data.attemptCounts, attemptCounts, expectedCount);
+            Array.Copy(data.failedCounts, failedCounts, expectedCount);
+            Array.Copy(data.completed, completed, expectedCount);
+            CurrentBattleIndex = data.version == 3
+                ? data.currentBattleIndex
+                : foundPendingBattle ? firstPendingBattle : phaseOneBattleCount - 1;
+            Stage = data.version == 3
+                ? data.stage == LearningStage.BattleInProgress ? LearningStage.Editing : data.stage
+                : foundPendingBattle ? LearningStage.Editing : LearningStage.VictoryReview;
+            FailedAttempts = Stage == LearningStage.Editing ? failedCounts[CurrentBattleIndex] : 0;
             CurrentHint = FailedAttempts == 0
                 ? null
                 : CurrentBattle.Hints[Math.Min(FailedAttempts - 1, CurrentBattle.Hints.Count - 1)];
-            Stage = foundPendingBattle
-                ? LearningStage.Editing
-                : LearningStage.VictoryReview;
         }
 
         private int FindPlayableBattle(string battleId)

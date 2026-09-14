@@ -317,6 +317,10 @@ namespace PrograMago.Tests.Integration
             PhaseOneSaveData legacy = JsonUtility.FromJson<PhaseOneSaveData>(
                 File.ReadAllText(progressSavePath));
             legacy.version = 1;
+            System.Array.Resize(ref legacy.battleIds, 3);
+            System.Array.Resize(ref legacy.attemptCounts, 3);
+            System.Array.Resize(ref legacy.failedCounts, 3);
+            System.Array.Resize(ref legacy.completed, 3);
             legacy.sourceBlocks = null;
             legacy.activeBlock = 0;
             File.WriteAllText(progressSavePath, JsonUtility.ToJson(legacy));
@@ -631,7 +635,7 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
                 Does.Contain("Fase 1 concluída"));
-            Assert.That(nextBattleButton.interactable, Is.False);
+            Assert.That(nextBattleButton.interactable, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
                 Does.Contain("Vida: 5"));
             Assert.That(File.Exists(progressSavePath), Is.True);
@@ -649,7 +653,70 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator PhaseOne_ReloadAfterFirstVictory_ResumesAttributesWithCode()
+        public IEnumerator FirstEnemyBattle_BonecoCanBeDefeatedAndReviewSurvivesReload()
+        {
+            codeInput.text = "public class Mago {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            codeInput.text =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
+            battleButton.onClick.Invoke();
+            yield return null;
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            const string magoCode =
+                "public class Mago { private int vida; private int dano; " +
+                "private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { " +
+                "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
+                "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
+                "Mago heroi = new Mago(8, 7, 4, 4, 2);";
+            codeInput.text = magoCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(nextBattleButton.interactable, Is.True);
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(titleText.text, Is.EqualTo("Surge um inimigo"));
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 4/8"));
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+            const string enemyCode =
+                "public class Inimigo { private String nome; private int vida; " +
+                "private String elemento; public Inimigo(String nome, int vida, String elemento) { " +
+                "this.nome = nome; this.vida = vida; this.elemento = elemento; } " +
+                "public String getElemento() { return elemento; } } " +
+                "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
+            codeInput.text = magoCode + " " + enemyCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(GameObject.Find("EnemyMarker-boneco"), Is.Not.Null);
+            Assert.That(FindSceneObject("CombatActionPanel").activeSelf, Is.True);
+            for (int tick = 0; tick < 200 && !victoryOverlay.activeSelf; tick++)
+                bootstrapper.AdvanceCombatTick();
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
+                Is.EqualTo("Adversário derrotado!"));
+            Assert.That(nextBattleButton.interactable, Is.False);
+
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text,
+                Is.EqualTo("Surge um inimigo"));
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
+            Assert.That(GameObject.Find("EnemyMarker-boneco"), Is.Not.Null);
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo(magoCode + " " + enemyCode));
+        }
+
+        [UnityTest]
+        public IEnumerator PhaseOne_ReloadAfterFirstVictory_PreservesReviewAndCanAdvance()
         {
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
@@ -659,12 +726,15 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_Text>("Title").text,
-                Is.EqualTo("Estado protegido"));
+                Is.EqualTo("O nascimento do Mago"));
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
                 Is.EqualTo("public class Mago {}"));
-            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.False);
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(FindSceneObject("WizardSpawnPoint").transform.childCount,
                 Is.EqualTo(1));
+            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text,
+                Is.EqualTo("Estado protegido"));
         }
 
         [UnityTest]
