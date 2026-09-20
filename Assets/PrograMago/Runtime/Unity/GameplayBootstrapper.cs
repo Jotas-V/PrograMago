@@ -41,12 +41,12 @@ namespace PrograMago.UnityIntegration
         private GameplayPresenter presenter;
         private LearningFlowPresenter learningFlowPresenter;
         private GameObject wizardInstance;
-        private TMP_Text magoStatsText;
-        private TMP_Text enemyStatsText;
+        [SerializeField] private TMP_Text magoStatsText;
+        [SerializeField] private TMP_Text enemyStatsText;
         private readonly List<GameObject> enemyMarkers = new List<GameObject>();
         private static Sprite enemyPlaceholderSprite;
         private readonly CodeBlockDocument codeBlocks = new CodeBlockDocument();
-        private readonly Button[] codeBlockButtons = new Button[CodeBlockDocument.BlockCount];
+        [SerializeField] private Button[] codeBlockButtons = new Button[CodeBlockDocument.BlockCount];
         private PhaseOneSaveStore progressStore;
         private string approvedCode = string.Empty;
         private bool pendingCodeSave;
@@ -55,12 +55,12 @@ namespace PrograMago.UnityIntegration
         private bool classPreview;
         private CombatEngine combat;
         private float combatAccumulator;
-        private RectTransform editorPanel;
-        private GameObject combatActionPanel;
-        private GameObject combatDefeatOverlay;
-        private Button pauseCombatButton;
-        private TMP_Text combatStatusText;
-        private readonly List<Button> combatActionButtons = new List<Button>();
+        [SerializeField] private RectTransform editorPanel;
+        [SerializeField] private GameObject combatActionPanel;
+        [SerializeField] private GameObject combatDefeatOverlay;
+        [SerializeField] private Button pauseCombatButton;
+        [SerializeField] private TMP_Text combatStatusText;
+        [SerializeField] private List<Button> combatActionButtons = new List<Button>();
         private float editorAnchorMaxX;
         private CombatElement[] activeExtraSpells = Array.Empty<CombatElement>();
 
@@ -98,12 +98,9 @@ namespace PrograMago.UnityIntegration
                 return;
             }
 
+            if (!BindScenePresentation()) { enabled = false; return; }
+            UpdateArenaPresentation();
             PositionWizardSpawnPoint();
-            CreateMagoStatsText();
-            CreateEnemyStatsText();
-            CreateCodeBlockButtons();
-            CreateCombatControls();
-            CreateArenaPresentation();
 
             LearningPath path;
             try
@@ -382,11 +379,9 @@ namespace PrograMago.UnityIntegration
             {
                 magoStatsText.text = CurrentMago == null
                     ? string.Empty
-                    : $"Mago {CurrentMago.InstanceName}\n" +
-                      $"Vida: {CurrentMago.Vida}   Dano: {CurrentMago.Dano}\n" +
-                      $"Alcance: {CurrentMago.Alcance}   Iniciativa: {CurrentMago.Iniciativa}\n" +
-                      $"Velocidade de ataque: {CurrentMago.VelocidadeAtaque}\n" +
-                      $"Pontos restantes: {CurrentMago.RemainingPoints}";
+                    : $"Mago {CurrentMago.InstanceName} · Vida: {CurrentMago.Vida} · Pontos: {25 - CurrentMago.RemainingPoints}/25\n" +
+                      $"Dano: {CurrentMago.Dano} · Alcance: {CurrentMago.Alcance} casas\n" +
+                      $"Iniciativa: {CurrentMago.Iniciativa} · Velocidade: {CurrentMago.VelocidadeAtaque}";
             }
         }
 
@@ -799,12 +794,12 @@ namespace PrograMago.UnityIntegration
                 new Color32(40, 29, 45, 245)).gameObject;
             CreateLabel("CombatDefeatTitle", combatDefeatOverlay.transform,
                 "Derrota", new Vector2(0.08f, 0.64f), new Vector2(0.92f, 0.95f));
-            CreateButton("RetryCombatButton", combatDefeatOverlay.transform,
+            retryCombatButton = CreateButton("RetryCombatButton", combatDefeatOverlay.transform,
                 "Tentar novamente", new Vector2(0.08f, 0.36f),
-                new Vector2(0.92f, 0.60f)).onClick.AddListener(RetryCombat);
-            CreateButton("EditAfterDefeatButton", combatDefeatOverlay.transform,
+                new Vector2(0.92f, 0.60f));
+            editAfterDefeatButton = CreateButton("EditAfterDefeatButton", combatDefeatOverlay.transform,
                 "Editar código", new Vector2(0.08f, 0.08f),
-                new Vector2(0.92f, 0.32f)).onClick.AddListener(EditAfterDefeat);
+                new Vector2(0.92f, 0.32f));
             combatDefeatOverlay.SetActive(false);
         }
 
@@ -923,7 +918,13 @@ namespace PrograMago.UnityIntegration
 
         private void PositionCombatActors()
         {
-            if (combat == null || arenaCamera == null) return;
+            if (arenaCamera == null) return;
+            if (combat == null)
+            {
+                for (int index = 0; index < enemyMarkers.Count; index++)
+                    StandInCell(enemyMarkers[index], CombatEngine.CellCount - 1 - index);
+                return;
+            }
             StandInCell(wizardInstance, combat.WizardPosition);
             for (int index = 0; index < enemyMarkers.Count && index < combat.Enemies.Count; index++)
             {

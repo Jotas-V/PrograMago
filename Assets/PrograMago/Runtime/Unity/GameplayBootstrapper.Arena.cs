@@ -6,8 +6,8 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
-        private readonly UnityEngine.UI.Image[] arenaCells = new UnityEngine.UI.Image[CombatEngine.CellCount];
-        private readonly SpriteRenderer[] scenery = new SpriteRenderer[2];
+        [SerializeField] private UnityEngine.UI.Image[] arenaCells = new UnityEngine.UI.Image[CombatEngine.CellCount];
+        [SerializeField] private SpriteRenderer[] scenery = new SpriteRenderer[2];
         private readonly Vector3[] arenaCorners = new Vector3[4];
         private Rect arenaWorldRect;
         private const float GroundHeight = 0.30f;
@@ -84,7 +84,11 @@ namespace PrograMago.UnityIntegration
                 if (scenery[i] == null || scenery[i].sprite == null) continue;
                 scenery[i].transform.position = new Vector3(arenaWorldRect.xMin + arenaWorldRect.width * (0.25f + i * 0.5f), arenaWorldRect.center.y, 0);
                 Vector2 size = scenery[i].sprite.bounds.size;
-                scenery[i].transform.localScale = new Vector3(arenaWorldRect.width * 0.5f / size.x, arenaWorldRect.height / size.y, 1);
+                // The bootstrapper lives under a scaled Canvas; dimensions here are world units.
+                Vector3 parentScale = scenery[i].transform.parent.lossyScale;
+                scenery[i].transform.localScale = new Vector3(
+                    arenaWorldRect.width * 0.5f / (size.x * parentScale.x),
+                    arenaWorldRect.height / (size.y * parentScale.y), 1 / parentScale.z);
             }
             for (int i = 0; i < arenaCells.Length; i++)
             {
@@ -104,7 +108,8 @@ namespace PrograMago.UnityIntegration
             if (actor == null) return;
             SpriteRenderer sprite = actor.GetComponentInChildren<SpriteRenderer>();
             Vector3 ground = CellGroundPosition(cell);
-            actor.transform.position += new Vector3(ground.x - sprite.bounds.center.x, ground.y - sprite.bounds.min.y, 0);
+            Transform feet = actor.transform.Find("CombatFootAnchor");
+            actor.transform.position += new Vector3(ground.x - sprite.bounds.center.x, ground.y - (feet != null ? feet.position.y : sprite.bounds.min.y), 0);
         }
 
         private int TargetDistance(string variableName)

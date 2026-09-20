@@ -31,6 +31,26 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
+        public void Scene_PersistsArenaTimelineAndTutorialBeforePlay()
+        {
+            foreach (string name in new[] { "ForestBackdrop0", "ForestBackdrop1", "ArenaCells",
+                "CodeTimeline", "CodeBlockButton1", "CombatAction1", "EnemyGuidePanel", "PauseCombatButton" })
+                Assert.That(FindSceneObjectOrNull(name), Is.Not.Null, name + " deve existir fora do Play.");
+            Assert.That(FindSceneObject("ArenaCells").transform.childCount, Is.EqualTo(16));
+        }
+        [Test]
+        public void Scene_PreparingPresentationAgainReusesAuthoredObjects()
+        {
+            var bootstrapper = FindBehaviourWithProperty("codeInput");
+            GameObject timeline = FindSceneObject("CodeTimeline");
+            int count = scene.GetRootGameObjects().Sum(root => root.GetComponentsInChildren<Transform>(true).Count(item => !item.name.StartsWith("TMP SubMeshUI", StringComparison.Ordinal)));
+            bootstrapper.GetType().GetMethod("PrepareScenePresentation").Invoke(bootstrapper, null);
+            Assert.That(FindSceneObject("CodeTimeline"), Is.SameAs(timeline));
+            Assert.That(scene.GetRootGameObjects().Sum(root => root.GetComponentsInChildren<Transform>(true).Count(item => !item.name.StartsWith("TMP SubMeshUI", StringComparison.Ordinal))), Is.EqualTo(count));
+            Assert.That(bootstrapper.GetType().GetProperty("CurrentMago").GetValue(bootstrapper), Is.Null);
+            Assert.That(FindSceneObject("ArenaEditorPreview").tag, Is.EqualTo("EditorOnly"));
+        }
+        [Test]
         public void Scene_PersistsBattleButtonAndBootstrapReferences()
         {
             GameObject codeInput = FindSceneObject("CodeInput");
@@ -71,7 +91,7 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void TutorialPanel_ContainsItsTextsWithExpectedContent()
+        public void TutorialPanel_PreviewsCombatLessonWithoutLoadingPlayerProgress()
         {
             GameObject panel = FindSceneObject("TutorialPanel");
             GameObject title = FindSceneObject("Title");
@@ -81,10 +101,10 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(title.transform.parent, Is.SameAs(panel.transform));
             Assert.That(objective.transform.parent, Is.SameAs(panel.transform));
             Assert.That(feedback.transform.parent, Is.SameAs(panel.transform));
-            Assert.That(ReadString(title, "m_text"), Is.EqualTo("Classes"));
+            Assert.That(ReadString(title, "m_text"), Is.EqualTo("Surge um inimigo"));
             Assert.That(
                 ReadString(objective, "m_text"),
-                Is.EqualTo("Declare a classe pública Mago."));
+                Does.Contain("Inimigo"));
             Assert.That(ReadString(feedback, "m_text"), Is.Empty);
             AssertContainedByPanel(title, panel);
             AssertContainedByPanel(objective, panel);
@@ -123,7 +143,7 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void WizardSpawnPoint_IsPreservedEmptyAndUsesASingleSquarePrefab()
+        public void WizardSpawnPoint_IsPreservedEmptyAndUsesWizardPrefabWithFootAnchor()
         {
             GameObject spawnPoint = FindSceneObject("WizardSpawnPoint");
             MonoBehaviour bootstrapper = FindBehaviourWithProperty("wizardSpawnPoint");
@@ -136,8 +156,8 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(FindSceneObjectOrNull("WizardWorldAnchor"), Is.Null);
             Assert.That(wizardPrefab, Is.Not.Null);
             Assert.That(wizardPrefab.name, Is.EqualTo("Mago"));
-            Assert.That(wizardPrefab.transform.childCount, Is.Zero);
-            Assert.That(wizardPrefab.GetComponents<SpriteRenderer>(), Has.Length.EqualTo(1));
+            Assert.That(wizardPrefab.transform.Find("CombatFootAnchor"), Is.Not.Null);
+            Assert.That(wizardPrefab.GetComponentsInChildren<SpriteRenderer>(), Has.Length.EqualTo(1));
             Assert.That(wizardPrefab.GetComponent<SpriteRenderer>().sprite, Is.Not.Null);
         }
 

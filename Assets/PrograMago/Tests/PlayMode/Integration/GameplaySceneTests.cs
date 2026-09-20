@@ -251,9 +251,57 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneObject("ArenaCells").transform.childCount, Is.EqualTo(16));
             SpriteRenderer wizard = wizardSpawnPoint.GetChild(0).GetComponentInChildren<SpriteRenderer>();
             SpriteRenderer dummy = FindSceneComponent<SpriteRenderer>("EnemyMarker-boneco");
-            Assert.That(wizard.bounds.min.y, Is.EqualTo(dummy.bounds.min.y).Within(0.02f));
+            Transform feet = wizardSpawnPoint.GetChild(0).Find("CombatFootAnchor");
+            Assert.That(feet, Is.Not.Null);
+            Assert.That(feet.position.y, Is.EqualTo(dummy.bounds.min.y).Within(0.02f));
             Assert.That(arenaCamera.WorldToViewportPoint(wizard.bounds.center).x, Is.LessThan(0.08f));
             Assert.That(arenaCamera.WorldToViewportPoint(dummy.bounds.center).x, Is.GreaterThan(0.92f));
+        }
+        [UnityTest]
+        public IEnumerator Arena_PreviewEnemyRemainsInLastCellAfterCameraResize()
+        {
+            PrepareCombatMago(4, 3, 15, 1, 2);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            yield return null;
+            float originalSize = arenaCamera.orthographicSize;
+            arenaCamera.orthographicSize *= 1.2f;
+            yield return null;
+            SpriteRenderer dummy = FindSceneComponent<SpriteRenderer>("EnemyMarker-boneco");
+            float position = arenaCamera.WorldToViewportPoint(dummy.bounds.center).x;
+            arenaCamera.orthographicSize = originalSize;
+            Assert.That(position, Is.EqualTo(15.5f / 16).Within(0.005f));
+        }
+        [UnityTest]
+        public IEnumerator Arena_BackdropFillsFrameEvenUnderScaledParent()
+        {
+            SpriteRenderer forest = FindSceneComponent<SpriteRenderer>("ForestBackdrop0");
+            var scaledParent = new GameObject("ScaledBackdropParent");
+            scaledParent.transform.localScale = Vector3.one * 0.5f;
+            forest.transform.SetParent(scaledParent.transform, true);
+            yield return null;
+            float left = arenaCamera.WorldToViewportPoint(forest.bounds.min).x;
+            float right = arenaCamera.WorldToViewportPoint(forest.bounds.max).x;
+            Object.Destroy(scaledParent);
+            Assert.That(left, Is.EqualTo(0).Within(0.005f));
+            Assert.That(right, Is.EqualTo(0.5f).Within(0.005f));
+        }
+        [UnityTest]
+        public IEnumerator Scene_ReusesAuthoredPresentationAndHidesEditorCharacters()
+        {
+            yield return null;
+            var objects = SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (string name in new[] { "ForestBackdrop0", "ForestBackdrop1", "CodeTimeline",
+                "ArenaCells", "CodeBlockButton1", "CombatAction1", "EnemyGuidePanel" })
+            {
+                int count = 0;
+                foreach (var root in objects)
+                    foreach (var item in root.GetComponentsInChildren<Transform>(true))
+                        if (item.name == name) count++;
+                Assert.That(count, Is.EqualTo(1), name + " não pode ser recriado no Play.");
+            }
+            Assert.That(FindSceneObject("ArenaEditorPreview").activeSelf, Is.False);
+            Assert.That(bootstrapper.CurrentMago, Is.Null);
+            Assert.That(wizardSpawnPoint.childCount, Is.Zero);
         }
         private void PrepareCombatMago(int life, int damage, int range,
             int initiative, int attackSpeed)
@@ -676,8 +724,8 @@ namespace PrograMago.Tests.Integration
             Assert.That(stats.text, Does.Contain("Dano: 7"));
             Assert.That(stats.text, Does.Contain("Alcance: 3"));
             Assert.That(stats.text, Does.Contain("Iniciativa: 4"));
-            Assert.That(stats.text, Does.Contain("Velocidade de ataque: 2"));
-            Assert.That(stats.text, Does.Contain("Pontos restantes: 4"));
+            Assert.That(stats.text, Does.Contain("Velocidade: 2"));
+            Assert.That(stats.text, Does.Contain("Pontos: 21/25"));
             Assert.That(wizardSpawnPoint.GetChild(0).GetComponent<SpriteRenderer>().color.a,
                 Is.EqualTo(1f).Within(0.01f));
         }
@@ -710,7 +758,7 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             TMP_Text stats = FindSceneComponent<TMP_Text>("MagoStatsText");
-            Assert.That(stats.text, Does.Contain("Pontos restantes: 0"));
+            Assert.That(stats.text, Does.Contain("Pontos: 25/25"));
         }
 
         [UnityTest]
@@ -762,7 +810,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
                 Does.Contain("Fase 1 concluída"));
             Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
-                Does.Contain("Pontos restantes: 4"));
+                Does.Contain("Pontos: 21/25"));
         }
 
         [UnityTest]

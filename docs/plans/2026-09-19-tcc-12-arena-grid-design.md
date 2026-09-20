@@ -50,3 +50,18 @@ Gerada com a ferramenta integrada image_gen. Prompt: floresta lateral original
 em pixel art para PrograMago, camadas de troncos e luz verde suave, chão de grama
 horizontal, fundo dessaturado para contraste com personagens, sem personagens,
 interface, grade, texto ou marcas. Asset final: Resources/Arena/ForestArena.png.
+
+## Validação concluída em 20/09/2026
+
+- EditMode: 271 testes aprovados. PlayMode: 41 aprovados.
+- Reproduzidos antes da correção: aceitação de 16 inimigos; posição incorreta
+  do Boneco após redimensionamento; fundo reduzido pela escala do Canvas.
+- Prefab Mago possui CombatFootAnchor alinhado ao primeiro pixel opaco dos pés,
+  mantendo o sprite original. HUD de preparação apresenta atributos em três linhas.
+- Inspeção visual em 1920×1080 e 1366×768. Capturas locais em TestResults:
+  arena-range-one.png, arena-ranged-projectile.png e arena-1366.png.
+- Com alcance 1, Mago ficou na casa 1 e Boneco na 16 com 10 de vida;
+  mensagem explicou distância 15 e como voltar à edição. Com dano 3 e alcance 15,
+  o projétil atravessou a arena e o Boneco ficou com 7 de vida no primeiro ataque.
+- Testes de código cobrem atributos, orçamento e parâmetros em ordem diferente;
+  nenhuma ficha é substituída silenciosamente. Balanceamento permanece pendente.

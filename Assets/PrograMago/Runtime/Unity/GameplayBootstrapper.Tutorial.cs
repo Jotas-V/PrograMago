@@ -5,9 +5,9 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
-        private GameObject enemyGuide;
-        private TMP_Text tutorialStepText;
-        private TMP_Text tutorialBodyText;
+        [SerializeField] private GameObject enemyGuide;
+        [SerializeField] private TMP_Text tutorialStepText;
+        [SerializeField] private TMP_Text tutorialBodyText;
         private int tutorialStep;
         private static readonly string[] TutorialTitles = {
             "1/6 · Ajuste seu Mago", "2/6 · Declare o inimigo", "3/6 · Guarde os valores",
@@ -26,31 +26,29 @@ namespace PrograMago.UnityIntegration
             "    public String getElemento() {\n        return elemento;\n    }\n}\n\n" +
             "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
 
+        private void CreateEnemyGuide()
+        {
+            RectTransform panel = CreatePanel("EnemyGuidePanel", titleText.transform.parent,
+                Vector2.zero, Vector2.one, new Color32(244, 246, 252, 255));
+            panel.offsetMin = new Vector2(12, 135);
+            panel.offsetMax = new Vector2(-12, -104);
+            enemyGuide = panel.gameObject;
+            tutorialStepText = CreateLabel("TutorialStepText", panel, "", new Vector2(0.03f, 0.88f), new Vector2(0.97f, 1));
+            tutorialStepText.color = new Color32(67, 47, 130, 255);
+            tutorialStepText.fontStyle = FontStyles.Bold;
+            tutorialStepText.fontSizeMax = 23;
+            tutorialBodyText = CreateLabel("TutorialBodyText", panel, "", new Vector2(0.04f, 0.18f), new Vector2(0.96f, 0.88f));
+            tutorialBodyText.alignment = TextAlignmentOptions.TopLeft;
+            tutorialBodyText.color = new Color32(31, 34, 48, 255);
+            tutorialBodyText.fontSizeMax = 20;
+            tutorialBodyText.fontSizeMin = 12;
+            tutorialPreviousButton = CreateButton("TutorialPreviousButton", panel, "Anterior", new Vector2(0.02f, 0.09f), new Vector2(0.48f, 0.16f));
+            tutorialNextButton = CreateButton("TutorialNextButton", panel, "Próximo", new Vector2(0.52f, 0.09f), new Vector2(0.98f, 0.16f));
+            copyEnemyExampleButton = CreateButton("CopyEnemyExampleButton", panel, "Copiar exemplo de Inimigo", new Vector2(0.02f, 0), new Vector2(0.98f, 0.07f));
+        }
+
         private void ShowEnemyGuide(bool visible)
         {
-            if (visible && enemyGuide == null)
-            {
-                RectTransform panel = CreatePanel("EnemyGuidePanel", titleText.transform.parent,
-                    Vector2.zero, Vector2.one, new Color32(244, 246, 252, 255));
-                panel.offsetMin = new Vector2(12, 135);
-                panel.offsetMax = new Vector2(-12, -104);
-                enemyGuide = panel.gameObject;
-                tutorialStepText = CreateLabel("TutorialStepText", panel, "", new Vector2(0.03f, 0.88f), new Vector2(0.97f, 1));
-                tutorialStepText.color = new Color32(67, 47, 130, 255);
-                tutorialStepText.fontStyle = FontStyles.Bold;
-                tutorialStepText.fontSizeMax = 23;
-                tutorialBodyText = CreateLabel("TutorialBodyText", panel, "", new Vector2(0.04f, 0.18f), new Vector2(0.96f, 0.88f));
-                tutorialBodyText.alignment = TextAlignmentOptions.TopLeft;
-                tutorialBodyText.color = new Color32(31, 34, 48, 255);
-                tutorialBodyText.fontSizeMax = 20;
-                tutorialBodyText.fontSizeMin = 12;
-                CreateButton("TutorialPreviousButton", panel, "Anterior", new Vector2(0.02f, 0.09f), new Vector2(0.48f, 0.16f))
-                    .onClick.AddListener(() => { tutorialStep = Mathf.Max(0, tutorialStep - 1); RenderTutorialStep(); });
-                CreateButton("TutorialNextButton", panel, "Próximo", new Vector2(0.52f, 0.09f), new Vector2(0.98f, 0.16f))
-                    .onClick.AddListener(() => { tutorialStep = Mathf.Min(5, tutorialStep + 1); RenderTutorialStep(); });
-                CreateButton("CopyEnemyExampleButton", panel, "Copiar exemplo de Inimigo", new Vector2(0.02f, 0), new Vector2(0.98f, 0.07f))
-                    .onClick.AddListener(() => { GUIUtility.systemCopyBuffer = EnemyTutorialExample; feedbackText.text = "Exemplo copiado. Cole em um bloco vazio; preserve o Mago."; });
-            }
             lessonText.gameObject.SetActive(!visible);
             objectiveText.gameObject.SetActive(!visible);
             hintText.gameObject.SetActive(!visible);

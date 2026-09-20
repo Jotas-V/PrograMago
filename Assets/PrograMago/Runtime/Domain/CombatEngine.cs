@@ -101,7 +101,8 @@ namespace PrograMago.Domain
     }
 
     public sealed class CombatEngine
-    { public const int CellCount = 16;
+    {
+        public const int CellCount = 16;
         private readonly CombatWizard wizard;
         private readonly List<CombatEnemy> enemies = new List<CombatEnemy>();
         private readonly List<CombatAction> actionOrder = new List<CombatAction>

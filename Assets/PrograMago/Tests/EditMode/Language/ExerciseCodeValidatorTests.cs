@@ -28,6 +28,17 @@ namespace PrograMago.Tests.Language
             "}\n" +
             "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
 
+        [TestCase(15, true)]
+        [TestCase(16, false)]
+        public void Validate_EnemyCountReservesOneCellForWizard(int count, bool accepted)
+        {
+            string source = EnemyProgram;
+            for (int i = 1; i < count; i++)
+                source += $"\nInimigo boneco{i} = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
+            ExerciseValidationResult result = Validate(source, ValidationCriterion.ConstructAndInstantiateEnemy);
+            Assert.That(result.IsSuccess, Is.EqualTo(accepted));
+            if (!accepted) Assert.That(result.Diagnostic.Code, Is.EqualTo("ENEMY012"));
+        }
         [Test]
         public void Validate_EnemyAfterApprovedMago_AcceptsConstructionAndInstantiation()
         {

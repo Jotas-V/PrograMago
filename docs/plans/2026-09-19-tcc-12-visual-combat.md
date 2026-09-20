@@ -1,3 +1,6 @@
+> Revisão: as regras de deslocamento e a barra separada descritas abaixo foram
+> substituídas pelo [design de arena em 16 casas e barra única](2026-09-19-tcc-12-arena-grid-design.md).
+
 # TCC-12 — blocos de ação e apresentação do combate
 
 Desenho aprovado pelo usuário em 19/09/2026. Complementa e substitui os pontos

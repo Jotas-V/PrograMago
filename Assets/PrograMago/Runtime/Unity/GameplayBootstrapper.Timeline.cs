@@ -10,9 +10,9 @@ namespace PrograMago.UnityIntegration
     {
         private readonly List<string> combatCodeBlocks = new List<string>(CombatCodeCompiler.DefaultBlocks());
         private int selectedCombatBlock = -1;
-        private RectTransform timelineContent;
-        private RectTransform definitionStrip;
-        private UnityEngine.UI.ScrollRect timelineScroll;
+        [SerializeField] private RectTransform timelineContent;
+        [SerializeField] private RectTransform definitionStrip;
+        [SerializeField] private UnityEngine.UI.ScrollRect timelineScroll;
         private bool timelineAvailable;
 
         private void CreateTimelineStrip()
@@ -77,18 +77,12 @@ namespace PrograMago.UnityIntegration
             panel.pivot = Vector2.zero;
             panel.anchoredPosition = new Vector2(320, 0);
             combatActionPanel = panel.gameObject;
-            RebuildActionArrows();
+            CreateInitialActionArrows();
         }
 
-        private void RebuildActionArrows()
+        private void CreateInitialActionArrows()
         {
             if (combatActionPanel == null) return;
-            foreach (Transform child in combatActionPanel.transform)
-            {
-                child.gameObject.SetActive(false);
-                child.name = "RetiredArrow";
-                Destroy(child.gameObject);
-            }
             combatActionButtons.Clear();
             float width = combatCodeBlocks.Count * 148 + 85;
             ((RectTransform)combatActionPanel.transform).sizeDelta = new Vector2(width, 68);
@@ -105,14 +99,44 @@ namespace PrograMago.UnityIntegration
                 button.gameObject.AddComponent<CombatActionDragHandle>().Configure(this, index);
                 combatActionButtons.Add(button);
             }
-            var add = CreateArrow("AddCombatBlockButton", combatActionPanel.transform, "+", combatCodeBlocks.Count * 148, 40);
-            add.onClick.AddListener(AddCombatBlock);
-            var remove = CreateArrow("RemoveCombatBlockButton", combatActionPanel.transform, "−", combatCodeBlocks.Count * 148 + 42, 40);
-            remove.onClick.AddListener(RemoveCombatBlock);
+            addCombatBlockButton = CreateArrow("AddCombatBlockButton", combatActionPanel.transform, "+", combatCodeBlocks.Count * 148, 40);
+
+            removeCombatBlockButton = CreateArrow("RemoveCombatBlockButton", combatActionPanel.transform, "−", combatCodeBlocks.Count * 148 + 42, 40);
+
             ResizeTimeline();
             RefreshCombatActionButtons();
         }
 
+        private void RebuildActionArrows()
+        {
+            if (combatActionPanel == null || combatActionButtons.Count == 0) return;
+            while (combatActionButtons.Count > combatCodeBlocks.Count)
+            {
+                int last = combatActionButtons.Count - 1;
+                var removed = combatActionButtons[last];
+                combatActionButtons.RemoveAt(last);
+                removed.gameObject.SetActive(false);
+                removed.name = "RetiredArrow";
+                Destroy(removed.gameObject);
+            }
+            while (combatActionButtons.Count < combatCodeBlocks.Count)
+            {
+                var added = Instantiate(combatActionButtons[0], combatActionPanel.transform);
+                added.name = "CombatAction" + (combatActionButtons.Count + 1);
+                added.GetComponentInChildren<TMP_Text>().name = added.name + "Label";
+                combatActionButtons.Add(added);
+            }
+            for (int i = 0; i < combatActionButtons.Count; i++)
+            {
+                int index = i;
+                var button = combatActionButtons[i];
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(() => SelectCombatBlock(index));
+                button.GetComponent<CombatActionDragHandle>().Configure(this, i);
+            }
+            ResizeTimeline();
+            RefreshCombatActionButtons();
+        }
         private void SetTimelineAvailable(bool available)
         {
             timelineAvailable = available;
