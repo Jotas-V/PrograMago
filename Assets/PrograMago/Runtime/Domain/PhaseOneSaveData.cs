@@ -16,5 +16,7 @@ namespace PrograMago.Domain
         public int activeBlock;
         public int currentBattleIndex;
         public LearningStage stage;
+        public string[] combatBlocks;
+        public int[] timelineOrder;
     }
 }

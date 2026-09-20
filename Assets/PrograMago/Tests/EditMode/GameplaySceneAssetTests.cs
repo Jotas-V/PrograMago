@@ -11,7 +11,7 @@ namespace PrograMago.Tests.UnityIntegration
 {
     public sealed class GameplaySceneAssetTests
     {
-        private const string ScenePath = "Assets/Scenes/SampleScene.unity";
+        private const string ScenePath = "Assets/Scenes/MainScene.unity";
 
         private Scene scene;
 

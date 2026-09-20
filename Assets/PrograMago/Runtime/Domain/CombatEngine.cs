@@ -9,7 +9,7 @@ namespace PrograMago.Domain
 
     public enum CombatOutcome { InProgress, Victory, Defeat }
 
-    public enum CombatEventKind { Move, Hit, Ineffective, NoTarget }
+    public enum CombatEventKind { Move, Hit, Ineffective, NoTarget, MissingSpell, TargetAnalyzed, SpellSelected, OutOfRange, Blocked }
 
     public sealed class CombatWizard
     {
@@ -59,7 +59,7 @@ namespace PrograMago.Domain
             Life = source.Vida;
             Position = position;
             bool dummy = source.Elemento == "neutro";
-            Damage = dummy ? 1 : 2;
+            Damage = dummy ? 0 : 2;
             Range = 1;
             Initiative = dummy ? 1 : 5;
             AttackSpeed = dummy ? 3 : 5;
@@ -78,7 +78,7 @@ namespace PrograMago.Domain
     public sealed class CombatEvent
     {
         internal CombatEvent(int tick, string actor, CombatEventKind kind,
-            string target, CombatElement element, int amount, int position)
+            string target, CombatElement element, int amount, int position, int blockIndex = -1)
         {
             Tick = tick;
             Actor = actor;
@@ -87,6 +87,7 @@ namespace PrograMago.Domain
             Element = element;
             Amount = amount;
             Position = position;
+            BlockIndex = blockIndex;
         }
 
         public int Tick { get; }
@@ -96,10 +97,11 @@ namespace PrograMago.Domain
         public CombatElement Element { get; }
         public int Amount { get; }
         public int Position { get; }
+        public int BlockIndex { get; }
     }
 
     public sealed class CombatEngine
-    {
+    { public const int CellCount = 16;
         private readonly CombatWizard wizard;
         private readonly List<CombatEnemy> enemies = new List<CombatEnemy>();
         private readonly List<CombatAction> actionOrder = new List<CombatAction>
@@ -109,17 +111,20 @@ namespace PrograMago.Domain
             CombatAction.Attack
         };
         private int wizardNextDueTick;
+        private readonly List<int> sourceBlocks = new List<int> { 0, 1, 2 };
+        private readonly List<CombatEvent> eventsThisTick = new List<CombatEvent>();
+        private int executingBlock = -1;
 
         public CombatEngine(CombatWizard wizard, IReadOnlyList<EnemyState> enemies)
         {
             this.wizard = wizard ?? throw new ArgumentNullException(nameof(wizard));
-            if (enemies == null || enemies.Count == 0)
+            if (enemies == null || enemies.Count == 0 || enemies.Count >= CellCount)
                 throw new ArgumentException("A batalha precisa de inimigos.", nameof(enemies));
             for (int index = 0; index < enemies.Count; index++)
             {
                 if (enemies[index] == null)
                     throw new ArgumentException("Inimigo ausente.", nameof(enemies));
-                this.enemies.Add(new CombatEnemy(enemies[index], 4 + index * 2));
+                this.enemies.Add(new CombatEnemy(enemies[index], CellCount - 1 - index));
             }
             WizardLife = wizard.Life;
         }
@@ -131,9 +136,24 @@ namespace PrograMago.Domain
         public bool IsPaused { get; private set; }
         public IReadOnlyList<CombatEnemy> Enemies => enemies.AsReadOnly();
         public IReadOnlyList<CombatAction> ActionOrder => actionOrder.AsReadOnly();
+        public IReadOnlyList<CombatEvent> EventsThisTick => eventsThisTick.AsReadOnly();
+
+        public void ConfigureActions(IReadOnlyList<CombatAction> actions, IReadOnlyList<int> origins)
+        {
+            if (CurrentTick != 0 && !IsPaused) throw new InvalidOperationException("Pause para alterar o programa.");
+            if (actions == null || origins == null || actions.Count == 0 || actions.Count > 48 || actions.Count != origins.Count)
+                throw new ArgumentException("Programa de combate inválido.");
+            for (int i = 0; i < actions.Count; i++)
+                if (!Enum.IsDefined(typeof(CombatAction), actions[i]) || origins[i] < 0)
+                    throw new ArgumentException("Comando de combate inválido.");
+            actionOrder.Clear();
+            sourceBlocks.Clear();
+            for (int i = 0; i < actions.Count; i++) { actionOrder.Add(actions[i]); sourceBlocks.Add(origins[i]); }
+        }
 
         public CombatEvent Tick()
         {
+            eventsThisTick.Clear();
             if (IsPaused || Outcome != CombatOutcome.InProgress) return null;
 
             int actor = FindReadyActor();
@@ -146,6 +166,7 @@ namespace PrograMago.Domain
             else if (actor >= 0)
             {
                 result = EnemyTurn(enemies[actor]);
+                eventsThisTick.Add(result);
                 enemies[actor].NextDueTick = CurrentTick + 16 - enemies[actor].AttackSpeed;
             }
             CurrentTick++;
@@ -167,11 +188,15 @@ namespace PrograMago.Domain
             CombatAction action = actionOrder[fromIndex];
             actionOrder.RemoveAt(fromIndex);
             actionOrder.Insert(toIndex, action);
+            int block = sourceBlocks[fromIndex];
+            sourceBlocks.RemoveAt(fromIndex);
+            sourceBlocks.Insert(toIndex, block);
         }
 
         public void Resume()
         {
             IsPaused = false;
+            eventsThisTick.Clear();
         }
 
         public void Restart()
@@ -182,10 +207,11 @@ namespace PrograMago.Domain
             wizardNextDueTick = 0;
             Outcome = CombatOutcome.InProgress;
             IsPaused = false;
+            eventsThisTick.Clear();
             for (int index = 0; index < enemies.Count; index++)
             {
                 enemies[index].Life = enemies[index].Source.Vida;
-                enemies[index].Position = 4 + index * 2;
+                enemies[index].Position = CellCount - 1 - index;
                 enemies[index].NextDueTick = 0;
             }
         }
@@ -204,7 +230,7 @@ namespace PrograMago.Domain
             for (int index = 0; index < enemies.Count; index++)
             {
                 CombatEnemy enemy = enemies[index];
-                if (enemy.Life <= 0 || enemy.NextDueTick > CurrentTick) continue;
+                if (enemy.Life <= 0 || enemy.Damage == 0 || enemy.NextDueTick > CurrentTick) continue;
                 if (enemy.NextDueTick < earliest ||
                     (enemy.NextDueTick == earliest && enemy.Initiative > initiative))
                 {
@@ -220,19 +246,28 @@ namespace PrograMago.Domain
         {
             CombatEnemy target = null;
             CombatElement selectedSpell = CombatElement.Neutral;
+            bool selected = false;
             CombatEvent result = null;
-            foreach (CombatAction action in actionOrder)
+            for (int index = 0; index < actionOrder.Count && Outcome == CombatOutcome.InProgress; index++)
             {
-                switch (action)
+                executingBlock = sourceBlocks[index];
+                switch (actionOrder[index])
                 {
                     case CombatAction.AnalyzeTarget:
                         target = NearestLivingEnemy();
+                        selected = false;
+                        eventsThisTick.Add(new CombatEvent(CurrentTick, "Mago", CombatEventKind.TargetAnalyzed,
+                            target?.Source.VariableName, CombatElement.Neutral, 0, WizardPosition, executingBlock));
                         break;
                     case CombatAction.SelectSpell:
                         selectedSpell = SelectSpell(target);
+                        selected = target != null;
+                        eventsThisTick.Add(new CombatEvent(CurrentTick, "Mago", selected ? CombatEventKind.SpellSelected : CombatEventKind.NoTarget,
+                            target?.Source.VariableName, selectedSpell, 0, WizardPosition, executingBlock));
                         break;
                     case CombatAction.Attack:
-                        result = WizardAttack(target, selectedSpell);
+                        result = WizardAttack(target, selectedSpell, selected);
+                        eventsThisTick.Add(result);
                         break;
                 }
             }
@@ -266,17 +301,19 @@ namespace PrograMago.Domain
             return wizard.Spells[0];
         }
 
-        private CombatEvent WizardAttack(CombatEnemy target, CombatElement spell)
+        private CombatEvent WizardAttack(CombatEnemy target, CombatElement spell, bool selected)
         {
-            if (target == null)
+            if (target == null || target.Life <= 0)
                 return new CombatEvent(CurrentTick, "Mago", CombatEventKind.NoTarget,
-                    null, spell, 0, WizardPosition);
+                    null, spell, 0, WizardPosition, executingBlock);
+            if (!selected)
+                return new CombatEvent(CurrentTick, "Mago", CombatEventKind.MissingSpell,
+                    target.Source.VariableName, spell, 0, WizardPosition, executingBlock);
             int distance = Math.Abs(target.Position - WizardPosition);
             if (distance > wizard.Range)
             {
-                WizardPosition += Math.Sign(target.Position - WizardPosition);
-                return new CombatEvent(CurrentTick, "Mago", CombatEventKind.Move,
-                    target.Source.VariableName, spell, 0, WizardPosition);
+                return new CombatEvent(CurrentTick, "Mago", CombatEventKind.OutOfRange,
+                    target.Source.VariableName, spell, 0, WizardPosition, executingBlock);
             }
             int damage = target.Source.Elemento == "neutro" ? wizard.Damage :
                 spell == Weakness(target.Source.Elemento) ? wizard.Damage * 2 : 0;
@@ -284,14 +321,19 @@ namespace PrograMago.Domain
             if (AllEnemiesDefeated()) Outcome = CombatOutcome.Victory;
             return new CombatEvent(CurrentTick, "Mago",
                 damage == 0 ? CombatEventKind.Ineffective : CombatEventKind.Hit,
-                target.Source.VariableName, spell, damage, WizardPosition);
+                target.Source.VariableName, spell, damage, WizardPosition, executingBlock);
         }
 
         private CombatEvent EnemyTurn(CombatEnemy enemy)
         {
             if (Math.Abs(enemy.Position - WizardPosition) > enemy.Range)
             {
-                enemy.Position += Math.Sign(WizardPosition - enemy.Position);
+                int next = enemy.Position - 1;
+                foreach (CombatEnemy occupant in enemies)
+                    if (occupant != enemy && occupant.Life > 0 && occupant.Position == next)
+                        return new CombatEvent(CurrentTick, enemy.Source.VariableName,
+                            CombatEventKind.Blocked, "Mago", CombatElement.Neutral, 0, enemy.Position);
+                enemy.Position = next;
                 return new CombatEvent(CurrentTick, enemy.Source.VariableName,
                     CombatEventKind.Move, "Mago", CombatElement.Neutral, 0,
                     enemy.Position);

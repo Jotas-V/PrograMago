@@ -45,7 +45,7 @@ namespace PrograMago.Tests.Integration
                 File.Delete(progressSavePath);
             }
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             bootstrapper = Object.FindFirstObjectByType<GameplayBootstrapper>();
@@ -125,7 +125,7 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator CombatControls_AttackUpdatesVisibleLifeAndBlocksCodeEditing()
         {
-            PrepareCombatMago(8, 3, 4, 10, 5);
+            PrepareCombatMago(1, 3, 15, 5, 1);
             bootstrapper.ShowEnemies(new[]
             {
                 new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro")
@@ -145,7 +145,7 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator CombatControls_ElementalWeaknessChangesDamageAndFeedbackColor()
         {
-            PrepareCombatMago(8, 3, 4, 10, 5);
+            PrepareCombatMago(1, 3, 15, 5, 1);
             bootstrapper.ShowEnemies(new[]
             {
                 new EnemyState("golem", "Golem de Gelo", 12, "gelo")
@@ -164,7 +164,7 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator CombatControls_PauseAndDragReordersTheNextCycle()
         {
-            PrepareCombatMago(8, 3, 4, 10, 5);
+            PrepareCombatMago(1, 3, 15, 5, 1);
             bootstrapper.ShowEnemies(new[]
             {
                 new EnemyState("golem", "Golem de Gelo", 12, "gelo")
@@ -174,11 +174,16 @@ namespace PrograMago.Tests.Integration
             var pointer = new PointerEventData(EventSystem.current);
             ExecuteEvents.Execute<IBeginDragHandler>(FindSceneObject("CombatAction3"),
                 pointer, ExecuteEvents.beginDragHandler);
+            pointer.position += new Vector2(80, 0);
+            ExecuteEvents.Execute<IDragHandler>(FindSceneObject("CombatAction3"), pointer, ExecuteEvents.dragHandler);
+            Assert.That(FindSceneComponent<CanvasGroup>("CombatAction3").blocksRaycasts, Is.False);
             ExecuteEvents.Execute<IDropHandler>(FindSceneObject("CombatAction1"),
                 pointer, ExecuteEvents.dropHandler);
+            ExecuteEvents.Execute<IEndDragHandler>(FindSceneObject("CombatAction3"), pointer, ExecuteEvents.endDragHandler);
+            Assert.That(FindSceneComponent<CanvasGroup>("CombatAction3").blocksRaycasts, Is.True);
 
-            Assert.That(FindSceneComponent<TMP_Text>("CombatAction1Label").text,
-                Is.EqualTo("Atacar"));
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction3Label").text,
+                Does.Contain("Atacar"));
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
             bootstrapper.AdvanceCombatTick();
             Assert.That(FindSceneComponent<TMP_Text>("CombatStatusText").text,
@@ -198,7 +203,7 @@ namespace PrograMago.Tests.Integration
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
             bootstrapper.ReorderCombatAction(2, 0);
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
-            for (int tick = 0; tick < 100 &&
+            for (int tick = 0; tick < 300 &&
                 !FindSceneObject("CombatDefeatOverlay").activeSelf; tick++)
                 bootstrapper.AdvanceCombatTick();
 
@@ -207,11 +212,49 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.False);
             Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
                 Does.Contain("Vida: 1/1"));
-            Assert.That(FindSceneComponent<TMP_Text>("CombatAction1Label").text,
-                Is.EqualTo("Atacar"));
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction3Label").text,
+                Does.Contain("Atacar"));
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator Timeline_DefinitionsCanBeDraggedAcrossActionBlocksAndPersist()
+        {
+            codeInput.text = "public class Mago {}";
+            PrepareCombatMago(4, 3, 15, 1, 2);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.ToggleCombatPause();
+            GameObject source = FindSceneObject("CodeBlockButton1");
+            GameObject target = FindSceneObject("CombatAction3");
+            var pointer = new PointerEventData(EventSystem.current);
+            ExecuteEvents.Execute<IBeginDragHandler>(source, pointer, ExecuteEvents.beginDragHandler);
+            Assert.That(pointer.pointerDrag, Is.EqualTo(source), "Todos os blocos precisam ser arrastáveis.");
+            ExecuteEvents.Execute<IDropHandler>(target, pointer, ExecuteEvents.dropHandler);
+            ExecuteEvents.Execute<IEndDragHandler>(source, pointer, ExecuteEvents.endDragHandler);
+            Assert.That(source.transform.position.x, Is.GreaterThan(target.transform.position.x));
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton1Label").text, Does.StartWith("6"));
+            FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo("public class Mago {}"));
+        }
+
+        [UnityTest]
+        public IEnumerator Arena_ShowsSixteenCellsAndCharactersStandOnTheSameGround()
+        {
+            PrepareCombatMago(4, 3, 15, 1, 2);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.ToggleCombatPause();
+            yield return null;
+            Assert.That(FindSceneObject("ArenaCells").transform.childCount, Is.EqualTo(16));
+            SpriteRenderer wizard = wizardSpawnPoint.GetChild(0).GetComponentInChildren<SpriteRenderer>();
+            SpriteRenderer dummy = FindSceneComponent<SpriteRenderer>("EnemyMarker-boneco");
+            Assert.That(wizard.bounds.min.y, Is.EqualTo(dummy.bounds.min.y).Within(0.02f));
+            Assert.That(arenaCamera.WorldToViewportPoint(wizard.bounds.center).x, Is.LessThan(0.08f));
+            Assert.That(arenaCamera.WorldToViewportPoint(dummy.bounds.center).x, Is.GreaterThan(0.92f));
+        }
         private void PrepareCombatMago(int life, int damage, int range,
             int initiative, int attackSpeed)
         {
@@ -225,6 +268,76 @@ namespace PrograMago.Tests.Integration
             };
             bootstrapper.ShowMago(MagoState.FromValidatedProgram(new ValidatedMagoProgram(
                 "Mago", values.Keys, "heroi", values, 25)));
+        }
+
+        [UnityTest]
+        public IEnumerator Timeline_EditAfterDefeatKeepsActionsAvailableAndRemovesProjectiles()
+        {
+            PrepareCombatMago(1, 1, 1, 1, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("golem", "Golem de Gelo", 12, "gelo") });
+            bootstrapper.StartCombat();
+            for (int tick = 0; tick < 300 && !FindSceneObject("CombatDefeatOverlay").activeSelf; tick++)
+                bootstrapper.AdvanceCombatTick();
+            FindSceneComponent<Button>("EditAfterDefeatButton").onClick.Invoke();
+            yield return null;
+            Assert.That(FindSceneObject("CombatActionPanel").activeSelf, Is.True);
+            Assert.That(codeInput.interactable, Is.True);
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Is.Empty);
+        }
+
+        [UnityTest]
+        public IEnumerator Timeline_VariableBlocksPersistWithoutLeakingIntoDefinitions()
+        {
+            codeInput.text = "public class Mago {}";
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.Reset();
+            FindSceneComponent<Button>("AddCombatBlockButton").onClick.Invoke();
+            codeInput.text = "analisarAlvo(); selecionarMagia(); lancarMagia();";
+            bootstrapper.ReorderCombatAction(3, 0);
+            Assert.That(bootstrapper.SourceCode, Is.EqualTo("public class Mago {}"));
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+            yield return null;
+            PhaseOneSaveData saved = JsonUtility.FromJson<PhaseOneSaveData>(File.ReadAllText(progressSavePath));
+            Assert.That(saved.combatBlocks, Has.Length.EqualTo(4));
+            Assert.That(saved.combatBlocks[3], Does.StartWith("analisarAlvo(); selecionarMagia();"));
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction4Label").text, Does.Contain("3 comandos"));
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo("public class Mago {}"));
+        }
+
+        [UnityTest]
+        public IEnumerator Timeline_StaysInFooterAndSelectingArrowShowsItsCode()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            RectTransform editor = FindSceneComponent<RectTransform>("CodeEditorPanel");
+            float width = editor.anchorMax.x;
+            bootstrapper.StartCombat();
+            Assert.That(editor.anchorMax.x, Is.EqualTo(width));
+            Assert.That(FindSceneObject("CombatActionPanel").transform.IsChildOf(editor), Is.True);
+            FindSceneComponent<Button>("CombatAction3").onClick.Invoke();
+            Assert.That(codeInput.text, Does.Contain("lancarMagia();"));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CombatProjectile_HitProducesVisibleTravelAndPauseFreezesIt()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.AdvanceCombatTick();
+            yield return new WaitForSecondsRealtime(0.1f);
+            GameObject projectile = GameObject.Find("NeutralProjectile(Clone)");
+            Assert.That(projectile, Is.Not.Null);
+            bootstrapper.ToggleCombatPause();
+            Vector3 before = projectile.transform.position;
+            yield return new WaitForSecondsRealtime(0.2f);
+            Assert.That(projectile.transform.position, Is.EqualTo(before));
+            bootstrapper.ToggleCombatPause();
+            yield return new WaitForSecondsRealtime(0.15f);
+            Assert.That(projectile.transform.position, Is.Not.EqualTo(before));
         }
 
         [UnityTest]
@@ -263,7 +376,7 @@ namespace PrograMago.Tests.Integration
             third.onClick.Invoke();
             codeInput.text = "Mago mago = new Mago();";
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
@@ -325,7 +438,7 @@ namespace PrograMago.Tests.Integration
             legacy.activeBlock = 0;
             File.WriteAllText(progressSavePath, JsonUtility.ToJson(legacy));
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
@@ -431,12 +544,12 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator WizardSpawnPoint_TracksLeftSideOfArenaWhenAspectChanges()
         {
-            AssertWizardViewportPosition(new Vector2(0.1f, 0.85f));
+            AssertWizardViewportPosition(new Vector2(0.03125f, 0.79f));
 
             arenaCamera.aspect = 0.75f;
             yield return null;
 
-            AssertWizardViewportPosition(new Vector2(0.1f, 0.85f));
+            AssertWizardViewportPosition(new Vector2(0.03125f, 0.79f));
         }
 
         [UnityTest]
@@ -640,7 +753,7 @@ namespace PrograMago.Tests.Integration
                 Does.Contain("Vida: 5"));
             Assert.That(File.Exists(progressSavePath), Is.True);
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
@@ -675,7 +788,7 @@ namespace PrograMago.Tests.Integration
                 "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { " +
                 "this.vida = vida; this.dano = dano; this.alcance = alcance; " +
                 "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } } " +
-                "Mago heroi = new Mago(8, 7, 4, 4, 2);";
+                "Mago heroi = new Mago(4, 3, 15, 1, 2);";
             codeInput.text = magoCode;
             battleButton.onClick.Invoke();
             yield return null;
@@ -684,6 +797,9 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(titleText.text, Is.EqualTo("Surge um inimigo"));
+            Assert.That(FindSceneComponent<TMP_Text>("TutorialStepText").text, Does.Contain("1/6"));
+            FindSceneComponent<Button>("TutorialNextButton").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_Text>("TutorialBodyText").text, Does.Contain("public class Inimigo"));
             Assert.That(battleProgressText.text, Does.Contain("Batalha 4/8"));
             Assert.That(victoryOverlay.activeSelf, Is.False);
             const string enemyCode =
@@ -700,12 +816,13 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneObject("CombatActionPanel").activeSelf, Is.True);
             for (int tick = 0; tick < 200 && !victoryOverlay.activeSelf; tick++)
                 bootstrapper.AdvanceCombatTick();
+            yield return new WaitForSecondsRealtime(0.85f);
             Assert.That(victoryOverlay.activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
                 Is.EqualTo("Adversário derrotado!"));
             Assert.That(nextBattleButton.interactable, Is.False);
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
             Assert.That(FindSceneComponent<TMP_Text>("Title").text,
                 Is.EqualTo("Surge um inimigo"));
@@ -722,7 +839,7 @@ namespace PrograMago.Tests.Integration
             battleButton.onClick.Invoke();
             yield return null;
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_Text>("Title").text,
@@ -756,7 +873,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(restarted, Is.True);
             Assert.That(wizardSpawnPoint.GetChild(0).gameObject.activeSelf, Is.False);
 
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
@@ -821,7 +938,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(wizardSpawnPoint.childCount, Is.EqualTo(1));
             Transform wizard = wizardSpawnPoint.GetChild(0);
             Assert.That(wizard.name, Does.StartWith("Mago"));
-            Assert.That(wizard.localPosition, Is.EqualTo(Vector3.zero));
+            Assert.That(arenaCamera.WorldToViewportPoint(wizard.position).x, Is.LessThan(0.08f));
             Assert.That(wizard.gameObject.activeSelf, Is.EqualTo(active));
             Assert.That(wizard.GetComponentsInChildren<SpriteRenderer>(true), Has.Length.EqualTo(1));
         }

@@ -1,5 +1,9 @@
 # TCC-12 — combate automático e regras elementais
 
+> Revisado pelo [desenho de 19/09](2026-09-19-tcc-12-visual-combat.md): Boneco
+> passivo, blocos de ação editáveis e timeline no rodapé. Este documento registra
+> a proposta inicial; consulte a revisão para o funcionamento atual.
+
 - Data: 14 de setembro de 2026
 - Linear: TCC-12 (TCC / PrograMago)
 - Estado: aprovado pelo usuário

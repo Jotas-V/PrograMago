@@ -37,8 +37,8 @@ namespace PrograMago.Tests.Domain
         [Test]
         public void Tick_HigherInitiativeActsFirst()
         {
-            CombatEngine fastWizard = CreateEngine(8, 2, 4, 6, 5, "gelo");
-            CombatEngine slowWizard = CreateEngine(8, 2, 4, 1, 5, "gelo");
+            CombatEngine fastWizard = CreateEngine(8, 2, 15, 6, 5, "gelo");
+            CombatEngine slowWizard = CreateEngine(8, 2, 15, 1, 5, "gelo");
 
             Assert.That(fastWizard.Tick().Actor, Is.EqualTo("Mago"));
             Assert.That(slowWizard.Tick().Actor, Is.EqualTo("enemy"));
@@ -49,26 +49,66 @@ namespace PrograMago.Tests.Domain
         {
             CombatEngine engine = CreateEngine(15, 1, 4, 10, 15, "neutro");
             Assert.That(engine.Tick().Actor, Is.EqualTo("Mago"));
-            Assert.That(engine.Tick().Actor, Is.EqualTo("enemy"));
+            Assert.That(engine.Tick().Actor, Is.EqualTo("Mago"));
             Assert.That(engine.Tick().Actor, Is.EqualTo("Mago"));
         }
 
         [Test]
-        public void Tick_OutOfRangeMovesInsteadOfDamaging()
+        public void TrainingDummy_NeverMovesOrAttacksEvenWhenWizardCannotAttack()
+        {
+            CombatEngine engine = CreateEngine(1, 1, 1, 1, 1, "neutro");
+            engine.Pause();
+            engine.MoveAction(2, 0);
+            engine.Resume();
+            for (int tick = 0; tick < 500; tick++) engine.Tick();
+
+            Assert.That(engine.WizardLife, Is.EqualTo(1));
+            Assert.That(engine.Enemies[0].Position, Is.EqualTo(15));
+            Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.InProgress));
+        }
+
+        [Test]
+        public void CodeProgram_RepeatedAttacksExecuteAndReportTheirSourceBlock()
+        {
+            CombatEngine engine = CreateEngine(8, 2, 15, 10, 5, "neutro");
+            var configure = typeof(CombatEngine).GetMethod("ConfigureActions");
+            Assert.That(configure, Is.Not.Null);
+            configure.Invoke(engine, new object[] {
+                new[] { CombatAction.AnalyzeTarget, CombatAction.SelectSpell, CombatAction.Attack, CombatAction.Attack },
+                new[] { 0, 1, 2, 3 } });
+            CombatEvent result = engine.Tick();
+            Assert.That(engine.Enemies[0].Life, Is.EqualTo(6));
+            Assert.That(typeof(CombatEvent).GetProperty("BlockIndex").GetValue(result), Is.EqualTo(3));
+        }
+
+        [Test]
+        public void CodeProgram_AttackBeforeSelectingMagicDoesNotDealDamage()
+        {
+            CombatEngine engine = CreateEngine(8, 2, 15, 10, 5, "neutro");
+            engine.Pause();
+            engine.MoveAction(2, 1);
+            engine.Resume();
+            CombatEvent result = engine.Tick();
+            Assert.That(engine.Enemies[0].Life, Is.EqualTo(10));
+            Assert.That(result.Kind.ToString(), Is.EqualTo("MissingSpell"));
+        }
+
+        [Test]
+        public void Tick_OutOfRangeStaysInPlaceWithoutDamaging()
         {
             CombatEngine engine = CreateEngine(8, 5, 1, 10, 5, "neutro");
 
             CombatEvent action = engine.Tick();
 
-            Assert.That(action.Kind, Is.EqualTo(CombatEventKind.Move));
-            Assert.That(engine.WizardPosition, Is.EqualTo(1));
+            Assert.That(action.Kind, Is.EqualTo(CombatEventKind.OutOfRange));
+            Assert.That(engine.WizardPosition, Is.Zero);
             Assert.That(engine.Enemies[0].Life, Is.EqualTo(10));
         }
 
         [Test]
         public void Tick_WithinRangeDealsBaseDamageToNeutralEnemy()
         {
-            CombatEngine engine = CreateEngine(8, 3, 4, 10, 5, "neutro");
+            CombatEngine engine = CreateEngine(8, 3, 15, 10, 5, "neutro");
 
             CombatEvent action = engine.Tick();
 
@@ -84,7 +124,7 @@ namespace PrograMago.Tests.Domain
         public void Tick_ElementalWeaknessDeterminesDamage(
             string enemyElement, CombatElement spell, int expectedDamage)
         {
-            CombatEngine engine = CreateEngine(8, 3, 4, 10, 5, enemyElement,
+            CombatEngine engine = CreateEngine(8, 3, 15, 10, 5, enemyElement,
                 spell);
 
             CombatEvent action = engine.Tick();
@@ -96,7 +136,7 @@ namespace PrograMago.Tests.Domain
         [Test]
         public void Tick_SelectsNearestLivingEnemyThenCreationOrder()
         {
-            var wizard = new CombatWizard(8, 3, 6, 10, 5, CombatElement.Neutral);
+            var wizard = new CombatWizard(8, 3, 15, 10, 5, CombatElement.Neutral);
             var enemies = new[]
             {
                 new EnemyState("first", "Boneco de Treinamento", 10, "neutro"),
@@ -104,13 +144,13 @@ namespace PrograMago.Tests.Domain
             };
             var engine = new CombatEngine(wizard, enemies);
 
-            Assert.That(engine.Tick().Target, Is.EqualTo("first"));
+            Assert.That(engine.Tick().Target, Is.EqualTo("second"));
         }
 
         [Test]
         public void Pause_FreezesStateAndAllowsReorderingOnlyWhilePaused()
         {
-            CombatEngine engine = CreateEngine(8, 3, 4, 10, 5, "gelo",
+            CombatEngine engine = CreateEngine(8, 3, 15, 10, 5, "gelo",
                 CombatElement.Fire);
             Assert.Throws<System.InvalidOperationException>(() => engine.MoveAction(2, 0));
             engine.Pause();
@@ -131,7 +171,7 @@ namespace PrograMago.Tests.Domain
         public void Tick_DefeatOccursWhenEnemyAttackReducesWizardLifeToZero()
         {
             CombatEngine engine = CreateEngine(1, 1, 1, 1, 1, "gelo");
-            for (int tick = 0; tick < 100 && engine.Outcome == CombatOutcome.InProgress;
+            for (int tick = 0; tick < 300 && engine.Outcome == CombatOutcome.InProgress;
                  tick++) engine.Tick();
 
             Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Defeat));
@@ -141,7 +181,7 @@ namespace PrograMago.Tests.Domain
         [Test]
         public void Tick_VictoryOccursWhenAllEnemyLifeReachesZero()
         {
-            CombatEngine engine = CreateEngine(15, 15, 4, 10, 15, "neutro");
+            CombatEngine engine = CreateEngine(15, 15, 15, 10, 15, "neutro");
 
             engine.Tick();
 
@@ -157,7 +197,7 @@ namespace PrograMago.Tests.Domain
             engine.Pause();
             engine.MoveAction(2, 0);
             engine.Resume();
-            for (int tick = 0; tick < 100 && engine.Outcome == CombatOutcome.InProgress;
+            for (int tick = 0; tick < 300 && engine.Outcome == CombatOutcome.InProgress;
                  tick++) engine.Tick();
             Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Defeat));
 
@@ -168,7 +208,7 @@ namespace PrograMago.Tests.Domain
             Assert.That(engine.WizardLife, Is.EqualTo(1));
             Assert.That(engine.WizardPosition, Is.Zero);
             Assert.That(engine.Enemies[0].Life, Is.EqualTo(12));
-            Assert.That(engine.Enemies[0].Position, Is.EqualTo(4));
+            Assert.That(engine.Enemies[0].Position, Is.EqualTo(15));
             Assert.That(engine.ActionOrder[0], Is.EqualTo(CombatAction.Attack));
         }
 
