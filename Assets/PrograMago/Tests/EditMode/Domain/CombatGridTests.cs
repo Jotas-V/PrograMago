@@ -11,6 +11,20 @@ namespace PrograMago.Tests.Domain
         private static EnemyState Dummy() => new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro");
 
         [Test]
+        public void SingleLearnedCast_AttacksWithoutArtificialPrerequisitesAndRetryKeepsInitialStats()
+        {
+            var engine = new CombatEngine(new CombatWizard(4, 3, 15, 1, 2, CombatElement.Neutral),
+                new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            engine.ConfigureActions(new[] { CombatAction.Cast }, new[] { 0 });
+            Assert.That(engine.Tick()?.Amount, Is.EqualTo(3));
+            engine.Pause();
+            Assert.That(engine.Tick(), Is.Null);
+            Assert.That(engine.Enemies[0].Life, Is.EqualTo(7));
+            engine.Restart();
+            Assert.That(engine.WizardLife, Is.EqualTo(4));
+            Assert.That(engine.Tick()?.Amount, Is.EqualTo(3));
+        }
+        [Test]
         public void Arena_StartsAtOppositeEndsOfSixteenCells()
         {
             var engine = Create(1, Dummy());

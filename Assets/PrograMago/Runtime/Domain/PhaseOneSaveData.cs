@@ -18,5 +18,8 @@ namespace PrograMago.Domain
         public LearningStage stage;
         public string[] combatBlocks;
         public int[] timelineOrder;
+        public string[] approvedMethods;
+        public string methodDraft;
+        public string preparationCode;
     }
 }

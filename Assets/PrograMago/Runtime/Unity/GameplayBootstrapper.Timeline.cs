@@ -8,7 +8,7 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
-        private readonly List<string> combatCodeBlocks = new List<string>(CombatCodeCompiler.DefaultBlocks());
+        private readonly List<string> combatCodeBlocks = new List<string>(CombatCodeCompiler.BattleBlocks());
         private int selectedCombatBlock = -1;
         [SerializeField] private RectTransform timelineContent;
         [SerializeField] private RectTransform definitionStrip;
@@ -109,7 +109,21 @@ namespace PrograMago.UnityIntegration
 
         private void RebuildActionArrows()
         {
-            if (combatActionPanel == null || combatActionButtons.Count == 0) return;
+            if (combatActionPanel == null) return;
+            if (combatActionButtons.Count == 0)
+            {
+                foreach (Transform child in combatActionPanel.transform)
+                    if (child.name.StartsWith("CombatAction"))
+                    {
+                        var discovered = child.GetComponent<UnityEngine.UI.Button>();
+                        if (discovered != null) combatActionButtons.Add(discovered);
+                    }
+                if (combatActionButtons.Count == 0)
+                {
+                    CreateInitialActionArrows();
+                    return;
+                }
+            }
             while (combatActionButtons.Count > combatCodeBlocks.Count)
             {
                 int last = combatActionButtons.Count - 1;
@@ -117,7 +131,12 @@ namespace PrograMago.UnityIntegration
                 combatActionButtons.RemoveAt(last);
                 removed.gameObject.SetActive(false);
                 removed.name = "RetiredArrow";
+#if UNITY_EDITOR
+                if (!UnityEngine.Application.isPlaying) DestroyImmediate(removed.gameObject);
+                else Destroy(removed.gameObject);
+#else
                 Destroy(removed.gameObject);
+#endif
             }
             while (combatActionButtons.Count < combatCodeBlocks.Count)
             {
@@ -152,27 +171,26 @@ namespace PrograMago.UnityIntegration
 
         private void StoreSelectedBlock()
         {
-            if (selectedCombatBlock >= 0 && selectedCombatBlock < combatCodeBlocks.Count)
-                combatCodeBlocks[selectedCombatBlock] = codeInput.text;
-            else codeBlocks.SetActiveText(codeInput.text);
+            StoreWorkspaceText();
         }
 
         private void SelectCombatBlock(int index)
         {
             StoreSelectedBlock();
+            workspaceArea = WorkspaceArea.Classes;
             selectedCombatBlock = index;
             codeInput.SetTextWithoutNotify(combatCodeBlocks[index]);
             RefreshCodeBlockButtons();
             RefreshCombatActionButtons();
             feedbackText.color = new Color32(40, 82, 100, 255);
-            feedbackText.text = $"Bloco {BlockNumber(index + 3)} · comandos disponíveis: analisarAlvo(); selecionarMagia(); lancarMagia();\nO alvo e a magia são definidos novamente a cada ciclo.";
+            feedbackText.text = $"Comando {BlockNumber(index + 3)} · lance a magia com alcance e atributos atuais.\nArraste os comandos para definir a ordem de cada ciclo.";
         }
 
         private void AddCombatBlock()
         {
             if (combat != null || combatCodeBlocks.Count >= 16) return;
             StoreSelectedBlock();
-            combatCodeBlocks.Add("lancarMagia();");
+            combatCodeBlocks.Add((CurrentMago == null ? "mago" : CurrentMago.InstanceName) + ".lancarMagia();");
             timelineOrder.Add(combatCodeBlocks.Count + 2);
             RebuildActionArrows();
             SelectCombatBlock(combatCodeBlocks.Count - 1);
@@ -198,10 +216,10 @@ namespace PrograMago.UnityIntegration
             StoreSelectedBlock();
             var orderedIds = timelineOrder.FindAll(id => id >= 3);
             var orderedCode = orderedIds.ConvertAll(id => combatCodeBlocks[id - 3]);
-            if (!CombatCodeCompiler.TryCompile(orderedCode, out CombatAction[] actions, out int[] origins, out int block, out string error))
+            if (!CombatCodeCompiler.TryCompileBattle(orderedCode, CurrentMago == null ? "mago" : CurrentMago.InstanceName, out CombatAction[] actions, out int[] origins, out int block, out string error))
             {
                 feedbackText.color = new Color32(156, 39, 49, 255);
-                feedbackText.text = $"Bloco {(block >= 0 ? BlockNumber(orderedIds[block]) : 1)}: {error}";
+                feedbackText.text = $"Comando {(block >= 0 ? BlockNumber(orderedIds[block]) : 1)}: {error}";
                 if (block >= 0 && block < combatActionButtons.Count)
                     combatActionButtons[orderedIds[block] - 3].targetGraphic.color = new Color32(155, 58, 66, 255);
                 return false;
@@ -213,15 +231,13 @@ namespace PrograMago.UnityIntegration
 
         private static string CombatBlockLabel(string code)
         {
-            if (!CombatCodeCompiler.TryCompile(new[] { code, "lancarMagia();" }, out CombatAction[] commands, out _, out _, out _)) return "Editar código";
-            if (commands.Length > 2) return (commands.Length - 1) + " comandos";
-            if (commands.Length == 1) return "Bloco vazio";
-            switch (commands[0])
-            {
-                case CombatAction.AnalyzeTarget: return "Analisar alvo";
-                case CombatAction.SelectSpell: return "Selecionar magia";
-                default: return "Atacar";
-            }
+            CombatAction[] commands;
+            int[] origins;
+            int errorBlock;
+            string error;
+            if (!CombatCodeCompiler.TryCompileBattle(new[] { code }, "mago", out commands, out origins, out errorBlock, out error))
+                return "Editar comando";
+            return commands.Length == 1 && commands[0] == CombatAction.Cast ? "Atacar" : "Editar comando";
         }
     }
 }

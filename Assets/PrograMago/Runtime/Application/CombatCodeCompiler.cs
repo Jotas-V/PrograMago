@@ -12,6 +12,51 @@ namespace PrograMago.Application
         public static string[] DefaultBlocks() => new[]
             { "analisarAlvo();", "selecionarMagia();", "lancarMagia();" };
 
+        public static string[] BattleBlocks() => new[] { "lancarMagia();" };
+
+        public static bool TryCompileBattle(IReadOnlyList<string> blocks, string instanceName,
+            out CombatAction[] actions, out int[] sourceBlocks, out int errorBlock, out string error)
+        {
+            actions = Array.Empty<CombatAction>();
+            sourceBlocks = Array.Empty<int>();
+            errorBlock = -1;
+            error = null;
+            if (blocks == null || blocks.Count == 0 || blocks.Count > 16)
+            {
+                error = "Use de 1 a 16 blocos de combate.";
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(instanceName))
+            {
+                error = "A instância do Mago precisa estar pronta antes da batalha.";
+                return false;
+            }
+
+            var compiled = new List<CombatAction>();
+            var origins = new List<int>();
+            for (int block = 0; block < blocks.Count; block++)
+            {
+                errorBlock = block;
+                string code = Regex.Replace(blocks[block] ?? "", @"//[^\r\n]*|/\*[\s\S]*?\*/", " ");
+                TokenizationResult tokens = new CodeTokenizer().Tokenize(code);
+                error = "Use lancarMagia(); ou " + instanceName + ".lancarMagia(); em cada bloco.";
+                if (!tokens.IsSuccess || (tokens.Tokens.Count != 4 && tokens.Tokens.Count != 6)) return false;
+                int nameIndex = tokens.Tokens.Count == 4 ? 0 : 2;
+                if (tokens.Tokens.Count == 6 &&
+                    (tokens.Tokens[0].Lexeme != instanceName || tokens.Tokens[1].Lexeme != ".")) return false;
+                if (tokens.Tokens[nameIndex].Lexeme != "lancarMagia" ||
+                    tokens.Tokens[nameIndex + 1].Lexeme != "(" ||
+                    tokens.Tokens[nameIndex + 2].Lexeme != ")" ||
+                    tokens.Tokens[nameIndex + 3].Lexeme != ";") return false;
+                compiled.Add(CombatAction.Cast);
+                origins.Add(block);
+            }
+            actions = compiled.ToArray();
+            sourceBlocks = origins.ToArray();
+            errorBlock = -1;
+            error = null;
+            return true;
+        }
         public static bool TryCompile(IReadOnlyList<string> blocks, out CombatAction[] actions,
             out int[] sourceBlocks, out int errorBlock, out string error)
         {

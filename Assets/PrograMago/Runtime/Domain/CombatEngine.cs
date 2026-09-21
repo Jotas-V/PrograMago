@@ -5,7 +5,7 @@ namespace PrograMago.Domain
 {
     public enum CombatElement { Neutral, Fire, Water, Electric }
 
-    public enum CombatAction { AnalyzeTarget, SelectSpell, Attack }
+    public enum CombatAction { AnalyzeTarget, SelectSpell, Attack, Cast }
 
     public enum CombatOutcome { InProgress, Victory, Defeat }
 
@@ -270,6 +270,13 @@ namespace PrograMago.Domain
                         result = WizardAttack(target, selectedSpell, selected);
                         eventsThisTick.Add(result);
                         break;
+                    case CombatAction.Cast:
+                        target = NearestLivingEnemy();
+                        selectedSpell = SelectSpell(target);
+                        result = WizardAttack(target, selectedSpell, target != null);
+                        eventsThisTick.Add(result);
+                        break;
+
                 }
             }
             return result;

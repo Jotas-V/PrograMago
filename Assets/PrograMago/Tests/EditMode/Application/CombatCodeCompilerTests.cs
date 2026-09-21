@@ -34,6 +34,32 @@ namespace PrograMago.Tests.Application
             Assert.That(args[1], Has.Length.EqualTo(3));
         }
 
+        [Test]
+        public void BattleCompile_AllowsSingleAtomicCastCommand()
+        {
+            CombatAction[] actions;
+            int[] origins;
+            int errorBlock;
+            string error;
+            Assert.That(CombatCodeCompiler.TryCompileBattle(new[] { "jorge.lancarMagia();" }, "jorge",
+                out actions, out origins, out errorBlock, out error), Is.True, error);
+            Assert.That(actions, Is.EqualTo(new[] { CombatAction.Cast }));
+            Assert.That(origins, Is.EqualTo(new[] { 0 }));
+            Assert.That(errorBlock, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void BattleCompile_RejectsPreparationAndLegacyPrerequisiteCommands()
+        {
+            CombatAction[] actions;
+            int[] origins;
+            int errorBlock;
+            string error;
+            Assert.That(CombatCodeCompiler.TryCompileBattle(new[] { "analisarAlvo();" }, "jorge",
+                out actions, out origins, out errorBlock, out error), Is.False);
+            Assert.That(errorBlock, Is.EqualTo(0));
+            Assert.That(error, Does.Contain("lancarMagia"));
+        }
         private static object[] Compile(string[] blocks, bool expectedSuccess = true)
         {
             Type type = typeof(CodeBlockDocument).Assembly.GetType("PrograMago.Application.CombatCodeCompiler");

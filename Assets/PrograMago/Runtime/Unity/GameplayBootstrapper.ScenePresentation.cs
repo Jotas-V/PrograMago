@@ -30,6 +30,8 @@ namespace PrograMago.UnityIntegration
             }
 
             editorAnchorMaxX = editorPanel.anchorMax.x;
+            LayoutDefinitionStrip();
+            EnsureWorkspaceControls();
             magoStatsText.text = enemyStatsText.text = combatStatusText.text = string.Empty;
             combatStatusText.gameObject.SetActive(false);
             pauseCombatButton.gameObject.SetActive(false);
@@ -70,6 +72,7 @@ namespace PrograMago.UnityIntegration
                 CreateArenaPresentation();
                 CreateEnemyGuide();
             }
+            EnsureWorkspaceControls();
             RestoreTimelineOrder(null);
             SetTimelineAvailable(true);
             ShowEnemyGuide(true);
@@ -80,6 +83,10 @@ namespace PrograMago.UnityIntegration
             magoStatsText.text = "Prévia do Mago · atributos definidos pelo código";
             enemyStatsText.text = "Prévia do Boneco · casa 16";
             combatStatusText.text = "Prévia do Editor · o progresso do jogador é carregado somente no Play";
+            classesLocked = false;
+            workspaceArea = WorkspaceArea.Classes;
+            UpdateWorkspaceUi();
+            feedbackText.text = string.Empty;
             combatStatusText.gameObject.SetActive(true);
             victoryOverlay.SetActive(false);
             restartProgressPanel.SetActive(false);

@@ -172,22 +172,22 @@ namespace PrograMago.Tests.Integration
             bootstrapper.StartCombat();
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
             var pointer = new PointerEventData(EventSystem.current);
-            ExecuteEvents.Execute<IBeginDragHandler>(FindSceneObject("CombatAction3"),
+            ExecuteEvents.Execute<IBeginDragHandler>(FindSceneObject("CombatAction1"),
                 pointer, ExecuteEvents.beginDragHandler);
             pointer.position += new Vector2(80, 0);
-            ExecuteEvents.Execute<IDragHandler>(FindSceneObject("CombatAction3"), pointer, ExecuteEvents.dragHandler);
-            Assert.That(FindSceneComponent<CanvasGroup>("CombatAction3").blocksRaycasts, Is.False);
+            ExecuteEvents.Execute<IDragHandler>(FindSceneObject("CombatAction1"), pointer, ExecuteEvents.dragHandler);
+            Assert.That(FindSceneComponent<CanvasGroup>("CombatAction1").blocksRaycasts, Is.False);
             ExecuteEvents.Execute<IDropHandler>(FindSceneObject("CombatAction1"),
                 pointer, ExecuteEvents.dropHandler);
-            ExecuteEvents.Execute<IEndDragHandler>(FindSceneObject("CombatAction3"), pointer, ExecuteEvents.endDragHandler);
-            Assert.That(FindSceneComponent<CanvasGroup>("CombatAction3").blocksRaycasts, Is.True);
+            ExecuteEvents.Execute<IEndDragHandler>(FindSceneObject("CombatAction1"), pointer, ExecuteEvents.endDragHandler);
+            Assert.That(FindSceneComponent<CanvasGroup>("CombatAction1").blocksRaycasts, Is.True);
 
-            Assert.That(FindSceneComponent<TMP_Text>("CombatAction3Label").text,
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction1Label").text,
                 Does.Contain("Atacar"));
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
             bootstrapper.AdvanceCombatTick();
             Assert.That(FindSceneComponent<TMP_Text>("CombatStatusText").text,
-                Does.Contain("sem analisar"));
+                Does.Not.Contain("sem analisar"));
             yield return null;
         }
 
@@ -201,7 +201,7 @@ namespace PrograMago.Tests.Integration
             });
             bootstrapper.StartCombat();
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
-            bootstrapper.ReorderCombatAction(2, 0);
+            bootstrapper.ReorderCombatAction(0, 0);
             FindSceneComponent<Button>("PauseCombatButton").onClick.Invoke();
             for (int tick = 0; tick < 300 &&
                 !FindSceneObject("CombatDefeatOverlay").activeSelf; tick++)
@@ -212,7 +212,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.False);
             Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
                 Does.Contain("Vida: 1/1"));
-            Assert.That(FindSceneComponent<TMP_Text>("CombatAction3Label").text,
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction1Label").text,
                 Does.Contain("Atacar"));
             yield return null;
         }
@@ -226,16 +226,17 @@ namespace PrograMago.Tests.Integration
             bootstrapper.StartCombat();
             bootstrapper.ToggleCombatPause();
             GameObject source = FindSceneObject("CodeBlockButton1");
-            GameObject target = FindSceneObject("CombatAction3");
+            GameObject target = FindSceneObject("CombatAction1");
             var pointer = new PointerEventData(EventSystem.current);
             ExecuteEvents.Execute<IBeginDragHandler>(source, pointer, ExecuteEvents.beginDragHandler);
             Assert.That(pointer.pointerDrag, Is.EqualTo(source), "Todos os blocos precisam ser arrastáveis.");
             ExecuteEvents.Execute<IDropHandler>(target, pointer, ExecuteEvents.dropHandler);
             ExecuteEvents.Execute<IEndDragHandler>(source, pointer, ExecuteEvents.endDragHandler);
-            Assert.That(source.transform.position.x, Is.GreaterThan(target.transform.position.x));
+            Assert.That(source.transform.IsChildOf(FindSceneObject("CodeEditorPanel").transform), Is.True);
+            Assert.That(target.transform.IsChildOf(FindSceneObject("CombatActionPanel").transform), Is.True);
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
-            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton1Label").text, Does.StartWith("6"));
+            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton1Label").text, Does.StartWith("1"));
             FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo("public class Mago {}"));
         }
@@ -342,15 +343,15 @@ namespace PrograMago.Tests.Integration
             bootstrapper.StartCombat();
             bootstrapper.Reset();
             FindSceneComponent<Button>("AddCombatBlockButton").onClick.Invoke();
-            codeInput.text = "analisarAlvo(); selecionarMagia(); lancarMagia();";
-            bootstrapper.ReorderCombatAction(3, 0);
+            codeInput.text = "lancarMagia();";
+            bootstrapper.ReorderCombatAction(1, 0);
             Assert.That(bootstrapper.SourceCode, Is.EqualTo("public class Mago {}"));
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
             PhaseOneSaveData saved = JsonUtility.FromJson<PhaseOneSaveData>(File.ReadAllText(progressSavePath));
-            Assert.That(saved.combatBlocks, Has.Length.EqualTo(4));
-            Assert.That(saved.combatBlocks[3], Does.StartWith("analisarAlvo(); selecionarMagia();"));
-            Assert.That(FindSceneComponent<TMP_Text>("CombatAction4Label").text, Does.Contain("3 comandos"));
+            Assert.That(saved.combatBlocks, Has.Length.EqualTo(2));
+            Assert.That(saved.combatBlocks[1], Does.StartWith("lancarMagia();"));
+            Assert.That(FindSceneComponent<TMP_Text>("CombatAction2Label").text, Does.Contain("Atacar"));
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo("public class Mago {}"));
         }
 
@@ -364,7 +365,7 @@ namespace PrograMago.Tests.Integration
             bootstrapper.StartCombat();
             Assert.That(editor.anchorMax.x, Is.EqualTo(width));
             Assert.That(FindSceneObject("CombatActionPanel").transform.IsChildOf(editor), Is.True);
-            FindSceneComponent<Button>("CombatAction3").onClick.Invoke();
+            FindSceneComponent<Button>("CombatAction1").onClick.Invoke();
             Assert.That(codeInput.text, Does.Contain("lancarMagia();"));
             yield return null;
         }
