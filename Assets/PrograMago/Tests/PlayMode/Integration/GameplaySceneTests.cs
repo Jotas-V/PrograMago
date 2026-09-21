@@ -109,6 +109,25 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
+        public IEnumerator WorkspaceToolbar_UsesStableLabelsAndShowsApprovalOnlyForMethods()
+        {
+            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton1Label").text, Is.EqualTo("1 · Mago"));
+            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton2Label").text, Is.EqualTo("2 · Inimigo"));
+            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton3Label").text, Is.EqualTo("3 · Código"));
+
+            Button approve = FindSceneComponent<Button>("ApproveMethodButton");
+            Assert.That(approve.gameObject.activeSelf, Is.False);
+
+            FindSceneComponent<Button>("MethodsWorkspaceButton").onClick.Invoke();
+            yield return null;
+            Assert.That(approve.gameObject.activeSelf, Is.True);
+
+            FindSceneComponent<Button>("PreparationWorkspaceButton").onClick.Invoke();
+            yield return null;
+            Assert.That(approve.gameObject.activeSelf, Is.False);
+        }
+
+        [UnityTest]
         public IEnumerator CombatControls_ArePreparedWithoutChangingTheFirstPhase()
         {
             GameObject actionPanel = FindSceneObject("CombatActionPanel");

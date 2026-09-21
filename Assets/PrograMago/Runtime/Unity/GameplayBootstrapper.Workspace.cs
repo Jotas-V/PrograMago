@@ -10,22 +10,63 @@ namespace PrograMago.UnityIntegration
         private void EnsureWorkspaceControls()
         {
             if (definitionStrip == null || editorPanel == null) return;
+            LayoutCodeFileButtons();
+            EnsureWorkspaceTitles();
             methodsWorkspaceButton = FindOrCreateWorkspaceButton(methodsWorkspaceButton,
-                "MethodsWorkspaceButton", "Métodos", 314f);
+                "MethodsWorkspaceButton", "Métodos", 420f);
             preparationWorkspaceButton = FindOrCreateWorkspaceButton(preparationWorkspaceButton,
-                "PreparationWorkspaceButton", "Preparação", 418f);
+                "PreparationWorkspaceButton", "Preparação", 546f);
             approveMethodButton = FindOrCreateWorkspaceButton(approveMethodButton,
-                "ApproveMethodButton", "Aprovar método", 526f);
+                "ApproveMethodButton", "Aprovar método", 680f);
             methodsWorkspaceButton.onClick.RemoveAllListeners();
             methodsWorkspaceButton.onClick.AddListener(() => SelectWorkspace(WorkspaceArea.Methods));
             preparationWorkspaceButton.onClick.RemoveAllListeners();
             preparationWorkspaceButton.onClick.AddListener(() => SelectWorkspace(WorkspaceArea.Preparation));
             approveMethodButton.onClick.RemoveAllListeners();
             approveMethodButton.onClick.AddListener(ApproveMethod);
-            LayoutWorkspaceButton(methodsWorkspaceButton, 314f, 100f);
-            LayoutWorkspaceButton(preparationWorkspaceButton, 418f, 104f);
-            LayoutWorkspaceButton(approveMethodButton, 526f, 132f);
+            LayoutWorkspaceButton(methodsWorkspaceButton, 420f, 120f);
+            LayoutWorkspaceButton(preparationWorkspaceButton, 546f, 128f);
+            LayoutWorkspaceButton(approveMethodButton, 680f, 150f);
             UpdateWorkspaceUi();
+        }
+
+        private void LayoutCodeFileButtons()
+        {
+            for (int index = 0; index < codeBlockButtons.Length; index++)
+            {
+                if (codeBlockButtons[index] == null) continue;
+                RectTransform rect = codeBlockButtons[index].GetComponent<RectTransform>();
+                rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
+                rect.anchoredPosition = new Vector2(index * 130f, 6f);
+                rect.sizeDelta = new Vector2(124f, 40f);
+            }
+        }
+
+        private void EnsureWorkspaceTitles()
+        {
+            Transform legacyTitle = definitionStrip.Find("DefinitionBlocksTitle");
+            if (legacyTitle != null) legacyTitle.gameObject.SetActive(false);
+            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "CÓDIGO DA FASE", 0f, 384f);
+            LayoutWorkspaceTitle("WizardConfigGroupTitle", "CONFIGURAÇÃO DO MAGO", 420f, 410f);
+        }
+
+        private void LayoutWorkspaceTitle(string name, string text, float x, float width)
+        {
+            Transform existing = definitionStrip.Find(name);
+            TMP_Text label = existing == null
+                ? CreateLabel(name, definitionStrip, text, Vector2.zero, Vector2.zero)
+                : existing.GetComponent<TMP_Text>();
+            label.text = text;
+            label.color = new Color32(218, 219, 231, 255);
+            label.fontStyle = FontStyles.Bold;
+            label.fontSizeMin = 10f;
+            label.fontSizeMax = 12f;
+            label.alignment = TextAlignmentOptions.BottomLeft;
+            label.raycastTarget = false;
+            RectTransform rect = label.rectTransform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
+            rect.anchoredPosition = new Vector2(x + 4f, 50f);
+            rect.sizeDelta = new Vector2(width - 8f, 16f);
         }
 
         private Button FindOrCreateWorkspaceButton(Button current, string name, string label, float x)
@@ -158,7 +199,18 @@ namespace PrograMago.UnityIntegration
             if (methodsWorkspaceButton != null) methodsWorkspaceButton.interactable = editing;
             if (preparationWorkspaceButton != null) preparationWorkspaceButton.interactable = editing;
             if (approveMethodButton != null)
+            {
+                approveMethodButton.gameObject.SetActive(workspaceArea == WorkspaceArea.Methods);
                 approveMethodButton.interactable = editing && workspaceArea == WorkspaceArea.Methods;
+            }
+            if (methodsWorkspaceButton != null)
+                methodsWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Methods
+                    ? new Color32(91, 74, 190, 255)
+                    : new Color32(39, 77, 92, 255);
+            if (preparationWorkspaceButton != null)
+                preparationWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Preparation
+                    ? new Color32(91, 74, 190, 255)
+                    : new Color32(39, 77, 92, 255);
             if (workspaceArea == WorkspaceArea.Classes && classesLocked && editing)
             {
                 feedbackText.color = new Color32(90, 86, 105, 255);

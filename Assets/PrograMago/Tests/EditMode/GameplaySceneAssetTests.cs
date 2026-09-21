@@ -38,6 +38,21 @@ namespace PrograMago.Tests.UnityIntegration
                 Assert.That(FindSceneObjectOrNull(name), Is.Not.Null, name + " deve existir fora do Play.");
             Assert.That(FindSceneObject("ArenaCells").transform.childCount, Is.EqualTo(16));
         }
+
+        [Test]
+        public void Scene_CodeToolbarSeparatesPhaseFilesFromWizardConfiguration()
+        {
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton1Label"), "m_text"), Is.EqualTo("1 · Mago"));
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton2Label"), "m_text"), Is.EqualTo("2 · Inimigo"));
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton3Label"), "m_text"), Is.EqualTo("3 · Código"));
+            Assert.That(ReadString(FindSceneObject("PhaseCodeGroupTitle"), "m_text"), Is.EqualTo("CÓDIGO DA FASE"));
+            Assert.That(ReadString(FindSceneObject("WizardConfigGroupTitle"), "m_text"), Is.EqualTo("CONFIGURAÇÃO DO MAGO"));
+
+            Rect thirdFile = WorldRect(FindSceneObject("CodeBlockButton3"));
+            Assert.That(thirdFile.Overlaps(WorldRect(FindSceneObject("MethodsWorkspaceButton"))), Is.False);
+            Assert.That(thirdFile.Overlaps(WorldRect(FindSceneObject("PreparationWorkspaceButton"))), Is.False);
+            Assert.That(FindSceneObject("ApproveMethodButton").activeSelf, Is.False);
+        }
         [Test]
         public void Scene_PreparingPresentationAgainReusesAuthoredObjects()
         {
@@ -529,6 +544,13 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(rect.anchorMin.y, Is.EqualTo(expectedMin.y).Within(0.001f));
             Assert.That(rect.anchorMax.x, Is.EqualTo(expectedMax.x).Within(0.001f));
             Assert.That(rect.anchorMax.y, Is.EqualTo(expectedMax.y).Within(0.001f));
+        }
+
+        private static Rect WorldRect(GameObject sceneObject)
+        {
+            var corners = new Vector3[4];
+            sceneObject.GetComponent<RectTransform>().GetWorldCorners(corners);
+            return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
         }
     }
 }

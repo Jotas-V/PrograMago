@@ -691,15 +691,16 @@ namespace PrograMago.UnityIntegration
 
         private void RefreshCodeBlockButtons()
         {
+            string[] titles = { "Mago", "Inimigo", "Código" };
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
                 var background = codeBlockButtons[index].targetGraphic;
-                background.color = selectedCombatBlock < 0 && index == codeBlocks.ActiveIndex
+                background.color = workspaceArea == WorkspaceArea.Classes &&
+                    selectedCombatBlock < 0 && index == codeBlocks.ActiveIndex
                     ? new Color32(91, 74, 190, 255)
                     : new Color32(69, 70, 90, 255);
-                string code = codeBlocks.Snapshot()[index];
-                string title = code.Contains("class Inimigo") ? "Inimigo" : code.Contains("class Mago") ? "Mago" : "Código";
-                codeBlockButtons[index].GetComponentInChildren<TMP_Text>().text = $"{BlockNumber(index)} · {title}";
+                codeBlockButtons[index].GetComponentInChildren<TMP_Text>().text =
+                    $"{index + 1} · {titles[index]}";
             }
         }
 
