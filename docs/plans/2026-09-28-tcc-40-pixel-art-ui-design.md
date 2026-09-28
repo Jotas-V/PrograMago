@@ -91,4 +91,4 @@ Não gerar novos sprites de personagens, inimigos, projéteis ou ícones; não a
 
 ### Ajuste técnico dos botões
 
-A folha atual recorta cada estado de botão como uma célula quadrada de 362×362 px, embora o desenho visível seja uma faixa horizontal menor. A integração vai verificar e, se confirmado na Sprite Editor API, ajustar os retângulos dos oito sprites existentes de estado para corresponder ao desenho, mantendo nomes, cores e estados. Não serão criadas novas artes de botão.
+A folha atual recorta cada estado de botão como uma célula quadrada de 362×362 px, embora o desenho visível seja uma faixa horizontal menor. A integração vai verificar e, se confirmado na Sprite Editor API, ajustar os retângulos dos quatro estados horizontais existentes `UI_Action_*`, mantendo nomes, cores e estados. O sprite quadrado `UI_Battle_*` não é adequado ao controle retangular Batalhar (180×56); Batalhar usará os mesmos estados horizontais existentes para não comprimir a arte. Não serão criadas novas artes de botão.

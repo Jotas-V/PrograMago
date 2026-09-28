@@ -24,4 +24,4 @@ Aplicar uma faixa contínua de terra sob a arena, criar uma moldura de madeira h
 
 ### Recorte dos botões existentes
 
-Antes da aplicação na faixa inferior, consultar e ajustar pela Unity Sprite Editor API os retângulos dos quatro estados de Batalhar e dos quatro estados de ação, pois a metadata atual usa a célula quadrada inteira da folha. Manter a arte e os nomes já existentes.
+Antes da aplicação na faixa inferior, consultar e ajustar pela Unity Sprite Editor API os retângulos dos quatro estados horizontais de ação, pois a metadata atual usa a célula quadrada inteira da folha. Usar esses estados horizontais já existentes no botão Batalhar, cujo RectTransform é horizontal; a arte quadrada `UI_Battle_*` estava comprimida nesse espaço. Manter a arte e os nomes dos sprites usados.
