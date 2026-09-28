@@ -9,6 +9,7 @@ namespace PrograMago.Domain
         DefineAndCallSpellMethod,
         ExtendMago,
         OverrideSpellWithSuper,
-        UsePolymorphicMagoReference
+        UsePolymorphicMagoReference,
+        AddMagoSetters
     }
 }

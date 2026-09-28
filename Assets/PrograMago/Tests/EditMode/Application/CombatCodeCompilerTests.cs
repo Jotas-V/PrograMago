@@ -1,0 +1,86 @@
+using System;
+using System.Reflection;
+using NUnit.Framework;
+using PrograMago.Application;
+using PrograMago.Domain;
+
+namespace PrograMago.Tests.Application
+{
+    public sealed class CombatCodeCompilerTests
+    {
+        [Test]
+        public void Compile_PreservesCommandsAndTheirSourceBlocks()
+        {
+            object[] args = Compile(new[] { "analisarAlvo();", "selecionarMagia(); lancarMagia();", "lancarMagia();" });
+            Assert.That(args[1], Is.EqualTo(new[] { CombatAction.AnalyzeTarget, CombatAction.SelectSpell, CombatAction.Attack, CombatAction.Attack }));
+            Assert.That(args[2], Is.EqualTo(new[] { 0, 1, 1, 2 }));
+            Assert.That(args[3], Is.EqualTo(-1));
+        }
+
+        [TestCase("destruirTudo();")]
+        [TestCase("lancarMagia()")]
+        [TestCase("lancarMagia(123);")]
+        public void Compile_RejectsUnsupportedCodeInItsOriginalBlock(string invalid)
+        {
+            object[] args = Compile(new[] { "analisarAlvo();", invalid }, false);
+            Assert.That(args[3], Is.EqualTo(1));
+            Assert.That(args[4], Is.Not.Empty);
+        }
+
+        [Test]
+        public void Compile_CommentsAndWhitespaceDoNotChangeExecution()
+        {
+            object[] args = Compile(new[] { "// alvo\nanalisarAlvo ( );", "selecionarMagia();\nlancarMagia();" });
+            Assert.That(args[1], Has.Length.EqualTo(3));
+        }
+
+        [Test]
+        public void BattleCompile_AllowsSingleAtomicCastCommand()
+        {
+            CombatAction[] actions;
+            int[] origins;
+            int errorBlock;
+            string error;
+            Assert.That(CombatCodeCompiler.TryCompileBattle(new[] { "jorge.lancarMagia();" }, "jorge",
+                out actions, out origins, out errorBlock, out error), Is.True, error);
+            Assert.That(actions, Is.EqualTo(new[] { CombatAction.Cast }));
+            Assert.That(origins, Is.EqualTo(new[] { 0 }));
+            Assert.That(errorBlock, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void BattleCompile_RejectsPreparationAndLegacyPrerequisiteCommands()
+        {
+            CombatAction[] actions;
+            int[] origins;
+            int errorBlock;
+            string error;
+            Assert.That(CombatCodeCompiler.TryCompileBattle(new[] { "analisarAlvo();" }, "jorge",
+                out actions, out origins, out errorBlock, out error), Is.False);
+            Assert.That(errorBlock, Is.EqualTo(0));
+            Assert.That(error, Does.Contain("lancarMagia"));
+        }
+
+        [Test]
+        public void BattleCompile_RejectsMultipleBlocksBecauseAttackRunsAutomatically()
+        {
+            CombatAction[] actions;
+            int[] origins;
+            int errorBlock;
+            string error;
+            Assert.That(CombatCodeCompiler.TryCompileBattle(
+                new[] { "lancarMagia();", "lancarMagia();" }, "jorge",
+                out actions, out origins, out errorBlock, out error), Is.False);
+            Assert.That(error, Does.Contain("único bloco Atacar"));
+        }
+        private static object[] Compile(string[] blocks, bool expectedSuccess = true)
+        {
+            Type type = typeof(CodeBlockDocument).Assembly.GetType("PrograMago.Application.CombatCodeCompiler");
+            Assert.That(type, Is.Not.Null, "O código dos blocos precisa ser compilado para ações reais.");
+            object[] args = { blocks, null, null, -1, null };
+            bool success = (bool)type.GetMethod("TryCompile", BindingFlags.Public | BindingFlags.Static).Invoke(null, args);
+            Assert.That(success, Is.EqualTo(expectedSuccess));
+            return args;
+        }
+    }
+}

@@ -30,6 +30,22 @@ O script lê a versão do Unity em `ProjectSettings/ProjectVersion.txt`, procura
 instalação correspondente no Unity Hub e grava XML e logs em `TestResults/`.
 Essa pasta é local e não deve ser versionada.
 
+## No Editor aberto com Unity CLI
+
+Com o Unity CLI instalado e `com.unity.pipeline` conectado ao projeto, não é
+necessário fechar o Editor:
+
+```powershell
+unity command run_tests --mode editor --filter PrograMago --async_tests true --caller plugin --skill unity-cli --format json
+unity command test_status --caller plugin --skill unity-cli --format json
+# Após concluir EditMode:
+unity command run_tests --mode playmode --filter PrograMago --async_tests true --caller plugin --skill unity-cli --format json
+unity command test_status --caller plugin --skill unity-cli --format json
+```
+
+Espere a conclusão de uma suíte antes de iniciar outra. A captura visual deve
+usar a Game View atualizada e a mesma resolução de `Screen.width/height`.
+
 ## Evolução da suíte
 
 Cada regra nova do jogo deve começar por um teste que falhe pela ausência do

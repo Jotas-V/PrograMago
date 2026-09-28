@@ -40,6 +40,12 @@ namespace PrograMago.Language
                         "Declare Inimigo e crie ao menos um objeto com new Inimigo(...).");
                 }
 
+                if (parts.EnemyInstances.Count >= CombatEngine.CellCount)
+                {
+                    throw Fail(parts.EnemyInstances[CombatEngine.CellCount - 1], 0, "ENEMY012",
+                        "A arena tem 16 casas: uma para o Mago e no máximo 15 inimigos.");
+                }
+
                 var magoTokens = new List<Token>(parts.MagoClass);
                 magoTokens.AddRange(parts.MagoInstance);
                 ExerciseValidationResult mago = new MagoConstructionValidator(rules).Validate(

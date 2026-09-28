@@ -18,6 +18,21 @@ namespace PrograMago.Tests.Language
             "}\n}\n" +
             "Mago mago = new Mago(5, 4, 6, 3, 2);";
 
+        private const string CompleteProgramWithSetters =
+            "public class Mago {\n" +
+            "private int vida; private int dano; private int alcance;\n" +
+            "private int iniciativa; private int velocidadeAtaque;\n" +
+            "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {\n" +
+            "this.vida = vida; this.dano = dano; this.alcance = alcance;\n" +
+            "this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque;\n" +
+            "}\n" +
+            "public void setVida(int valor) { this.vida = valor; }\n" +
+            "public void setDano(int valor) { this.dano = valor; }\n" +
+            "public void setAlcance(int valor) { this.alcance = valor; }\n" +
+            "public void setIniciativa(int valor) { this.iniciativa = valor; }\n" +
+            "public void setVelocidadeAtaque(int valor) { this.velocidadeAtaque = valor; }\n" +
+            "}\nMago mago = new Mago(5, 4, 6, 3, 2);";
+
         private const string EnemyProgram = CompleteProgram + "\n" +
             "public class Inimigo {\n" +
             "private String nome; private int vida; private String elemento;\n" +
@@ -28,6 +43,17 @@ namespace PrograMago.Tests.Language
             "}\n" +
             "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
 
+        [TestCase(15, true)]
+        [TestCase(16, false)]
+        public void Validate_EnemyCountReservesOneCellForWizard(int count, bool accepted)
+        {
+            string source = EnemyProgram;
+            for (int i = 1; i < count; i++)
+                source += $"\nInimigo boneco{i} = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
+            ExerciseValidationResult result = Validate(source, ValidationCriterion.ConstructAndInstantiateEnemy);
+            Assert.That(result.IsSuccess, Is.EqualTo(accepted));
+            if (!accepted) Assert.That(result.Diagnostic.Code, Is.EqualTo("ENEMY012"));
+        }
         [Test]
         public void Validate_EnemyAfterApprovedMago_AcceptsConstructionAndInstantiation()
         {
@@ -205,6 +231,32 @@ namespace PrograMago.Tests.Language
             Assert.That(result.Program.TotalPoints, Is.EqualTo(20));
             Assert.That(result.Program.RemainingPoints, Is.EqualTo(5));
             Assert.That(result.Diagnostic, Is.Null);
+        }
+
+        [Test]
+        public void Validate_SetterLesson_AcceptsAllSettersInsideTheMagoClass()
+        {
+            ExerciseValidationResult result = Validate(
+                CompleteProgramWithSetters,
+                ValidationCriterion.AddMagoSetters);
+
+            Assert.That(result.IsSuccess, Is.True, result.Diagnostic?.Detail);
+            Assert.That(result.SatisfiedCriterion, Is.EqualTo(ValidationCriterion.AddMagoSetters));
+            Assert.That(result.Program.InstanceName, Is.EqualTo("mago"));
+            Assert.That(result.Program.InitialValues["vida"], Is.EqualTo(5));
+        }
+
+        [TestCase("this.vida = valor;", "this.vida = this.dano;")]
+        [TestCase("public void setAlcance(int valor)", "public void setAlcance(String valor)")]
+        public void Validate_SetterLesson_RejectsSetterThatDoesNotAssignItsParameter(
+            string expected, string replacement)
+        {
+            ExerciseValidationResult result = Validate(
+                CompleteProgramWithSetters.Replace(expected, replacement),
+                ValidationCriterion.AddMagoSetters);
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Diagnostic, Is.Not.Null);
         }
 
         [TestCase(

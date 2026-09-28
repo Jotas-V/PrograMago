@@ -11,7 +11,7 @@ namespace PrograMago.Tests.UnityIntegration
 {
     public sealed class GameplaySceneAssetTests
     {
-        private const string ScenePath = "Assets/Scenes/SampleScene.unity";
+        private const string ScenePath = "Assets/Scenes/MainScene.unity";
 
         private Scene scene;
 
@@ -30,6 +30,59 @@ namespace PrograMago.Tests.UnityIntegration
             }
         }
 
+        [Test]
+        public void Scene_PersistsArenaTimelineAndTutorialBeforePlay()
+        {
+            foreach (string name in new[] { "ForestBackdrop0", "ForestBackdrop1", "ArenaCells",
+                "CodeTimeline", "DefinitionBlocks", "CodeBlockButton1", "MethodsWorkspaceButton",
+                "PreparationWorkspaceButton", "CombatAction1", "EnemyGuidePanel", "PauseCombatButton" })
+                Assert.That(FindSceneObjectOrNull(name), Is.Not.Null, name + " deve existir fora do Play.");
+            Assert.That(FindSceneObject("ArenaCells").transform.childCount, Is.EqualTo(16));
+        }
+
+        [Test]
+        public void Scene_KeepsSelectorsAndSingleAttackInTheBottomTimeline()
+        {
+            Transform content = FindSceneObject("CodeTimeline").transform.Find("Viewport/Content");
+            GameObject definitions = FindSceneObject("DefinitionBlocks");
+            GameObject actions = FindSceneObject("CombatActionPanel");
+
+            Assert.That(definitions.transform.parent, Is.SameAs(content));
+            Assert.That(actions.transform.parent, Is.SameAs(content));
+            Assert.That(ReadString(FindSceneObject("CombatAction1Label"), "m_text"),
+                Is.EqualTo("1 · Atacar"));
+            Assert.That(FindSceneObject("AddCombatBlockButton").activeSelf, Is.False);
+            Assert.That(FindSceneObject("RemoveCombatBlockButton").activeSelf, Is.False);
+        }
+
+        [Test]
+        public void Scene_CodeToolbarSeparatesPhaseFilesFromWizardConfiguration()
+        {
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton1Label"), "m_text"), Is.EqualTo("1 · Mago"));
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton2Label"), "m_text"), Is.EqualTo("2 · Inimigo"));
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton3Label"), "m_text"), Is.EqualTo("3 · Estratégia"));
+            Assert.That(ReadString(FindSceneObject("PhaseCodeGroupTitle"), "m_text"), Is.EqualTo("BLOCOS DE CÓDIGO"));
+            Assert.That(ReadString(FindSceneObject("WizardConfigGroupTitle"), "m_text"), Is.EqualTo("AJUSTES"));
+
+            Rect thirdFile = WorldRect(FindSceneObject("CodeBlockButton3"));
+            Assert.That(thirdFile.Overlaps(WorldRect(FindSceneObject("MethodsWorkspaceButton"))), Is.False);
+            Assert.That(thirdFile.Overlaps(WorldRect(FindSceneObject("PreparationWorkspaceButton"))), Is.False);
+            Assert.That(FindSceneObject("MethodsWorkspaceButton").activeSelf, Is.False);
+            Assert.That(FindSceneObject("ApproveMethodButton").activeSelf, Is.False);
+            Assert.That(ReadString(FindSceneObject("PreparationWorkspaceButtonLabel"), "m_text"), Is.EqualTo("Ajustes"));
+        }
+        [Test]
+        public void Scene_PreparingPresentationAgainReusesAuthoredObjects()
+        {
+            var bootstrapper = FindBehaviourWithProperty("codeInput");
+            GameObject timeline = FindSceneObject("CodeTimeline");
+            int count = scene.GetRootGameObjects().Sum(root => root.GetComponentsInChildren<Transform>(true).Count(item => !item.name.StartsWith("TMP SubMeshUI", StringComparison.Ordinal)));
+            bootstrapper.GetType().GetMethod("PrepareScenePresentation").Invoke(bootstrapper, null);
+            Assert.That(FindSceneObject("CodeTimeline"), Is.SameAs(timeline));
+            Assert.That(scene.GetRootGameObjects().Sum(root => root.GetComponentsInChildren<Transform>(true).Count(item => !item.name.StartsWith("TMP SubMeshUI", StringComparison.Ordinal))), Is.EqualTo(count));
+            Assert.That(bootstrapper.GetType().GetProperty("CurrentMago").GetValue(bootstrapper), Is.Null);
+            Assert.That(FindSceneObject("ArenaEditorPreview").tag, Is.EqualTo("EditorOnly"));
+        }
         [Test]
         public void Scene_PersistsBattleButtonAndBootstrapReferences()
         {
@@ -71,7 +124,7 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void TutorialPanel_ContainsItsTextsWithExpectedContent()
+        public void TutorialPanel_PreviewsCombatLessonWithoutLoadingPlayerProgress()
         {
             GameObject panel = FindSceneObject("TutorialPanel");
             GameObject title = FindSceneObject("Title");
@@ -81,10 +134,10 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(title.transform.parent, Is.SameAs(panel.transform));
             Assert.That(objective.transform.parent, Is.SameAs(panel.transform));
             Assert.That(feedback.transform.parent, Is.SameAs(panel.transform));
-            Assert.That(ReadString(title, "m_text"), Is.EqualTo("Classes"));
+            Assert.That(ReadString(title, "m_text"), Is.EqualTo("Surge um inimigo"));
             Assert.That(
                 ReadString(objective, "m_text"),
-                Is.EqualTo("Declare a classe pública Mago."));
+                Does.Contain("Inimigo"));
             Assert.That(ReadString(feedback, "m_text"), Is.Empty);
             AssertContainedByPanel(title, panel);
             AssertContainedByPanel(objective, panel);
@@ -123,7 +176,7 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void WizardSpawnPoint_IsPreservedEmptyAndUsesASingleSquarePrefab()
+        public void WizardSpawnPoint_IsPreservedEmptyAndUsesWizardPrefabWithFootAnchor()
         {
             GameObject spawnPoint = FindSceneObject("WizardSpawnPoint");
             MonoBehaviour bootstrapper = FindBehaviourWithProperty("wizardSpawnPoint");
@@ -136,8 +189,8 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(FindSceneObjectOrNull("WizardWorldAnchor"), Is.Null);
             Assert.That(wizardPrefab, Is.Not.Null);
             Assert.That(wizardPrefab.name, Is.EqualTo("Mago"));
-            Assert.That(wizardPrefab.transform.childCount, Is.Zero);
-            Assert.That(wizardPrefab.GetComponents<SpriteRenderer>(), Has.Length.EqualTo(1));
+            Assert.That(wizardPrefab.transform.Find("CombatFootAnchor"), Is.Not.Null);
+            Assert.That(wizardPrefab.GetComponentsInChildren<SpriteRenderer>(), Has.Length.EqualTo(1));
             Assert.That(wizardPrefab.GetComponent<SpriteRenderer>().sprite, Is.Not.Null);
         }
 
@@ -201,7 +254,7 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void LearningPathAsset_ContainsEightApprovedPedagogicalBattles()
+        public void LearningPathAsset_ContainsNineApprovedPedagogicalStages()
         {
             const string assetPath = "Assets/PrograMago/Content/LearningPath.asset";
             Type assetType = AppDomain.CurrentDomain.GetAssemblies()
@@ -213,12 +266,13 @@ namespace PrograMago.Tests.UnityIntegration
             var path = (LearningPath)assetType.GetMethod("ToDomain").Invoke(asset, null);
 
             Assert.That(path, Is.Not.Null);
-            Assert.That(path.Battles, Has.Count.EqualTo(8));
+            Assert.That(path.Battles, Has.Count.EqualTo(9));
             Assert.That(path.Battles.Select(battle => battle.Id), Is.EqualTo(new[]
             {
                 "mago-class",
                 "mago-private-state",
                 "mago-constructor-object",
+                "mago-setters",
                 "enemy-object",
                 "first-spell-method",
                 "elemental-inheritance",
@@ -227,13 +281,14 @@ namespace PrograMago.Tests.UnityIntegration
             }));
             Assert.That(path.Battles.Select(battle => battle.Chapter), Is.EqualTo(new[]
             {
-                1, 1, 1, 2, 2, 3, 3, 4
+                1, 1, 1, 1, 2, 2, 3, 3, 4
             }));
             Assert.That(path.Battles.Select(battle => battle.Criterion), Is.EqualTo(new[]
             {
                 ValidationCriterion.DeclareMagoClass,
                 ValidationCriterion.AddPrivateAttributes,
                 ValidationCriterion.ConstructAndInstantiateMago,
+                ValidationCriterion.AddMagoSetters,
                 ValidationCriterion.ConstructAndInstantiateEnemy,
                 ValidationCriterion.DefineAndCallSpellMethod,
                 ValidationCriterion.ExtendMago,
@@ -242,6 +297,7 @@ namespace PrograMago.Tests.UnityIntegration
             }));
             Assert.That(path.Battles.Select(battle => battle.CompletionMode), Is.EqualTo(new[]
             {
+                BattleCompletionMode.OnCodeValidated,
                 BattleCompletionMode.OnCodeValidated,
                 BattleCompletionMode.OnCodeValidated,
                 BattleCompletionMode.OnCodeValidated,
@@ -297,7 +353,7 @@ namespace PrograMago.Tests.UnityIntegration
                 .Single(type => type != null);
             UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, assetType);
             var path = (LearningPath)assetType.GetMethod("ToDomain").Invoke(asset, null);
-            BattleDefinition enemyBattle = path.Battles[3];
+            BattleDefinition enemyBattle = path.Battles[4];
             string guidance = string.Join(" ", enemyBattle.Hints);
 
             Assert.That(enemyBattle.Lesson.Task, Does.Contain("getElemento"));
@@ -509,6 +565,13 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(rect.anchorMin.y, Is.EqualTo(expectedMin.y).Within(0.001f));
             Assert.That(rect.anchorMax.x, Is.EqualTo(expectedMax.x).Within(0.001f));
             Assert.That(rect.anchorMax.y, Is.EqualTo(expectedMax.y).Within(0.001f));
+        }
+
+        private static Rect WorldRect(GameObject sceneObject)
+        {
+            var corners = new Vector3[4];
+            sceneObject.GetComponent<RectTransform>().GetWorldCorners(corners);
+            return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
         }
     }
 }
