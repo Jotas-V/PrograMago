@@ -11,7 +11,7 @@ namespace PrograMago.Domain
 
     public enum CombatEventKind { Move, Hit, Ineffective, NoTarget, MissingSpell, TargetAnalyzed, SpellSelected, OutOfRange, Blocked }
 
-    public sealed class CombatWizard
+    public class CombatWizard
     {
         public CombatWizard(int life, int damage, int range, int initiative,
             int attackSpeed, params CombatElement[] spells)
@@ -33,22 +33,77 @@ namespace PrograMago.Domain
             Spells = Array.AsReadOnly((CombatElement[])spells.Clone());
         }
 
+        protected CombatWizard(CombatWizard source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            Life = source.Life;
+            Damage = source.Damage;
+            Range = source.Range;
+            Initiative = source.Initiative;
+            AttackSpeed = source.AttackSpeed;
+            Spells = source.Spells;
+        }
+
         public int Life { get; }
         public int Damage { get; }
         public int Range { get; }
         public int Initiative { get; }
         public int AttackSpeed { get; }
         public IReadOnlyList<CombatElement> Spells { get; }
+        public virtual string Form => "neutro";
+        public virtual CombatElement Spell => CombatElement.Neutral;
+
+        public static CombatWizard Specialize(CombatWizard baseWizard, string form)
+        {
+            if (baseWizard == null) throw new ArgumentNullException(nameof(baseWizard));
+            switch (form)
+            {
+                case "neutro": return baseWizard;
+                case "piromante": return new Piromante(baseWizard);
+                case "hidromante": return new Hidromante(baseWizard);
+                case "eletromante": return new Eletromante(baseWizard);
+                default: throw new ArgumentException("Forma elemental desconhecida.", nameof(form));
+            }
+        }
 
         public static CombatWizard FromMago(MagoState mago,
             params CombatElement[] extraSpells)
         {
             if (mago == null) throw new ArgumentNullException(nameof(mago));
-            var spells = new List<CombatElement> { CombatElement.Neutral };
-            if (extraSpells != null) spells.AddRange(extraSpells);
+            var spells = new List<CombatElement>
+            {
+                CombatElement.Neutral,
+                CombatElement.Fire,
+                CombatElement.Water,
+                CombatElement.Electric
+            };
+            if (extraSpells != null)
+                foreach (CombatElement extraSpell in extraSpells)
+                    if (!spells.Contains(extraSpell)) spells.Add(extraSpell);
             return new CombatWizard(mago.Vida, mago.Dano, mago.Alcance,
                 mago.Iniciativa, mago.VelocidadeAtaque, spells.ToArray());
         }
+    }
+
+    public sealed class Piromante : CombatWizard
+    {
+        public Piromante(CombatWizard baseWizard) : base(baseWizard) { }
+        public override string Form => "piromante";
+        public override CombatElement Spell => CombatElement.Fire;
+    }
+
+    public sealed class Hidromante : CombatWizard
+    {
+        public Hidromante(CombatWizard baseWizard) : base(baseWizard) { }
+        public override string Form => "hidromante";
+        public override CombatElement Spell => CombatElement.Water;
+    }
+
+    public sealed class Eletromante : CombatWizard
+    {
+        public Eletromante(CombatWizard baseWizard) : base(baseWizard) { }
+        public override string Form => "eletromante";
+        public override CombatElement Spell => CombatElement.Electric;
     }
 
     public sealed class CombatEnemy
@@ -314,8 +369,10 @@ namespace PrograMago.Domain
         private CombatElement SelectSpell(CombatEnemy target)
         {
             string targetElement = target == null ? "neutro" : target.Source.Elemento;
-            WizardForm = strategy.FormFor(targetElement);
-            return strategy.SpellFor(targetElement);
+            CombatWizard specialization = CombatWizard.Specialize(
+                wizard, strategy.FormFor(targetElement));
+            WizardForm = specialization.Form;
+            return specialization.Spell;
         }
 
         private CombatEvent WizardAttack(CombatEnemy target, CombatElement spell, bool selected)
