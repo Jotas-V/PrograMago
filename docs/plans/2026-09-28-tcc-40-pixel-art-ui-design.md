@@ -62,3 +62,33 @@ Importar os sprites e configurar prefabs, divisões de sprites, bordas 9-slice e
 - Comparar as quatro formas do Mago e os quatro inimigos lado a lado para confirmar leitura e consistência.
 - Conferir cada ciclo de animação, o flash de dano, as folhas/vento e o retorno do botão após o clique.
 - Confirmar que o editor, os objetivos e as dicas continuam legíveis nos painéis e na tela final.
+## Correção da composição após teste visual (2026-09-28)
+
+### Evidência revisada
+
+A captura da execução mostra molduras quadradas ampliadas em painéis largos. O código atribui `UI_WorkspacePanel` tanto ao `CodeEditorPanel` (75% da largura da área inferior) quanto a painéis de tutorial aninhados. Também atribui `UI_CodePanel` à imagem de fundo do `CodeInput`, que ocupa quase toda a área do editor. Cada arte é quadrada (362×362 px); o resultado empilha molduras decorativas e cobre texto e código. O `BottomArea` não possui imagem de fundo própria.
+
+### Direção aprovada
+
+- Preencher a área abaixo da arena com uma continuação visual da terra já existente em `ForestArena`.
+- Usar uma placa de madeira horizontal, com proporção adequada ao editor, como moldura única do espaço de código. O conteúdo de código permanece legível dentro da placa.
+- Remover o uso duplicado de molduras entre `TutorialPanel` e `EnemyGuidePanel`; manter uma única superfície discreta na coluna de instruções e ajustar o espaço interno.
+- Reposicionar/acomodar a faixa inferior de blocos e Batalhar para que cada controle permaneça dentro da sua própria área e fora do texto editável.
+- Reutilizar os sprites existentes de personagens, inimigos e botões. Não criar ícones sem função nem redesenhar artes já aprovadas.
+
+### Plano de implementação
+
+1. Criar somente dois fundos rasterizados específicos para esta composição: continuação de terra em estilo compatível com `ForestArena` e placa horizontal de madeira baseada na placa já aprovada da UI.
+2. Importá-los com filtro Point, sem mipmaps e sem compressão que borre os pixels; configurar a placa como 9-slice apenas nas bordas necessárias.
+3. Aplicar o fundo de terra ao `BottomArea`, a placa apenas ao `CodeEditorPanel`, e deixar a imagem de `CodeInput` transparente, preservando seu raycast e edição.
+4. Tirar molduras duplicadas dos painéis do tutorial e do editor; revisar âncoras, margens, ordem de desenho, cores e contraste do texto.
+5. Manter os sprites/estados e feedback de clique dos botões. Ajustar a faixa inferior para não cobrir o campo de código nem sair da placa.
+6. Verificar visualmente o editor, o tutorial, os botões, a arena e a tela de conclusão na execução Unity, comparando proporções de janela ampla e a proporção atual usada na captura.
+
+### Fora deste ajuste
+
+Não gerar novos sprites de personagens, inimigos, projéteis ou ícones; não alterar regras de combate ou progressão.
+
+### Ajuste técnico dos botões
+
+A folha atual recorta cada estado de botão como uma célula quadrada de 362×362 px, embora o desenho visível seja uma faixa horizontal menor. A integração vai verificar e, se confirmado na Sprite Editor API, ajustar os retângulos dos oito sprites existentes de estado para corresponder ao desenho, mantendo nomes, cores e estados. Não serão criadas novas artes de botão.
