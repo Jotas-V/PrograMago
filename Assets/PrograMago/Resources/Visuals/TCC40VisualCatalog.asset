@@ -16,6 +16,8 @@ MonoBehaviour:
   pyromancerController: {fileID: 22100000, guid: 0dc42b223b060bf4786e2112affbd9ec, type: 2}
   hydromancerController: {fileID: 22100000, guid: d9d624cb56dd13a478e9a3cc428b5ef5, type: 2}
   electromancerController: {fileID: 22100000, guid: 129c68bf894e0a7408eb267956e9afc5, type: 2}
+  trainingDummyIdleSprite: {fileID: 337358917, guid: 37d2f1838b0eb2d4aa2b83c1f510a7fa, type: 3}
+  trainingDummyController: {fileID: 22100000, guid: 96c6fefb6501b8a438fa34656e75373a, type: 2}
   workspacePanel: {fileID: 1344505198, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
   codePanel: {fileID: -332417872, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
   codeTray: {fileID: 1693572663, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}

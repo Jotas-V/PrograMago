@@ -10,6 +10,10 @@ namespace PrograMago.Editor
     {
         private const string CatalogPath = "Assets/PrograMago/Resources/Visuals/TCC40VisualCatalog.asset";
         private const string UiSheetPath = "Assets/PrograMago/Art/UI/UI-Panel-Button-Sheet.png";
+        private const string TrainingDummySheetPath =
+            "Assets/PrograMago/Art/Characters/Inimigo-BonecoTreinamento-AnimSheet.png";
+        private const string TrainingDummyControllerPath =
+            "Assets/PrograMago/Art/Characters/Animations/Enemies/Enemy-BonecoTreinamento.overrideController";
 
         public static void Build()
         {
@@ -29,6 +33,9 @@ namespace PrograMago.Editor
                 "Assets/PrograMago/Art/Characters/Animations/Mago-Hidromante.overrideController");
             catalog.electromancerController = Load<RuntimeAnimatorController>(
                 "Assets/PrograMago/Art/Characters/Animations/Mago-Eletromante.overrideController");
+            catalog.trainingDummyIdleSprite = FindSpriteAtPath(TrainingDummySheetPath,
+                "BonecoTreinamento_Idle_0");
+            catalog.trainingDummyController = Load<RuntimeAnimatorController>(TrainingDummyControllerPath);
 
             catalog.workspacePanel = FindSprite("UI_WorkspacePanel");
             catalog.codePanel = FindSprite("UI_CodePanel");
@@ -64,7 +71,12 @@ namespace PrograMago.Editor
 
         private static Sprite FindSprite(string name)
         {
-            Sprite sprite = AssetDatabase.LoadAllAssetsAtPath(UiSheetPath)
+            return FindSpriteAtPath(UiSheetPath, name);
+        }
+
+        private static Sprite FindSpriteAtPath(string path, string name)
+        {
+            Sprite sprite = AssetDatabase.LoadAllAssetsAtPath(path)
                 .OfType<Sprite>().FirstOrDefault(candidate => candidate.name == name);
             if (sprite == null) throw new InvalidOperationException("Sprite não encontrado: " + name);
             return sprite;
@@ -87,6 +99,7 @@ namespace PrograMago.Editor
         {
             if (catalog.spectralWizard == null || catalog.pyromancerController == null ||
                 catalog.hydromancerController == null || catalog.electromancerController == null ||
+                catalog.trainingDummyIdleSprite == null || catalog.trainingDummyController == null ||
                 catalog.workspacePanel == null || catalog.codePanel == null || catalog.codeTray == null ||
                 catalog.victoryPanel == null || catalog.battleButtonStates.Any(sprite => sprite == null) ||
                 catalog.actionButtonStates.Any(sprite => sprite == null) ||

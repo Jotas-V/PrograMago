@@ -470,10 +470,21 @@ namespace PrograMago.UnityIntegration
                 EnemyState enemy = CurrentEnemies[index];
                 var marker = new GameObject($"EnemyMarker-{enemy.VariableName}", typeof(SpriteRenderer));
                 SpriteRenderer renderer = marker.GetComponent<SpriteRenderer>();
-                renderer.sprite = GetEnemyPlaceholderSprite();
-                renderer.color = EnemyColor(enemy.Elemento);
+                bool isTrainingDummy = enemy.Name == "Boneco de Treinamento";
+                renderer.sprite = isTrainingDummy && visualCatalog != null &&
+                    visualCatalog.trainingDummyIdleSprite != null
+                    ? visualCatalog.trainingDummyIdleSprite
+                    : GetEnemyPlaceholderSprite();
+                renderer.color = isTrainingDummy ? Color.white : EnemyColor(enemy.Elemento);
                 renderer.sortingOrder = 10;
                 marker.transform.localScale = new Vector3(0.65f, 0.85f, 1f);
+                if (isTrainingDummy && visualCatalog != null &&
+                    visualCatalog.trainingDummyController != null)
+                {
+                    Animator animator = marker.AddComponent<Animator>();
+                    animator.runtimeAnimatorController = visualCatalog.trainingDummyController;
+                    animator.Play("Idle", 0, 0f);
+                }
                 float distance = Vector3.Dot(
                     wizardSpawnPoint.position - arenaCamera.transform.position,
                     arenaCamera.transform.forward);
