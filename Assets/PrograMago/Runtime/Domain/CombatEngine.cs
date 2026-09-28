@@ -104,6 +104,7 @@ namespace PrograMago.Domain
     {
         public const int CellCount = 16;
         private readonly CombatWizard wizard;
+        private CombatStrategy strategy;
         private readonly List<CombatEnemy> enemies = new List<CombatEnemy>();
         private readonly List<CombatAction> actionOrder = new List<CombatAction>
         {
@@ -116,9 +117,11 @@ namespace PrograMago.Domain
         private readonly List<CombatEvent> eventsThisTick = new List<CombatEvent>();
         private int executingBlock = -1;
 
-        public CombatEngine(CombatWizard wizard, IReadOnlyList<EnemyState> enemies)
+        public CombatEngine(CombatWizard wizard, IReadOnlyList<EnemyState> enemies,
+            CombatStrategy strategy = null)
         {
             this.wizard = wizard ?? throw new ArgumentNullException(nameof(wizard));
+            this.strategy = strategy ?? new CombatStrategy(null, "neutro");
             if (enemies == null || enemies.Count == 0 || enemies.Count >= CellCount)
                 throw new ArgumentException("A batalha precisa de inimigos.", nameof(enemies));
             for (int index = 0; index < enemies.Count; index++)
@@ -133,6 +136,7 @@ namespace PrograMago.Domain
         public int CurrentTick { get; private set; }
         public int WizardLife { get; private set; }
         public int WizardPosition { get; private set; }
+        public string WizardForm { get; private set; } = "neutro";
         public CombatOutcome Outcome { get; private set; }
         public bool IsPaused { get; private set; }
         public IReadOnlyList<CombatEnemy> Enemies => enemies.AsReadOnly();
@@ -150,6 +154,14 @@ namespace PrograMago.Domain
             actionOrder.Clear();
             sourceBlocks.Clear();
             for (int i = 0; i < actions.Count; i++) { actionOrder.Add(actions[i]); sourceBlocks.Add(origins[i]); }
+        }
+
+        public void ConfigureStrategy(CombatStrategy strategy)
+        {
+            if (strategy == null) throw new ArgumentNullException(nameof(strategy));
+            if (CurrentTick != 0 && !IsPaused)
+                throw new InvalidOperationException("Pause para alterar a Estratégia.");
+            this.strategy = strategy;
         }
 
         public CombatEvent Tick()
@@ -204,6 +216,7 @@ namespace PrograMago.Domain
         {
             WizardLife = wizard.Life;
             WizardPosition = 0;
+            WizardForm = "neutro";
             CurrentTick = 0;
             wizardNextDueTick = 0;
             Outcome = CombatOutcome.InProgress;
@@ -300,13 +313,9 @@ namespace PrograMago.Domain
 
         private CombatElement SelectSpell(CombatEnemy target)
         {
-            CombatElement weakness = target == null ? CombatElement.Neutral :
-                Weakness(target.Source.Elemento);
-            foreach (CombatElement spell in wizard.Spells)
-                if (spell == weakness) return spell;
-            foreach (CombatElement spell in wizard.Spells)
-                if (spell == CombatElement.Neutral) return spell;
-            return wizard.Spells[0];
+            string targetElement = target == null ? "neutro" : target.Source.Elemento;
+            WizardForm = strategy.FormFor(targetElement);
+            return strategy.SpellFor(targetElement);
         }
 
         private CombatEvent WizardAttack(CombatEnemy target, CombatElement spell, bool selected)
@@ -315,6 +324,12 @@ namespace PrograMago.Domain
                 return new CombatEvent(CurrentTick, "Mago", CombatEventKind.NoTarget,
                     null, spell, 0, WizardPosition, executingBlock);
             if (!selected)
+                return new CombatEvent(CurrentTick, "Mago", CombatEventKind.MissingSpell,
+                    target.Source.VariableName, spell, 0, WizardPosition, executingBlock);
+            bool ownsSpell = false;
+            foreach (CombatElement knownSpell in wizard.Spells)
+                if (knownSpell == spell) { ownsSpell = true; break; }
+            if (!ownsSpell)
                 return new CombatEvent(CurrentTick, "Mago", CombatEventKind.MissingSpell,
                     target.Source.VariableName, spell, 0, WizardPosition, executingBlock);
             int distance = Math.Abs(target.Position - WizardPosition);

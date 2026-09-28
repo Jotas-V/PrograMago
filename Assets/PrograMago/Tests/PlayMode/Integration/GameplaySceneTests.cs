@@ -98,7 +98,8 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator LearningFlow_LoadsFirstBattleContentAndKeepsOverlaysHidden()
         {
-            Assert.That(battleProgressText.text, Does.Contain("Batalha 1/8"));
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 1/9"));
+            Assert.That(FindSceneComponent<TMP_Text>("BattleButtonLabel").text, Is.EqualTo("Validar código"));
             Assert.That(titleText.text, Is.EqualTo("O nascimento do Mago"));
             Assert.That(lessonText.text, Does.Contain("O QUE É"));
             Assert.That(lessonText.text, Does.Contain("public class Mago"));
@@ -110,12 +111,12 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator WorkspaceToolbar_UsesStableLabelsAndShowsApprovalOnlyForMethods()
+        public IEnumerator WorkspaceToolbar_UsesBottomSelectorsWithoutMethodApproval()
         {
             Transform content = FindSceneObject("CodeTimeline").transform.Find("Viewport/Content");
             Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton1Label").text, Is.EqualTo("1 · Mago"));
             Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton2Label").text, Is.EqualTo("2 · Inimigo"));
-            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton3Label").text, Is.EqualTo("3 · Código"));
+            Assert.That(FindSceneComponent<TMP_Text>("CodeBlockButton3Label").text, Is.EqualTo("3 · Estratégia"));
             Assert.That(FindSceneObject("DefinitionBlocks").transform.parent, Is.SameAs(content));
             Assert.That(FindSceneObject("MethodsWorkspaceButton").transform.IsChildOf(content), Is.True);
             Assert.That(FindSceneObject("PreparationWorkspaceButton").transform.IsChildOf(content), Is.True);
@@ -124,10 +125,7 @@ namespace PrograMago.Tests.Integration
 
             Button approve = FindSceneComponent<Button>("ApproveMethodButton");
             Assert.That(approve.gameObject.activeSelf, Is.False);
-
-            FindSceneComponent<Button>("MethodsWorkspaceButton").onClick.Invoke();
-            yield return null;
-            Assert.That(approve.gameObject.activeSelf, Is.True);
+            Assert.That(FindSceneObject("MethodsWorkspaceButton").activeSelf, Is.False);
 
             FindSceneComponent<Button>("PreparationWorkspaceButton").onClick.Invoke();
             yield return null;
@@ -171,6 +169,14 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator CombatControls_ElementalWeaknessChangesDamageAndFeedbackColor()
         {
+            object codeBlocks = typeof(GameplayBootstrapper).GetField(
+                "codeBlocks", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            codeBlocks.GetType().GetMethod("Restore").Invoke(codeBlocks, new object[] { new[]
+            {
+                string.Empty, string.Empty,
+                "if (alvo.getElemento().equals(\"gelo\")) { heroi.selecionarForma(\"piromante\"); } " +
+                "else { heroi.selecionarForma(\"neutro\"); } heroi.lancarMagia(alvo);"
+            }, 0 });
             PrepareCombatMago(1, 3, 15, 5, 1);
             bootstrapper.ShowEnemies(new[]
             {
@@ -429,6 +435,8 @@ namespace PrograMago.Tests.Integration
             Button first = FindSceneComponent<Button>("CodeBlockButton1");
             Button second = FindSceneComponent<Button>("CodeBlockButton2");
             Button third = FindSceneComponent<Button>("CodeBlockButton3");
+            Assert.That(third.interactable, Is.False,
+                "Estratégia só abre depois que as formas e os inimigos elementais forem ensinados.");
 
             codeInput.text = "public class Mago {}";
             second.onClick.Invoke();
@@ -436,10 +444,6 @@ namespace PrograMago.Tests.Integration
             Assert.That(codeInput.text, Is.Empty);
 
             codeInput.text = "public class Inimigo {}";
-            third.onClick.Invoke();
-            yield return null;
-            Assert.That(codeInput.text, Is.Empty);
-
             first.onClick.Invoke();
             yield return null;
             Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
@@ -449,35 +453,38 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator CodeBlocks_ReloadRestoresThreeTextsAndSelectedBlock()
+        public IEnumerator CodeBlocks_ReloadRestoresTextsAndKeepsStrategyLocked()
         {
-            Button second = FindSceneComponent<Button>("CodeBlockButton2");
-            Button third = FindSceneComponent<Button>("CodeBlockButton3");
+            object codeBlocks = typeof(GameplayBootstrapper).GetField(
+                "codeBlocks", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            codeBlocks.GetType().GetMethod("Restore").Invoke(codeBlocks, new object[] { new[]
+            {
+                "public class Mago {}", "public class Inimigo {}", "if (alvo) { mago.selecionarForma(\"neutro\"); }"
+            }, 0 });
             codeInput.text = "public class Mago {}";
-            second.onClick.Invoke();
-            codeInput.text = "public class Inimigo {}";
-            third.onClick.Invoke();
-            codeInput.text = "Mago mago = new Mago();";
+            typeof(GameplayBootstrapper).GetMethod(
+                "SaveProgress", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(bootstrapper, null);
 
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
-                Is.EqualTo("Mago mago = new Mago();"));
-            FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
-            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
                 Is.EqualTo("public class Mago {}"));
+            PhaseOneSaveData saved = JsonUtility.FromJson<PhaseOneSaveData>(
+                File.ReadAllText(progressSavePath));
+            Assert.That(saved.sourceBlocks[2],
+                Is.EqualTo("if (alvo) { mago.selecionarForma(\"neutro\"); }"));
             FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
                 Is.EqualTo("public class Inimigo {}"));
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton3").interactable, Is.False);
         }
 
         [UnityTest]
         public IEnumerator CodeBlocks_BattleReadsCodeFromHiddenBlock()
         {
-            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
             codeInput.text = "public class Mago {}";
-            FindSceneComponent<Button>("CodeBlockButton3").onClick.Invoke();
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
             Assert.That(codeInput.text, Is.Empty);
 
             battleButton.onClick.Invoke();
@@ -599,7 +606,7 @@ namespace PrograMago.Tests.Integration
             nextBattleButton.onClick.Invoke();
             yield return null;
 
-            Assert.That(battleProgressText.text, Does.Contain("Batalha 2/8"));
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 2/9"));
             Assert.That(titleText.text, Is.EqualTo("Estado protegido"));
             Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
             Assert.That(codeInput.interactable, Is.True);
@@ -693,7 +700,7 @@ namespace PrograMago.Tests.Integration
             var label = battleObject.GetComponentInChildren<TMP_Text>();
             Assert.That(button, Is.Not.Null);
             Assert.That(label, Is.Not.Null);
-            Assert.That(label.text, Is.EqualTo("Batalhar"));
+            Assert.That(label.text, Is.EqualTo("Validar código"));
             codeInput.text = "public class Mago {}";
 
             button.onClick.Invoke();
@@ -797,7 +804,7 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator PhaseOne_ThreeValidatedTasks_EndWithSavedCompletionAndMappedMago()
+        public IEnumerator MagoConstruction_ThreeValidatedTasks_EndWithSavedProgressAndMappedMago()
         {
             codeInput.text = "public class Bruxo {}";
             battleButton.onClick.Invoke();
@@ -830,7 +837,7 @@ namespace PrograMago.Tests.Integration
             yield return null;
 
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
-                Does.Contain("Fase 1 concluída"));
+                Does.Contain("O Mago ganhou vida!"));
             Assert.That(nextBattleButton.interactable, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
                 Does.Contain("Vida: 5"));
@@ -843,7 +850,7 @@ namespace PrograMago.Tests.Integration
                 Is.EqualTo(approvedCode));
             Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
-                Does.Contain("Fase 1 concluída"));
+                Does.Contain("O Mago ganhou vida!"));
             Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
                 Does.Contain("Pontos: 21/25"));
         }
@@ -879,11 +886,25 @@ namespace PrograMago.Tests.Integration
             nextBattleButton.onClick.Invoke();
             yield return null;
 
+            const string setters =
+                " public void setVida(int vida) { this.vida = vida; } " +
+                "public void setDano(int dano) { this.dano = dano; } " +
+                "public void setAlcance(int alcance) { this.alcance = alcance; } " +
+                "public void setIniciativa(int iniciativa) { this.iniciativa = iniciativa; } " +
+                "public void setVelocidadeAtaque(int velocidadeAtaque) { this.velocidadeAtaque = velocidadeAtaque; } ";
+            string setterCode = magoCode.Replace("} Mago heroi", setters + "} Mago heroi");
+            codeInput.text = setterCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(nextBattleButton.interactable, Is.True);
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+
             Assert.That(titleText.text, Is.EqualTo("Surge um inimigo"));
             Assert.That(FindSceneComponent<TMP_Text>("TutorialStepText").text, Does.Contain("1/6"));
             FindSceneComponent<Button>("TutorialNextButton").onClick.Invoke();
             Assert.That(FindSceneComponent<TMP_Text>("TutorialBodyText").text, Does.Contain("public class Inimigo"));
-            Assert.That(battleProgressText.text, Does.Contain("Batalha 4/8"));
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 5/9"));
             Assert.That(victoryOverlay.activeSelf, Is.False);
             const string enemyCode =
                 "public class Inimigo { private String nome; private int vida; " +
@@ -891,7 +912,8 @@ namespace PrograMago.Tests.Integration
                 "this.nome = nome; this.vida = vida; this.elemento = elemento; } " +
                 "public String getElemento() { return elemento; } } " +
                 "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\", 10, \"neutro\");";
-            codeInput.text = magoCode + " " + enemyCode;
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            codeInput.text = enemyCode;
             battleButton.onClick.Invoke();
             yield return null;
 
@@ -912,7 +934,11 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(GameObject.Find("EnemyMarker-boneco"), Is.Not.Null);
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
-                Is.EqualTo(magoCode + " " + enemyCode));
+                Is.EqualTo(enemyCode));
+            PhaseOneSaveData saved = JsonUtility.FromJson<PhaseOneSaveData>(
+                File.ReadAllText(progressSavePath));
+            Assert.That(saved.sourceBlocks[0], Is.EqualTo(setterCode));
+            Assert.That(saved.sourceBlocks[1], Is.EqualTo(enemyCode));
         }
 
         [UnityTest]

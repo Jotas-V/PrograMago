@@ -73,9 +73,29 @@ MonoBehaviour:
     victoryTitle: O Mago ganhou vida!
     victoryAchievement: Você construiu e instanciou um objeto completo.
     victoryReview: O construtor inicializa o objeto, this acessa seu próprio estado e new transforma a classe em uma instância.
+  - id: mago-setters
+    chapter: 1
+    order: 4
+    title: Ajustando o Mago com setters
+    concept: Encapsulamento e métodos de alteração
+    whatItIs: Um setter é um método público que permite à própria classe alterar com segurança um atributo privado.
+    purpose: Setters permitem redistribuir os atributos depois da construção sem liberar o acesso direto aos campos private.
+    usageExample: public void setAlcance(int valor) { this.alcance = valor; }
+    gameEffect: Você pode alterar os cinco atributos do mesmo Mago uma vez antes da batalha; a soma final continua limitada a 25 pontos.
+    task: Dentro da classe Mago, implemente setVida, setDano, setAlcance, setIniciativa e setVelocidadeAtaque. Cada método recebe int valor e atribui o valor ao atributo correspondente usando this.
+    hints:
+    - Os cinco métodos ficam dentro das chaves de Mago, depois do construtor.
+    - Cada assinatura começa com public void e recebe um parâmetro int valor.
+    - Use this.vida = valor, this.dano = valor, this.alcance = valor, this.iniciativa = valor e this.velocidadeAtaque = valor.
+    - 'Não apague o construtor nem a instância. Depois, no bloco Ajustes, use chamadas como mago.setAlcance(8);. Se passar de 25 pontos, redistribua também os outros atributos.'
+    criterion: 8
+    completionMode: 1
+    victoryTitle: Atributos ajustáveis!
+    victoryAchievement: Você manteve os dados privados e criou métodos para alterá-los com controle.
+    victoryReview: Um setter oferece uma forma pública e controlada de mudar um atributo private; a build final ainda precisa respeitar o limite de 25 pontos.
   - id: enemy-object
     chapter: 2
-    order: 4
+    order: 5
     title: Surge um inimigo
     concept: Classes e objetos em interação
     whatItIs: Uma classe pode produzir muitos objetos com estados diferentes. O mesmo molde Inimigo representa adversários variados.
@@ -95,7 +115,7 @@ MonoBehaviour:
     victoryReview: Uma classe é reutilizável; cada objeto criado por ela mantém seu próprio estado.
   - id: first-spell-method
     chapter: 2
-    order: 5
+    order: 6
     title: Primeira magia
     concept: Métodos, parâmetros e chamadas
     whatItIs: Métodos descrevem comportamentos. Parâmetros fornecem os objetos e valores necessários para executar uma ação.
@@ -115,7 +135,7 @@ MonoBehaviour:
     victoryReview: Métodos representam ações; parâmetros levam informações para a ação e chamadas pedem ao objeto que a execute.
   - id: elemental-inheritance
     chapter: 3
-    order: 6
+    order: 7
     title: Especialização elemental
     concept: Herança
     whatItIs: Herança cria uma classe especializada a partir de outra. A subclasse recebe características e comportamentos da classe base.
@@ -135,7 +155,7 @@ MonoBehaviour:
     victoryReview: Herança permite que uma subclasse reutilize membros da classe base e acrescente sua própria especialização.
   - id: spell-override
     chapter: 3
-    order: 7
+    order: 8
     title: Cada Mago, uma magia
     concept: Sobrescrita e super
     whatItIs: Sobrescrita redefine em uma subclasse um método herdado. super permite reutilizar explicitamente o comportamento da classe base.
@@ -155,7 +175,7 @@ MonoBehaviour:
     victoryReview: Sobrescrita especializa um método herdado; super permite combinar o comportamento base com a nova implementação.
   - id: final-polymorphism
     chapter: 4
-    order: 8
+    order: 9
     title: Batalha final
     concept: Polimorfismo
     whatItIs: Polimorfismo permite tratar objetos de subclasses diferentes por uma referência do tipo da classe base.

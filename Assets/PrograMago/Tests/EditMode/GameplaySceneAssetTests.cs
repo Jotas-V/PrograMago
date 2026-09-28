@@ -60,14 +60,16 @@ namespace PrograMago.Tests.UnityIntegration
         {
             Assert.That(ReadString(FindSceneObject("CodeBlockButton1Label"), "m_text"), Is.EqualTo("1 · Mago"));
             Assert.That(ReadString(FindSceneObject("CodeBlockButton2Label"), "m_text"), Is.EqualTo("2 · Inimigo"));
-            Assert.That(ReadString(FindSceneObject("CodeBlockButton3Label"), "m_text"), Is.EqualTo("3 · Código"));
-            Assert.That(ReadString(FindSceneObject("PhaseCodeGroupTitle"), "m_text"), Is.EqualTo("CÓDIGO DA FASE"));
-            Assert.That(ReadString(FindSceneObject("WizardConfigGroupTitle"), "m_text"), Is.EqualTo("CONFIGURAÇÃO DO MAGO"));
+            Assert.That(ReadString(FindSceneObject("CodeBlockButton3Label"), "m_text"), Is.EqualTo("3 · Estratégia"));
+            Assert.That(ReadString(FindSceneObject("PhaseCodeGroupTitle"), "m_text"), Is.EqualTo("BLOCOS DE CÓDIGO"));
+            Assert.That(ReadString(FindSceneObject("WizardConfigGroupTitle"), "m_text"), Is.EqualTo("AJUSTES"));
 
             Rect thirdFile = WorldRect(FindSceneObject("CodeBlockButton3"));
             Assert.That(thirdFile.Overlaps(WorldRect(FindSceneObject("MethodsWorkspaceButton"))), Is.False);
             Assert.That(thirdFile.Overlaps(WorldRect(FindSceneObject("PreparationWorkspaceButton"))), Is.False);
+            Assert.That(FindSceneObject("MethodsWorkspaceButton").activeSelf, Is.False);
             Assert.That(FindSceneObject("ApproveMethodButton").activeSelf, Is.False);
+            Assert.That(ReadString(FindSceneObject("PreparationWorkspaceButtonLabel"), "m_text"), Is.EqualTo("Ajustes"));
         }
         [Test]
         public void Scene_PreparingPresentationAgainReusesAuthoredObjects()
@@ -252,7 +254,7 @@ namespace PrograMago.Tests.UnityIntegration
         }
 
         [Test]
-        public void LearningPathAsset_ContainsEightApprovedPedagogicalBattles()
+        public void LearningPathAsset_ContainsNineApprovedPedagogicalStages()
         {
             const string assetPath = "Assets/PrograMago/Content/LearningPath.asset";
             Type assetType = AppDomain.CurrentDomain.GetAssemblies()
@@ -264,12 +266,13 @@ namespace PrograMago.Tests.UnityIntegration
             var path = (LearningPath)assetType.GetMethod("ToDomain").Invoke(asset, null);
 
             Assert.That(path, Is.Not.Null);
-            Assert.That(path.Battles, Has.Count.EqualTo(8));
+            Assert.That(path.Battles, Has.Count.EqualTo(9));
             Assert.That(path.Battles.Select(battle => battle.Id), Is.EqualTo(new[]
             {
                 "mago-class",
                 "mago-private-state",
                 "mago-constructor-object",
+                "mago-setters",
                 "enemy-object",
                 "first-spell-method",
                 "elemental-inheritance",
@@ -278,13 +281,14 @@ namespace PrograMago.Tests.UnityIntegration
             }));
             Assert.That(path.Battles.Select(battle => battle.Chapter), Is.EqualTo(new[]
             {
-                1, 1, 1, 2, 2, 3, 3, 4
+                1, 1, 1, 1, 2, 2, 3, 3, 4
             }));
             Assert.That(path.Battles.Select(battle => battle.Criterion), Is.EqualTo(new[]
             {
                 ValidationCriterion.DeclareMagoClass,
                 ValidationCriterion.AddPrivateAttributes,
                 ValidationCriterion.ConstructAndInstantiateMago,
+                ValidationCriterion.AddMagoSetters,
                 ValidationCriterion.ConstructAndInstantiateEnemy,
                 ValidationCriterion.DefineAndCallSpellMethod,
                 ValidationCriterion.ExtendMago,
@@ -293,6 +297,7 @@ namespace PrograMago.Tests.UnityIntegration
             }));
             Assert.That(path.Battles.Select(battle => battle.CompletionMode), Is.EqualTo(new[]
             {
+                BattleCompletionMode.OnCodeValidated,
                 BattleCompletionMode.OnCodeValidated,
                 BattleCompletionMode.OnCodeValidated,
                 BattleCompletionMode.OnCodeValidated,
@@ -348,7 +353,7 @@ namespace PrograMago.Tests.UnityIntegration
                 .Single(type => type != null);
             UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, assetType);
             var path = (LearningPath)assetType.GetMethod("ToDomain").Invoke(asset, null);
-            BattleDefinition enemyBattle = path.Battles[3];
+            BattleDefinition enemyBattle = path.Battles[4];
             string guidance = string.Join(" ", enemyBattle.Hints);
 
             Assert.That(enemyBattle.Lesson.Task, Does.Contain("getElemento"));

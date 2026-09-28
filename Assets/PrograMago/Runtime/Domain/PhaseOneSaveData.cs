@@ -5,7 +5,7 @@ namespace PrograMago.Domain
     [Serializable]
     public sealed class PhaseOneSaveData
     {
-        public int version = 3;
+        public int version = 4;
         public string[] battleIds;
         public int[] attemptCounts;
         public int[] failedCounts;

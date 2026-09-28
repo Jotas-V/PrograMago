@@ -209,9 +209,11 @@ namespace PrograMago.Domain
 
         public void RestorePhaseOne(PhaseOneSaveData data)
         {
-            int expectedCount = data != null && data.version == 3
-                ? playableBattleCount : phaseOneBattleCount;
-            if (data == null || (data.version != 1 && data.version != 2 && data.version != 3) ||
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (data.version < 4) data = UpgradeLegacySnapshot(data);
+
+            int expectedCount = playableBattleCount;
+            if (data.version != 4 ||
                 data.battleIds?.Length != expectedCount ||
                 data.attemptCounts?.Length != expectedCount ||
                 data.failedCounts?.Length != expectedCount ||
@@ -243,7 +245,7 @@ namespace PrograMago.Domain
                 }
             }
 
-            if (data.version == 3 &&
+            if (data.version == 4 &&
                 (data.currentBattleIndex < 0 || data.currentBattleIndex >= playableBattleCount ||
                  !Enum.IsDefined(typeof(LearningStage), data.stage) ||
                  (data.stage == LearningStage.VictoryReview &&
@@ -264,16 +266,132 @@ namespace PrograMago.Domain
             Array.Copy(data.attemptCounts, attemptCounts, expectedCount);
             Array.Copy(data.failedCounts, failedCounts, expectedCount);
             Array.Copy(data.completed, completed, expectedCount);
-            CurrentBattleIndex = data.version == 3
-                ? data.currentBattleIndex
-                : foundPendingBattle ? firstPendingBattle : phaseOneBattleCount - 1;
-            Stage = data.version == 3
-                ? data.stage == LearningStage.BattleInProgress ? LearningStage.Editing : data.stage
-                : foundPendingBattle ? LearningStage.Editing : LearningStage.VictoryReview;
+            CurrentBattleIndex = data.currentBattleIndex;
+            Stage = data.stage == LearningStage.BattleInProgress
+                ? LearningStage.Editing : data.stage;
             FailedAttempts = Stage == LearningStage.Editing ? failedCounts[CurrentBattleIndex] : 0;
             CurrentHint = FailedAttempts == 0
                 ? null
                 : CurrentBattle.Hints[Math.Min(FailedAttempts - 1, CurrentBattle.Hints.Count - 1)];
+        }
+
+        private PhaseOneSaveData UpgradeLegacySnapshot(PhaseOneSaveData legacy)
+        {
+            if (legacy.version < 1 || legacy.version > 3 ||
+                legacy.battleIds == null || legacy.attemptCounts?.Length != legacy.battleIds.Length ||
+                legacy.failedCounts?.Length != legacy.battleIds.Length ||
+                legacy.completed?.Length != legacy.battleIds.Length ||
+                (legacy.version >= 2 &&
+                    (legacy.sourceBlocks?.Length != 3 || legacy.activeBlock < 0 || legacy.activeBlock >= 3)))
+                throw new ArgumentException("Registro antigo da fase 1 inválido.", nameof(legacy));
+
+            var ids = new string[playableBattleCount];
+            var attempts = new int[playableBattleCount];
+            var failed = new int[playableBattleCount];
+            var done = new bool[playableBattleCount];
+            var mapped = new bool[playableBattleCount];
+            for (int index = 0; index < playableBattleCount; index++)
+                ids[index] = Path.Battles[index].Id;
+
+            int legacyCurrentTarget = -1;
+            for (int index = 0; index < legacy.battleIds.Length; index++)
+            {
+                int target = FindPathBattleIndex(legacy.battleIds[index]);
+                if (target < 0 || target >= playableBattleCount || mapped[target] ||
+                    legacy.attemptCounts[index] < 0 || legacy.failedCounts[index] < 0 ||
+                    legacy.failedCounts[index] > legacy.attemptCounts[index] ||
+                    (legacy.completed[index] && legacy.attemptCounts[index] == 0))
+                    throw new ArgumentException("Registro antigo da fase 1 incompatível.", nameof(legacy));
+
+                mapped[target] = true;
+                attempts[target] = legacy.attemptCounts[index];
+                failed[target] = legacy.failedCounts[index];
+                done[target] = legacy.completed[index];
+                if (legacy.version == 3 && index == legacy.currentBattleIndex)
+                    legacyCurrentTarget = target;
+            }
+
+            int oldEnemy = Array.IndexOf(legacy.battleIds, "enemy-object");
+            bool reachedLegacyEnemy = oldEnemy >= 0 &&
+                (legacy.version == 3 && legacy.currentBattleIndex == oldEnemy ||
+                 legacy.attemptCounts[oldEnemy] > 0 || legacy.completed[oldEnemy]);
+            if (reachedLegacyEnemy)
+            {
+                int setterIndex = FindPathBattleIndexByCriterion(ValidationCriterion.AddMagoSetters);
+                if (setterIndex >= 0 && setterIndex < playableBattleCount)
+                {
+                    done[setterIndex] = true;
+                    attempts[setterIndex] = Math.Max(attempts[setterIndex], 1);
+                }
+            }
+
+            int currentBattleIndex;
+            LearningStage stage;
+            if (legacy.version == 3)
+            {
+                if (legacy.currentBattleIndex < 0 ||
+                    legacy.currentBattleIndex >= legacy.battleIds.Length ||
+                    legacyCurrentTarget < 0 || !Enum.IsDefined(typeof(LearningStage), legacy.stage))
+                    throw new ArgumentException("Estado do registro antigo inválido.", nameof(legacy));
+                currentBattleIndex = legacyCurrentTarget;
+                stage = legacy.stage;
+            }
+            else
+            {
+                bool completedLegacySequence = Array.TrueForAll(legacy.completed, item => item);
+                if (completedLegacySequence)
+                {
+                    currentBattleIndex = FindPathBattleIndex(legacy.battleIds[legacy.battleIds.Length - 1]);
+                    stage = LearningStage.VictoryReview;
+                }
+                else
+                {
+                    currentBattleIndex = 0;
+                    while (currentBattleIndex < playableBattleCount && done[currentBattleIndex])
+                        currentBattleIndex++;
+                    if (currentBattleIndex >= playableBattleCount)
+                        currentBattleIndex = playableBattleCount - 1;
+                    stage = LearningStage.Editing;
+                }
+            }
+
+            string[] sourceBlocks = legacy.version >= 2
+                ? (string[])legacy.sourceBlocks.Clone()
+                : new[] { legacy.sourceCode ?? string.Empty, string.Empty, string.Empty };
+            int activeBlock = legacy.version >= 2 ? legacy.activeBlock : 0;
+            return new PhaseOneSaveData
+            {
+                version = 4,
+                battleIds = ids,
+                attemptCounts = attempts,
+                failedCounts = failed,
+                completed = done,
+                sourceCode = legacy.sourceCode ?? string.Empty,
+                approvedCode = legacy.approvedCode ?? string.Empty,
+                sourceBlocks = sourceBlocks,
+                activeBlock = activeBlock,
+                currentBattleIndex = currentBattleIndex,
+                stage = stage,
+                combatBlocks = legacy.combatBlocks,
+                timelineOrder = legacy.timelineOrder,
+                approvedMethods = legacy.approvedMethods,
+                methodDraft = legacy.methodDraft,
+                preparationCode = legacy.preparationCode
+            };
+        }
+
+        private int FindPathBattleIndex(string id)
+        {
+            for (int index = 0; index < Path.Battles.Count; index++)
+                if (string.Equals(Path.Battles[index].Id, id, StringComparison.Ordinal)) return index;
+            return -1;
+        }
+
+        private int FindPathBattleIndexByCriterion(ValidationCriterion criterion)
+        {
+            for (int index = 0; index < Path.Battles.Count; index++)
+                if (Path.Battles[index].Criterion == criterion) return index;
+            return -1;
         }
 
         private int FindPlayableBattle(string battleId)

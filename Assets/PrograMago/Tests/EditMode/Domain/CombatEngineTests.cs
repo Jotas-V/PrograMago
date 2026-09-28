@@ -134,6 +134,35 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
+        public void Tick_UsesTheAuthoredFormInsteadOfCorrectingThePlayersChoice()
+        {
+            var wizard = new CombatWizard(8, 3, 15, 10, 5,
+                CombatElement.Neutral, CombatElement.Fire, CombatElement.Water,
+                CombatElement.Electric);
+            var engine = new CombatEngine(wizard, new[]
+            {
+                new EnemyState("golem", "Golem de Gelo", 12, "gelo")
+            });
+            var strategy = new CombatStrategy(
+                new Dictionary<string, string> { ["gelo"] = "hidromante" }, "neutro");
+            System.Reflection.MethodInfo configure = engine.GetType().GetMethod("ConfigureStrategy");
+            System.Reflection.PropertyInfo currentForm = engine.GetType().GetProperty("WizardForm");
+            Assert.That(configure, Is.Not.Null,
+                "O motor deve receber a Estratégia compilada pelo editor.");
+            Assert.That(currentForm, Is.Not.Null,
+                "A forma atual precisa ser observável para atualizar o único sprite do Mago.");
+
+            configure.Invoke(engine, new object[] { strategy });
+            CombatEvent attack = engine.Tick();
+
+            Assert.That(currentForm.GetValue(engine), Is.EqualTo("hidromante"));
+            Assert.That(attack.Element, Is.EqualTo(CombatElement.Water));
+            Assert.That(attack.Kind, Is.EqualTo(CombatEventKind.Ineffective));
+            Assert.That(engine.Enemies[0].Life, Is.EqualTo(12));
+            Assert.That(engine.WizardLife, Is.EqualTo(8));
+        }
+
+        [Test]
         public void Tick_SelectsNearestLivingEnemyThenCreationOrder()
         {
             var wizard = new CombatWizard(8, 3, 15, 10, 5, CombatElement.Neutral);
@@ -224,10 +253,16 @@ namespace PrograMago.Tests.Domain
                 enemyElement == "gelo" ? "Golem de Gelo" :
                 enemyElement == "fogo" ? "Elemental de Fogo" : "Slime Aquático";
             int enemyLife = enemyElement == "neutro" ? 10 : 12;
+            var formsByElement = new Dictionary<string, string>();
+            if (extraSpells.Length > 0)
+                formsByElement[enemyElement] = extraSpells[0] == CombatElement.Fire ? "piromante" :
+                    extraSpells[0] == CombatElement.Water ? "hidromante" :
+                    extraSpells[0] == CombatElement.Electric ? "eletromante" : "neutro";
+            var strategy = new CombatStrategy(formsByElement, "neutro");
             return new CombatEngine(wizard, new[]
             {
                 new EnemyState("enemy", name, enemyLife, enemyElement)
-            });
+            }, strategy);
         }
 
         private static string Describe(CombatEvent action)

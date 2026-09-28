@@ -282,7 +282,7 @@ namespace PrograMago.Tests.Domain
             var restored = new LearningProgress(path);
             restored.RestorePhaseOne(editing);
 
-            Assert.That(editing.version, Is.EqualTo(3));
+            Assert.That(editing.version, Is.EqualTo(4));
             Assert.That(restored.CurrentBattle.Id, Is.EqualTo("enemy"));
             Assert.That(restored.Stage, Is.EqualTo(LearningStage.Editing));
             Assert.That(restored.FailedAttempts, Is.EqualTo(1));
@@ -340,6 +340,45 @@ namespace PrograMago.Tests.Domain
 
             Assert.Throws<ArgumentException>(() =>
                 new LearningProgress(path).RestorePhaseOne(snapshot));
+        }
+
+        [Test]
+        public void LegacyV3Save_AtTheEnemyStageMigratesWithoutLosingItsProgress()
+        {
+            LearningPath path = CreateCurrentNineStagePrefix();
+            var legacy = new PhaseOneSaveData
+            {
+                version = 3,
+                battleIds = new[] { "mago-class", "mago-private-state", "mago-constructor-object", "enemy-object" },
+                attemptCounts = new[] { 1, 1, 1, 2 },
+                failedCounts = new[] { 0, 0, 0, 1 },
+                completed = new[] { true, true, true, false },
+                sourceBlocks = new[] { "mago", "inimigo", "" },
+                activeBlock = 1,
+                currentBattleIndex = 3,
+                stage = LearningStage.Editing
+            };
+
+            var restored = new LearningProgress(path);
+            restored.RestorePhaseOne(legacy);
+
+            Assert.That(restored.CurrentBattle.Id, Is.EqualTo("enemy-object"));
+            Assert.That(restored.CurrentBattleIndex, Is.EqualTo(4));
+            Assert.That(restored.Stage, Is.EqualTo(LearningStage.Editing));
+            Assert.That(restored.FailedAttempts, Is.EqualTo(1));
+            Assert.That(restored.HasCompletedPhaseOne, Is.True);
+        }
+
+        private static LearningPath CreateCurrentNineStagePrefix()
+        {
+            return new LearningPath(new[]
+            {
+                CreateBattle("mago-class", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("mago-private-state", 2, ValidationCriterion.AddPrivateAttributes),
+                CreateBattle("mago-constructor-object", 3, ValidationCriterion.ConstructAndInstantiateMago),
+                CreateBattle("mago-setters", 4, ValidationCriterion.AddMagoSetters),
+                CreateBattle("enemy-object", 5, ValidationCriterion.ConstructAndInstantiateEnemy, 2)
+            });
         }
 
         [Test]

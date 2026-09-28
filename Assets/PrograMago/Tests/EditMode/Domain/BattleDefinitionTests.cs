@@ -113,7 +113,7 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
-        public void ValidationCriterion_DefinesTheEightApprovedBattles()
+        public void ValidationCriterion_DefinesAllNineApprovedStages()
         {
             Assert.That(System.Enum.GetNames(typeof(ValidationCriterion)), Is.EquivalentTo(new[]
             {
@@ -124,7 +124,8 @@ namespace PrograMago.Tests.Domain
                 "DefineAndCallSpellMethod",
                 "ExtendMago",
                 "OverrideSpellWithSuper",
-                "UsePolymorphicMagoReference"
+                "UsePolymorphicMagoReference",
+                "AddMagoSetters"
             }));
         }
 

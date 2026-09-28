@@ -1,4 +1,6 @@
 using PrograMago.Application;
+using PrograMago.Domain;
+using PrograMago.Language;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,30 +9,33 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
-        private const float DefinitionStripWidth = 564f;
-        private const float CombatActionStripStartX = 574f;
-        private const float TimelineContentWidth = 700f;
+        private const float DefinitionStripWidth = 365f;
+        private const float CombatActionStripStartX = 375f;
+        private const float TimelineContentWidth = 500f;
 
         private void EnsureWorkspaceControls()
         {
             if (definitionStrip == null || editorPanel == null) return;
             LayoutCodeFileButtons();
             EnsureWorkspaceTitles();
-            methodsWorkspaceButton = FindOrCreateWorkspaceButton(methodsWorkspaceButton,
-                "MethodsWorkspaceButton", "Métodos", 282f);
             preparationWorkspaceButton = FindOrCreateWorkspaceButton(preparationWorkspaceButton,
-                "PreparationWorkspaceButton", "Preparação", 370f);
+                "PreparationWorkspaceButton", "Ajustes", 260f);
             approveMethodButton = FindOrCreateWorkspaceButton(approveMethodButton,
-                "ApproveMethodButton", "Aprovar método", 466f);
-            methodsWorkspaceButton.onClick.RemoveAllListeners();
-            methodsWorkspaceButton.onClick.AddListener(() => SelectWorkspace(WorkspaceArea.Methods));
+                "ApproveMethodButton", "Aprovar método", 0f);
+            if (methodsWorkspaceButton != null)
+            {
+                methodsWorkspaceButton.onClick.RemoveAllListeners();
+                methodsWorkspaceButton.gameObject.SetActive(false);
+            }
             preparationWorkspaceButton.onClick.RemoveAllListeners();
             preparationWorkspaceButton.onClick.AddListener(() => SelectWorkspace(WorkspaceArea.Preparation));
-            approveMethodButton.onClick.RemoveAllListeners();
-            approveMethodButton.onClick.AddListener(ApproveMethod);
-            LayoutWorkspaceButton(methodsWorkspaceButton, 282f, 84f);
-            LayoutWorkspaceButton(preparationWorkspaceButton, 370f, 92f);
-            LayoutWorkspaceButton(approveMethodButton, 466f, 98f);
+            if (approveMethodButton != null)
+            {
+                approveMethodButton.onClick.RemoveAllListeners();
+                approveMethodButton.gameObject.SetActive(false);
+            }
+            LayoutWorkspaceButton(preparationWorkspaceButton, 260f, 98f);
+            RefreshCodeBlockButtons();
             UpdateWorkspaceUi();
         }
 
@@ -41,8 +46,8 @@ namespace PrograMago.UnityIntegration
                 if (codeBlockButtons[index] == null) continue;
                 RectTransform rect = codeBlockButtons[index].GetComponent<RectTransform>();
                 rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 94f, 6f);
-                rect.sizeDelta = new Vector2(90f, 40f);
+                rect.anchoredPosition = new Vector2(index * 86f, 6f);
+                rect.sizeDelta = new Vector2(82f, 40f);
             }
         }
 
@@ -50,8 +55,8 @@ namespace PrograMago.UnityIntegration
         {
             Transform legacyTitle = definitionStrip.Find("DefinitionBlocksTitle");
             if (legacyTitle != null) legacyTitle.gameObject.SetActive(false);
-            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "CÓDIGO DA FASE", 0f, 278f);
-            LayoutWorkspaceTitle("WizardConfigGroupTitle", "CONFIGURAÇÃO DO MAGO", 282f, 282f);
+            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 0f, 254f);
+            LayoutWorkspaceTitle("WizardConfigGroupTitle", "AJUSTES", 258f, 102f);
         }
 
         private void LayoutWorkspaceTitle(string name, string text, float x, float width)
@@ -109,16 +114,10 @@ namespace PrograMago.UnityIntegration
                 codeBlocks.Select(codeBlocks.ActiveIndex);
                 codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
             }
-            else if (area == WorkspaceArea.Methods)
-            {
-                codeInput.SetTextWithoutNotify(methodDraft);
-                feedbackText.text = "Métodos · escreva um método por vez e clique em Aprovar método.\n" +
-                    $"Progresso: {magoMethodBook.ApprovedSources.Count}/{MagoMethodBook.Names.Length}.";
-            }
-            else
+            else if (area == WorkspaceArea.Preparation)
             {
                 codeInput.SetTextWithoutNotify(preparationCode);
-                feedbackText.text = "Preparação · use apenas setters já aprovados, uma vez antes da batalha.\n" +
+                feedbackText.text = "Ajustes · redistribua atributos antes da batalha usando os setters da classe Mago.\n" +
                     $"Exemplo: {(declaredMago == null ? "mago" : declaredMago.InstanceName)}.setAlcance(5);";
             }
             UpdateWorkspaceUi();
@@ -129,9 +128,9 @@ namespace PrograMago.UnityIntegration
         private void StoreWorkspaceText()
         {
             if (codeInput == null) return;
-            if (workspaceArea == WorkspaceArea.Classes)
+            if (workspaceArea == WorkspaceArea.Classes || workspaceArea == WorkspaceArea.Strategy)
             {
-                if (selectedCombatBlock >= 0 && selectedCombatBlock < combatCodeBlocks.Count)
+                if (workspaceArea == WorkspaceArea.Classes && selectedCombatBlock >= 0 && selectedCombatBlock < combatCodeBlocks.Count)
                     combatCodeBlocks[selectedCombatBlock] = codeInput.text;
                 else
                     codeBlocks.SetActiveText(codeInput.text);
@@ -177,9 +176,31 @@ namespace PrograMago.UnityIntegration
             {
                 preparedMago = null;
                 CurrentMago = declaredMago;
+                RenderWizard();
                 return true;
             }
-            PreparationResult result = MagoPreparation.Evaluate(declaredMago, magoMethodBook, preparationCode);
+            TokenizationResult setterTokens = new CodeTokenizer().Tokenize(codeBlocks.Snapshot()[0]);
+            if (!setterTokens.IsSuccess)
+            {
+                feedbackText.color = new Color32(156, 39, 49, 255);
+                feedbackText.text = "Não foi possível ler a classe Mago para conferir os setters.";
+                return false;
+            }
+            var setterExercise = new ExerciseDefinition("mago-setters", "Mago", "Valide os setters do Mago.");
+            ExerciseValidationResult setters = new ExerciseCodeValidator().Validate(
+                setterTokens.Tokens, setterExercise, ValidationCriterion.AddMagoSetters);
+            if (!setters.IsSuccess)
+            {
+                feedbackText.color = new Color32(156, 39, 49, 255);
+                feedbackText.text = "Ajustes indisponíveis: " + setters.Diagnostic.Detail;
+                return false;
+            }
+            var learnedSetters = new MagoMethodBook(new[]
+            {
+                MagoMethodBook.Examples[0], MagoMethodBook.Examples[1], MagoMethodBook.Examples[2],
+                MagoMethodBook.Examples[3], MagoMethodBook.Examples[4]
+            });
+            PreparationResult result = MagoPreparation.Evaluate(declaredMago, learnedSetters, preparationCode);
             if (!result.IsSuccess)
             {
                 feedbackText.color = new Color32(156, 39, 49, 255);
@@ -196,21 +217,22 @@ namespace PrograMago.UnityIntegration
         {
             if (codeInput == null) return;
             bool editing = combat == null && interactionEnabled;
-            bool classesEditable = editing && (!classesLocked || selectedCombatBlock >= 0);
-            codeInput.interactable = editing && (workspaceArea != WorkspaceArea.Classes || classesEditable);
+            bool classesEditable = workspaceArea == WorkspaceArea.Classes && selectedCombatBlock >= 0 ||
+                workspaceArea == WorkspaceArea.Classes && IsCodeBlockEditable(codeBlocks.ActiveIndex);
+            codeInput.interactable = editing && (workspaceArea == WorkspaceArea.Preparation || classesEditable ||
+                workspaceArea == WorkspaceArea.Strategy && IsCodeBlockEditable(2));
             for (int index = 0; index < codeBlockButtons.Length; index++)
-                if (codeBlockButtons[index] != null) codeBlockButtons[index].interactable = classesEditable;
-            if (methodsWorkspaceButton != null) methodsWorkspaceButton.interactable = editing;
-            if (preparationWorkspaceButton != null) preparationWorkspaceButton.interactable = editing;
+                if (codeBlockButtons[index] != null)
+                    codeBlockButtons[index].interactable = editing && IsCodeBlockEditable(index);
+            bool adjustmentsAvailable = learningFlowPresenter != null &&
+                learningFlowPresenter.Progress.CurrentBattleIndex >= 4;
+            if (preparationWorkspaceButton != null)
+                preparationWorkspaceButton.interactable = editing && adjustmentsAvailable;
             if (approveMethodButton != null)
             {
-                approveMethodButton.gameObject.SetActive(workspaceArea == WorkspaceArea.Methods);
-                approveMethodButton.interactable = editing && workspaceArea == WorkspaceArea.Methods;
+                approveMethodButton.gameObject.SetActive(false);
+                approveMethodButton.interactable = false;
             }
-            if (methodsWorkspaceButton != null)
-                methodsWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Methods
-                    ? new Color32(91, 74, 190, 255)
-                    : new Color32(39, 77, 92, 255);
             if (preparationWorkspaceButton != null)
                 preparationWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Preparation
                     ? new Color32(91, 74, 190, 255)
@@ -218,7 +240,22 @@ namespace PrograMago.UnityIntegration
             if (workspaceArea == WorkspaceArea.Classes && classesLocked && editing)
             {
                 feedbackText.color = new Color32(90, 86, 105, 255);
-                feedbackText.text = "Classes protegidas após a fase 3. Use Métodos e Preparação para ajustar o Mago.";
+                feedbackText.text = "Código protegido após a fase 3. Use Ajustes para redistribuir os atributos do Mago.";
+            }
+        }
+
+        private bool IsCodeBlockEditable(int index)
+        {
+            if (learningFlowPresenter == null) return index < 2;
+            if (index == 2)
+                return learningFlowPresenter.Progress.CurrentBattle.Criterion ==
+                    ValidationCriterion.UsePolymorphicMagoReference;
+            if (!classesLocked) return index < 2;
+            switch (learningFlowPresenter.Progress.CurrentBattle.Criterion)
+            {
+                case ValidationCriterion.AddMagoSetters: return index == 0;
+                case ValidationCriterion.ConstructAndInstantiateEnemy: return index == 1;
+                default: return false;
             }
         }
 
@@ -232,6 +269,29 @@ namespace PrograMago.UnityIntegration
             classesLocked = false;
             interactionEnabled = true;
             workspaceArea = WorkspaceArea.Classes;
+            setterDraftSource = string.Empty;
+        }
+
+        private bool KeepApprovedMagoSource()
+        {
+            if (learningFlowPresenter == null || workspaceArea != WorkspaceArea.Classes ||
+                codeBlocks.ActiveIndex != 0 ||
+                learningFlowPresenter.Progress.CurrentBattle.Criterion != ValidationCriterion.AddMagoSetters)
+                return true;
+
+            if (MagoSourceInsertion.TryExtract(approvedCode, codeInput.text, out _, out string error))
+            {
+                setterDraftSource = codeInput.text;
+                return true;
+            }
+
+            string restore = string.IsNullOrEmpty(setterDraftSource)
+                ? codeBlocks.Snapshot()[0] : setterDraftSource;
+            codeInput.SetTextWithoutNotify(restore);
+            codeBlocks.SetActiveText(restore);
+            feedbackText.color = new Color32(156, 39, 49, 255);
+            feedbackText.text = error;
+            return false;
         }
     }
 }

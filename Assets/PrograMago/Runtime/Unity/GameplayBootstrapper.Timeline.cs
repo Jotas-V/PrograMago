@@ -9,6 +9,7 @@ namespace PrograMago.UnityIntegration
     public sealed partial class GameplayBootstrapper
     {
         private readonly List<string> combatCodeBlocks = new List<string>(CombatCodeCompiler.BattleBlocks());
+        private CombatStrategy compiledStrategy = new CombatStrategy(null, "neutro");
         private int selectedCombatBlock = -1;
         [SerializeField] private RectTransform timelineContent;
         [SerializeField] private RectTransform definitionStrip;
@@ -197,7 +198,21 @@ namespace PrograMago.UnityIntegration
                     combatActionButtons[block].targetGraphic.color = new Color32(155, 58, 66, 255);
                 return false;
             }
+            string strategySource = codeBlocks.Snapshot()[2];
+            if (string.IsNullOrWhiteSpace(strategySource))
+            {
+                compiledStrategy = new CombatStrategy(null, "neutro");
+            }
+            else if (!CombatCodeCompiler.TryCompileStrategy(strategySource,
+                CurrentMago == null ? "mago" : CurrentMago.InstanceName,
+                out compiledStrategy, out error))
+            {
+                feedbackText.color = new Color32(156, 39, 49, 255);
+                feedbackText.text = "Estratégia: " + error;
+                return false;
+            }
             if (combat != null) combat.ConfigureActions(actions, origins);
+            if (combat != null) combat.ConfigureStrategy(compiledStrategy);
             return true;
         }
 

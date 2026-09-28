@@ -7,10 +7,12 @@ namespace PrograMago.Language
     internal sealed class MagoConstructionValidator
     {
         private readonly MagoValidationRules rules;
+        private readonly bool requireSetters;
 
-        public MagoConstructionValidator(MagoValidationRules rules)
+        public MagoConstructionValidator(MagoValidationRules rules, bool requireSetters = false)
         {
             this.rules = rules ?? throw new ArgumentNullException(nameof(rules));
+            this.requireSetters = requireSetters;
         }
 
         public ExerciseValidationResult Validate(
@@ -41,6 +43,19 @@ namespace PrograMago.Language
                 return failure;
             }
 
+            var setters = new HashSet<string>(StringComparer.Ordinal);
+            while (index < tokens.Count && tokens[index].Kind != TokenKind.RightBrace)
+            {
+                failure = ParseSetter(tokens, ref index, setters);
+                if (failure != null) return failure;
+            }
+
+            if (requireSetters && setters.Count != SetterNames.Length)
+            {
+                return At(tokens, index, "STRUCT010",
+                    "Implemente os cinco setters públicos dentro da classe Mago.");
+            }
+
             if (index >= tokens.Count || tokens[index].Kind != TokenKind.RightBrace)
             {
                 return At(tokens, index, "SYN007", "Feche a classe Mago depois do construtor.");
@@ -62,7 +77,9 @@ namespace PrograMago.Language
             }
 
             return ExerciseValidationResult.Success(
-                ValidationCriterion.ConstructAndInstantiateMago,
+                requireSetters
+                    ? ValidationCriterion.AddMagoSetters
+                    : ValidationCriterion.ConstructAndInstantiateMago,
                 new ValidatedMagoProgram(
                     exercise.ExpectedClassName,
                     attributes,
@@ -168,6 +185,63 @@ namespace PrograMago.Language
                     "Declare os cinco atributos antes do construtor.");
             }
 
+            return null;
+        }
+
+        private static readonly string[] SetterNames =
+        {
+            "setVida", "setDano", "setAlcance", "setIniciativa", "setVelocidadeAtaque"
+        };
+
+        private static readonly string[] SetterAttributes =
+        {
+            "vida", "dano", "alcance", "iniciativa", "velocidadeAtaque"
+        };
+
+        private static ExerciseValidationResult ParseSetter(
+            IReadOnlyList<Token> tokens, ref int index, HashSet<string> setters)
+        {
+            int start = index;
+            if (!Consume(tokens, ref index, TokenKind.PublicKeyword) ||
+                !Consume(tokens, ref index, TokenKind.VoidKeyword) ||
+                index >= tokens.Count || tokens[index].Kind != TokenKind.Identifier)
+            {
+                return At(tokens, start, "STRUCT010",
+                    "Depois do construtor, declare apenas os setters públicos do Mago.");
+            }
+
+            Token method = tokens[index++];
+            int setterIndex = Array.IndexOf(SetterNames, method.Lexeme);
+            if (setterIndex < 0)
+                return From("STRUCT010", method, "Este bloco deve conter apenas os cinco setters do Mago.");
+            if (!setters.Add(method.Lexeme))
+                return From("STRUCT003", method, "Cada setter deve ser declarado uma única vez.");
+
+            if (!Consume(tokens, ref index, TokenKind.LeftParenthesis) ||
+                !Consume(tokens, ref index, TokenKind.IntKeyword) ||
+                index >= tokens.Count || tokens[index].Kind != TokenKind.Identifier)
+                return At(tokens, index, "STRUCT010", $"Declare {method.Lexeme}(int valor).");
+
+            Token parameter = tokens[index++];
+            if (!Consume(tokens, ref index, TokenKind.RightParenthesis) ||
+                !Consume(tokens, ref index, TokenKind.LeftBrace) ||
+                !Consume(tokens, ref index, TokenKind.ThisKeyword) ||
+                !Consume(tokens, ref index, TokenKind.Dot) ||
+                index >= tokens.Count || tokens[index].Kind != TokenKind.Identifier)
+                return At(tokens, index, "STRUCT010", $"Use this.{SetterAttributes[setterIndex]} = valor dentro do setter.");
+
+            Token field = tokens[index++];
+            if (!Consume(tokens, ref index, TokenKind.Equals) ||
+                index >= tokens.Count || tokens[index].Kind != TokenKind.Identifier)
+                return At(tokens, index, "STRUCT010", $"Atribua o parâmetro ao atributo {SetterAttributes[setterIndex]}.");
+
+            Token assignedValue = tokens[index++];
+            if (field.Lexeme != SetterAttributes[setterIndex] || assignedValue.Lexeme != parameter.Lexeme)
+                return From("STRUCT007", field,
+                    $"{method.Lexeme} deve atribuir seu parâmetro a this.{SetterAttributes[setterIndex]}.");
+            if (!Consume(tokens, ref index, TokenKind.Semicolon) ||
+                !Consume(tokens, ref index, TokenKind.RightBrace))
+                return At(tokens, index, "STRUCT010", $"Finalize {method.Lexeme} com ; e feche o método com }}.");
             return null;
         }
 

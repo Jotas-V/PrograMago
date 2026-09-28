@@ -72,6 +72,7 @@ namespace PrograMago.UnityIntegration
         private MagoState declaredMago;
         private MagoState preparedMago;
         private bool classesLocked;
+        private string setterDraftSource = string.Empty;
         private bool interactionEnabled = true;
         private WorkspaceArea workspaceArea = WorkspaceArea.Classes;
 
@@ -79,7 +80,8 @@ namespace PrograMago.UnityIntegration
         {
             Classes,
             Methods,
-            Preparation
+            Preparation,
+            Strategy
         }
 
         public MagoState CurrentMago { get; private set; }
@@ -393,11 +395,7 @@ namespace PrograMago.UnityIntegration
                 wizardInstance.SetActive(visible);
                 SpriteRenderer sprite = wizardInstance.GetComponent<SpriteRenderer>();
                 if (sprite != null)
-                {
-                    Color color = wizardPrefab.GetComponent<SpriteRenderer>().color;
-                    color.a = CurrentMago == null ? 0.35f : 1f;
-                    sprite.color = color;
-                }
+                    ApplyWizardFormTint(combat == null ? "neutro" : combat.WizardForm);
             }
 
             if (magoStatsText != null)
@@ -408,6 +406,26 @@ namespace PrograMago.UnityIntegration
                       $"Dano: {CurrentMago.Dano} · Alcance: {CurrentMago.Alcance} casas\n" +
                       $"Iniciativa: {CurrentMago.Iniciativa} · Velocidade: {CurrentMago.VelocidadeAtaque}";
             }
+        }
+
+        private void ApplyWizardFormTint(string form)
+        {
+            if (wizardInstance == null) return;
+            SpriteRenderer sprite = wizardInstance.GetComponent<SpriteRenderer>();
+            SpriteRenderer prefabSprite = wizardPrefab.GetComponent<SpriteRenderer>();
+            if (sprite == null || prefabSprite == null) return;
+
+            Color tint;
+            switch (form)
+            {
+                case "piromante": tint = new Color32(255, 125, 95, 255); break;
+                case "hidromante": tint = new Color32(105, 181, 255, 255); break;
+                case "eletromante": tint = new Color32(255, 226, 105, 255); break;
+                default: tint = Color.white; break;
+            }
+            Color color = prefabSprite.color * tint;
+            color.a = CurrentMago == null ? 0.35f : 1f;
+            sprite.color = color;
         }
 
         private void CreateMagoStatsText()
@@ -519,6 +537,10 @@ namespace PrograMago.UnityIntegration
         public void ShowBattle(BattleDefinition battle, int battleNumber, int battleCount)
         {
             battleProgressText.text = $"Batalha {battleNumber}/{battleCount}  •  Arco {battle.Chapter}";
+            TMP_Text battleLabel = battleButton.GetComponentInChildren<TMP_Text>();
+            if (battleLabel != null)
+                battleLabel.text = battle.CompletionMode == BattleCompletionMode.OnCombatVictory
+                    ? "Batalhar" : "Validar código";
             titleText.text = battle.Lesson.Title;
             lessonText.text =
                 $"O QUE É\n{battle.Lesson.WhatItIs}\n\n" +
@@ -528,7 +550,12 @@ namespace PrograMago.UnityIntegration
             objectiveText.text = $"TAREFA\n{battle.Lesson.Task}";
             hintText.text = string.Empty;
             classesLocked = battleNumber >= 4;
-            SetTimelineAvailable(battle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy);
+            if (battle.Criterion == ValidationCriterion.AddMagoSetters)
+            {
+                setterDraftSource = codeBlocks.Snapshot()[0];
+                if (string.IsNullOrEmpty(approvedCode)) approvedCode = setterDraftSource;
+            }
+            SetTimelineAvailable(battle.CompletionMode == BattleCompletionMode.OnCombatVictory);
             UpdateWorkspaceUi();
             ShowEnemyGuide(battle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy);
         }
@@ -568,15 +595,7 @@ namespace PrograMago.UnityIntegration
         public void SetInteractionEnabled(bool isEnabled)
         {
             interactionEnabled = isEnabled;
-            ColorBlock colors = codeInput.colors;
-            colors.disabledColor = colors.normalColor;
-            codeInput.colors = colors;
-            codeInput.interactable = isEnabled &&
-                (workspaceArea != WorkspaceArea.Classes || !classesLocked);
             battleButton.interactable = isEnabled;
-            for (int index = 0; index < codeBlockButtons.Length; index++)
-                if (codeBlockButtons[index] != null)
-                    codeBlockButtons[index].interactable = isEnabled && !classesLocked;
             UpdateWorkspaceUi();
         }
         public void ShowRestartProgress(float progress)
@@ -621,7 +640,7 @@ namespace PrograMago.UnityIntegration
 
         private void HandleBattle()
         {
-            if (learningFlowPresenter.Progress.CurrentBattle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy)
+            if (learningFlowPresenter.Progress.CurrentBattle.CompletionMode == BattleCompletionMode.OnCombatVictory)
             {
                 if (!TryApplyPreparation() || !CompileTimeline()) return;
             }
@@ -635,8 +654,11 @@ namespace PrograMago.UnityIntegration
         }
         private void HandleCodeChanged(string _)
         {
+            if (!KeepApprovedMagoSource()) return;
             StoreWorkspaceText();
-            if (workspaceArea == WorkspaceArea.Classes && selectedCombatBlock < 0)
+            bool setterLesson = learningFlowPresenter != null &&
+                learningFlowPresenter.Progress.CurrentBattle.Criterion == ValidationCriterion.AddMagoSetters;
+            if (workspaceArea == WorkspaceArea.Classes && selectedCombatBlock < 0 && !setterLesson)
                 presenter.Preview();
             RefreshCodeBlockButtons();
             RefreshCombatActionButtons();
@@ -649,20 +671,21 @@ namespace PrograMago.UnityIntegration
             CreateTimelineStrip();
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
+                string[] labels = { "1 · Mago", "2 · Inimigo", "3 · Estratégia" };
                 Button button = CreateArrow($"CodeBlockButton{index + 1}", definitionStrip,
-                    $"{index + 1} · Código", index * 94f, 90f);
+                    labels[index], index * 86f, 82f);
                 button.gameObject.name = $"CodeBlockButton{index + 1}";
                 button.onClick.RemoveAllListeners();
                 RectTransform rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.zero;
                 rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 94f, 6f);
-                rect.sizeDelta = new Vector2(90f, 40f);
+                rect.anchoredPosition = new Vector2(index * 86f, 6f);
+                rect.sizeDelta = new Vector2(82f, 40f);
                 TMP_Text label = button.GetComponentInChildren<TMP_Text>();
                 if (label != null)
                 {
-                    label.text = $"{index + 1} · Código";
+                    label.text = labels[index];
                     label.fontSize = 16;
                 }
 
@@ -676,9 +699,11 @@ namespace PrograMago.UnityIntegration
 
         private void SelectCodeBlock(int index)
         {
-            if (workspaceArea == WorkspaceArea.Classes && selectedCombatBlock < 0 && codeBlocks.ActiveIndex == index) return;
+            if (index < 0 || index >= codeBlockButtons.Length || !IsCodeBlockEditable(index)) return;
+            if ((workspaceArea == WorkspaceArea.Classes || workspaceArea == WorkspaceArea.Strategy) &&
+                selectedCombatBlock < 0 && codeBlocks.ActiveIndex == index) return;
             StoreWorkspaceText();
-            workspaceArea = WorkspaceArea.Classes;
+            workspaceArea = index == 2 ? WorkspaceArea.Strategy : WorkspaceArea.Classes;
             selectedCombatBlock = -1;
             codeBlocks.Select(index);
             codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
@@ -690,11 +715,12 @@ namespace PrograMago.UnityIntegration
 
         private void RefreshCodeBlockButtons()
         {
-            string[] titles = { "Mago", "Inimigo", "Código" };
+            string[] titles = { "Mago", "Inimigo", "Estratégia" };
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
+                if (codeBlockButtons[index] == null) continue;
                 var background = codeBlockButtons[index].targetGraphic;
-                background.color = workspaceArea == WorkspaceArea.Classes &&
+                background.color = (workspaceArea == WorkspaceArea.Classes || workspaceArea == WorkspaceArea.Strategy) &&
                     selectedCombatBlock < 0 && index == codeBlocks.ActiveIndex
                     ? new Color32(91, 74, 190, 255)
                     : new Color32(69, 70, 90, 255);
@@ -721,7 +747,7 @@ namespace PrograMago.UnityIntegration
                 : (CombatElement[])extraSpells.Clone();
             MagoState combatMago = preparedMago ?? declaredMago ?? CurrentMago;
             combat = new CombatEngine(CombatWizard.FromMago(combatMago,
-                activeExtraSpells), CurrentEnemies);
+                activeExtraSpells), CurrentEnemies, compiledStrategy);
             if (!CompileTimeline()) { combat = null; return; }
             ClearCombatPresentation();
             combatAccumulator = 0f;
@@ -939,6 +965,7 @@ namespace PrograMago.UnityIntegration
         private void RenderCombatState()
         {
             if (combat == null) return;
+            ApplyWizardFormTint(combat.WizardForm);
             magoStatsText.text = $"Mago {CurrentMago.InstanceName} — Vida: {combat.WizardLife}/{CurrentMago.Vida}\n" +
                 $"Casa: {combat.WizardPosition + 1}  Dano: {CurrentMago.Dano}  Alcance: {CurrentMago.Alcance}\n" +
                 $"Iniciativa: {CurrentMago.Iniciativa}  Velocidade: {CurrentMago.VelocidadeAtaque}  Pontos: {25 - CurrentMago.RemainingPoints}/25";
@@ -1013,11 +1040,11 @@ namespace PrograMago.UnityIntegration
 
             try
             {
+                StoreWorkspaceText();
                 PhaseOneSaveData data = learningFlowPresenter.Progress.CapturePhaseOne(
                     SourceCode, approvedCode, codeBlocks.Snapshot(), codeBlocks.ActiveIndex);
                 data.combatBlocks = combatCodeBlocks.ToArray();
                 data.timelineOrder = timelineOrder.ToArray();
-                StoreWorkspaceText();
                 data.approvedMethods = new List<string>(magoMethodBook.ApprovedSources).ToArray();
                 data.methodDraft = methodDraft ?? string.Empty;
                 data.preparationCode = preparationCode ?? string.Empty;

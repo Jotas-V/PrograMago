@@ -40,7 +40,12 @@ namespace PrograMago.Language
 
             if (criterion == ValidationCriterion.ConstructAndInstantiateMago)
             {
-                return new MagoConstructionValidator(rules).Validate(tokens, exercise);
+                return new MagoConstructionValidator(rules, false).Validate(tokens, exercise);
+            }
+
+            if (criterion == ValidationCriterion.AddMagoSetters)
+            {
+                return new MagoConstructionValidator(rules, true).Validate(tokens, exercise);
             }
 
             if (criterion == ValidationCriterion.ConstructAndInstantiateEnemy)

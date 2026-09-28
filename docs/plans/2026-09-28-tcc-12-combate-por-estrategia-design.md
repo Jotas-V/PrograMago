@@ -2,7 +2,7 @@
 
 ## Problema
 
-A interface atual separa a declaração de métodos da classe Mago, mostra um bloco genérico sem finalidade explícita e oferece uma timeline arrastável embora o combate atual aceite uma única ação. O código também congela as classes inteiras depois da terceira etapa, impedindo que o jogador acrescente os setters dentro da classe. O conteúdo anuncia oito etapas, mas só as quatro primeiras têm critérios implementados. A seleção elemental é automática no motor, então um `if/else` escrito pelo jogador não teria efeito.
+A interface antiga separava métodos da classe Mago, mostrava um bloco genérico e oferecia uma timeline arrastável embora o combate jogável use uma única ação. O conteúdo anterior anunciava oito etapas, mas não ensinava a redistribuição dos atributos nem permitia ao jogador escolher a forma elemental.
 
 ## Resultado esperado
 
@@ -10,12 +10,12 @@ O aluno monta as classes progressivamente, mantém o código aprovado e acrescen
 
 ## Organização dos editores
 
-- **Mago:** documento cumulativo com a classe, atributos privados, construtor, setters, método de magia, especializações e instância. Métodos pertencem à classe. Não há workspace de Métodos nem botão “Aprovar método”.
+- **Mago:** documento cumulativo com classe, atributos privados, construtor, setters e instância. Métodos pertencem à classe. Ao aprender setters, o código aprovado fica protegido e a nova implementação só pode ser inserida antes da chave final de Mago. Não há workspace de Métodos nem botão “Aprovar método”.
 - **Inimigo:** documento cumulativo com a classe, atributos, construtor, métodos de consulta e instâncias.
 - **Ajustes:** chamadas aos setters. Aplicadas uma vez antes de cada tentativa, sempre sobre os valores originais do construtor.
-- **Estratégia:** um único bloco de código de batalha, sem reordenar ações. O motor fornece a referência `alvo` para o inimigo vivo escolhido naquele turno. O código seleciona uma forma/magia e chama `mago.lancarMagia(alvo)`.
+- **Estratégia:** o terceiro seletor da faixa inferior; fica bloqueado enquanto o Boneco for o único inimigo. Depois que formas e inimigos elementais forem ensinados, libera um único bloco com `if/else`, sem reordenar ações. O motor fornece a referência `alvo` para o inimigo vivo escolhido naquele turno. O código seleciona a forma, e a ação Atacar executa a magia.
 
-O código já aprovado fica visível e somente para leitura. A etapa atual abre uma área editável que é montada no ponto correto: métodos antes da chave que fecha a classe; instâncias depois da classe. O programa montado aparece como um documento contínuo, e erros apontam a área e a linha em edição.
+O código já aprovado fica visível e protegido. Na fase dos setters, o jogador pode acrescentar somente métodos dentro da classe Mago; alterar campos, construtor ou instância aprovados é rejeitado. Na fase do inimigo, só o bloco Inimigo fica editável. O texto composto usado para validação reúne Mago e Inimigo e ignora Estratégia.
 
 ## Mago único e formas elementais
 
@@ -30,7 +30,7 @@ O mapeamento aprovado é:
 | água | eletricidade / Eletromante |
 | neutro | magia neutra |
 
-O sprite de fogo usa tons vermelhos e alaranjados com efeito de fogo; água usa tons azuis e efeito aquático; eletricidade usa amarelo e raio; neutro mantém a aparência base. O projétil acompanha a forma escolhida. O motor deixa de selecionar a magia automaticamente quando recebe uma Estratégia válida. Uma escolha errada continua podendo causar um ataque ineficaz.
+O sprite único recebe uma tonalidade vermelha/laranja no fogo, azul na água e amarela na eletricidade; neutro mantém a aparência base. O projétil acompanha a forma escolhida. O motor deixa de selecionar a magia automaticamente quando recebe uma Estratégia válida. Uma escolha errada continua podendo causar um ataque ineficaz.
 
 ## Progressão em nove etapas
 
@@ -46,7 +46,7 @@ O sprite de fogo usa tons vermelhos e alaranjados com efeito de fogo; água usa 
 
 ## Exemplos progressivos
 
-Os exemplos a seguir definem o contrato pedagógico pretendido. As etapas 5–9 ainda não passam nos validadores atuais e só serão exemplos copiáveis para teste depois da implementação dos respectivos critérios.
+Os exemplos progressivos completos, incluindo chamadas de Ajustes e as etapas futuras, ficam em [tcc-12-exemplos-por-fase.md](../tcc-12-exemplos-por-fase.md). As fases 1–5 estão no fluxo jogável; as fases 6–9 descrevem a continuação e permanecem bloqueadas até as issues de progressão e conteúdo elemental.
 
 ### Etapa 1 — classe
 
@@ -90,7 +90,7 @@ Mago mago = new Mago(5, 5, 5, 5, 5);
 
 ### Etapa 4 — setters dentro da classe e chamadas em Ajustes
 
-Acrescentar dentro de `Mago`, antes da chave final:
+Acrescente os cinco setters dentro de `Mago`, antes da chave final:
 
 ```java
 public void setAlcance(int valor) {
@@ -100,6 +100,18 @@ public void setAlcance(int valor) {
 public void setDano(int valor) {
     this.dano = valor;
 }
+
+public void setVida(int valor) {
+    this.vida = valor;
+}
+
+public void setIniciativa(int valor) {
+    this.iniciativa = valor;
+}
+
+public void setVelocidadeAtaque(int valor) {
+    this.velocidadeAtaque = valor;
+}
 ```
 
 No bloco Ajustes:
@@ -107,6 +119,9 @@ No bloco Ajustes:
 ```java
 mago.setAlcance(7);
 mago.setDano(3);
+mago.setVida(5);
+mago.setIniciativa(5);
+mago.setVelocidadeAtaque(5);
 ```
 
 Com os valores iniciais `5, 5, 5, 5, 5`, a nova build fica `vida=5, dano=3, alcance=7, iniciativa=5, velocidadeAtaque=5`, ainda totalizando 25. Atributos sem chamada mantêm seus valores de origem. Se a soma final exceder 25 ou algum valor sair de 1–15, rejeitar a build inteira sem aplicação parcial.
@@ -201,7 +216,7 @@ O vocabulário final do compilador deve permanecer pequeno e seguro, aceitar som
 
 ## Verificação
 
-- Testes EditMode para composição do código progressivo, proteção dos trechos concluídos, inserção de métodos/instâncias nos pontos corretos, orçamento dos setters, compilação condicional e seleção de forma por elemento.
+- Testes EditMode para setters, proteção dos trechos concluídos, orçamento, conteúdo com nove fases, compilação condicional e seleção de forma por elemento.
 - Testes PlayMode para uma única entidade Mago, mudança de sprite/projétil sem perder vida/atributos/posição, seleção de forma por turno, movimento automático, Boneco parado, vitória, derrota e nova tentativa.
 - Abrir a MainScene sem Play para conferir a prévia e validar visualmente as quatro formas durante o combate no Unity.
 - Executar EditMode e PlayMode no Unity Editor.

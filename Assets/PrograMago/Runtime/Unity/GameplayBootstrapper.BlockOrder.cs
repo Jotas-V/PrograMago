@@ -20,7 +20,7 @@ namespace PrograMago.UnityIntegration
                 string[] definitions = codeBlocks.Snapshot();
                 foreach (int id in timelineOrder)
                 {
-                    if (id >= 3 || string.IsNullOrEmpty(definitions[id])) continue;
+                    if (id >= 2 || string.IsNullOrEmpty(definitions[id])) continue;
                     if (source.Length > 0) source.Append('\n');
                     source.Append(definitions[id]);
                 }
@@ -30,19 +30,10 @@ namespace PrograMago.UnityIntegration
 
         private CodeBlockLocation LocateOrderedSource(int offset)
         {
-            var ordered = new List<string>();
-            var positions = new List<int>();
             string[] definitions = codeBlocks.Snapshot();
-            for (int i = 0; i < timelineOrder.Count; i++)
-                if (timelineOrder[i] < 3)
-                {
-                    ordered.Add(definitions[timelineOrder[i]]);
-                    positions.Add(i + 1);
-                }
             var document = new CodeBlockDocument();
-            document.Restore(ordered.ToArray(), 0);
-            CodeBlockLocation location = document.Locate(offset);
-            return new CodeBlockLocation(positions[location.BlockNumber - 1], location.Line, location.Column);
+            document.Restore(definitions, 0);
+            return document.Locate(offset);
         }
 
         private void RestoreTimelineOrder(int[] saved)
