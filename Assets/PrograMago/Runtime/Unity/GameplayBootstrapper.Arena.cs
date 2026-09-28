@@ -91,6 +91,7 @@ namespace PrograMago.UnityIntegration
                     arenaWorldRect.height / (size.y * parentScale.y), 1 / parentScale.z);
             }
             UpdateReachIndicators();
+            UpdateArenaAtmosphere();
         }
 
         private void UpdateReachIndicators()
@@ -112,7 +113,7 @@ namespace PrograMago.UnityIntegration
 
         private void StandInCell(GameObject actor, int cell)
         {
-            if (actor == null) return;
+            if (actor == null || IsActorMoving(actor)) return;
             SpriteRenderer sprite = actor.GetComponentInChildren<SpriteRenderer>();
             Vector3 ground = CellGroundPosition(cell);
             Transform feet = actor.transform.Find("CombatFootAnchor");

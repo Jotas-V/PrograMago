@@ -72,6 +72,9 @@ namespace PrograMago.UnityIntegration
                 CreateEnemyGuide();
             }
             EnsureWorkspaceControls();
+            LoadTCC40Visuals();
+            ApplyTCC40PresentationArt();
+            EnsureArenaAtmosphere();
             RestoreTimelineOrder(null);
             DisableLegacyTimelineControls();
             SetTimelineAvailable(true);

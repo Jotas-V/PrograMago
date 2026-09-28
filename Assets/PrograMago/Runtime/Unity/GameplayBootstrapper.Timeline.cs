@@ -57,16 +57,18 @@ namespace PrograMago.UnityIntegration
 
         private UnityEngine.UI.Button CreateArrow(string name, Transform parent, string label, float x, float width)
         {
-            var item = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TimelineArrowGraphic), typeof(UnityEngine.UI.Button));
+            var item = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer),
+                typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Button));
             RectTransform rect = item.GetComponent<RectTransform>();
             rect.SetParent(parent, false);
             rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
             rect.anchoredPosition = new Vector2(x, 9);
             rect.sizeDelta = new Vector2(width, 41);
-            var graphic = item.GetComponent<TimelineArrowGraphic>();
-            graphic.color = new Color32(39, 77, 92, 255);
             var button = item.GetComponent<UnityEngine.UI.Button>();
-            button.targetGraphic = graphic;
+            var image = item.GetComponent<UnityEngine.UI.Image>();
+            button.targetGraphic = image;
+            image.color = new Color32(39, 77, 92, 255);
+            ApplyButtonArt(button, false);
             TMP_Text text = CreateLabel(name + "Label", rect, label, new Vector2(0.1f, 0.08f), new Vector2(0.88f, 0.92f));
             text.fontSizeMin = 11;
             text.fontSizeMax = 16;

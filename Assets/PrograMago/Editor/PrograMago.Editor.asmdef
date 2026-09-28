@@ -1,0 +1,11 @@
+{
+  "name": "PrograMago.Editor",
+  "rootNamespace": "PrograMago.Editor",
+  "references": [
+    "PrograMago.Unity"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}

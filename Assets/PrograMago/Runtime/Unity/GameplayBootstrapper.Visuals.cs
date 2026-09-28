@@ -15,6 +15,12 @@ namespace PrograMago.UnityIntegration
         private void PresentCombatStep(CombatEvent step)
         {
             if (step.BlockIndex >= 0) trace.Enqueue(step);
+            if (step.Kind == CombatEventKind.Hit || step.Kind == CombatEventKind.Ineffective)
+            {
+                if (step.Actor == "Mago") PlayWizardAttack();
+                if (step.Kind == CombatEventKind.Hit)
+                    FlashCombatTarget(FindCombatActor(step.Target)?.gameObject, step.Element);
+            }
             if (step.Kind != CombatEventKind.Hit && step.Kind != CombatEventKind.Ineffective) return;
             if (!projectilePrefabs.TryGetValue(step.Element, out GameObject prefab))
             {
@@ -66,6 +72,7 @@ namespace PrograMago.UnityIntegration
 
         private void ClearCombatPresentation()
         {
+            StopWizardMove();
             foreach (var projectile in projectiles) if (projectile != null) Destroy(projectile.gameObject);
             projectiles.Clear();
             trace.Clear();

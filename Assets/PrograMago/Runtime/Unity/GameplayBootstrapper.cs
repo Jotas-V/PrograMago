@@ -117,7 +117,10 @@ namespace PrograMago.UnityIntegration
                 return;
             }
 
+            LoadTCC40Visuals();
             if (!BindScenePresentation()) { enabled = false; return; }
+            ApplyTCC40PresentationArt();
+            EnsureArenaAtmosphere();
             UpdateArenaPresentation();
             PositionWizardSpawnPoint();
 
@@ -306,6 +309,7 @@ namespace PrograMago.UnityIntegration
             UpdateArenaPresentation();
             PositionWizardSpawnPoint();
             PositionCombatActors();
+            UpdateSpectralWizardIdle();
         }
 
         public void ShowError(Diagnostic diagnostic)
@@ -386,6 +390,8 @@ namespace PrograMago.UnityIntegration
                 wizardInstance = Instantiate(wizardPrefab, wizardSpawnPoint);
                 wizardInstance.name = wizardPrefab.name;
                 wizardInstance.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                Animator prefabAnimator = wizardPrefab.GetComponent<Animator>();
+                wizardBaseController = prefabAnimator == null ? null : prefabAnimator.runtimeAnimatorController;
             }
 
             if (wizardInstance != null)
@@ -408,22 +414,7 @@ namespace PrograMago.UnityIntegration
 
         private void ApplyWizardFormTint(string form)
         {
-            if (wizardInstance == null) return;
-            SpriteRenderer sprite = wizardInstance.GetComponent<SpriteRenderer>();
-            SpriteRenderer prefabSprite = wizardPrefab.GetComponent<SpriteRenderer>();
-            if (sprite == null || prefabSprite == null) return;
-
-            Color tint;
-            switch (form)
-            {
-                case "piromante": tint = new Color32(255, 125, 95, 255); break;
-                case "hidromante": tint = new Color32(105, 181, 255, 255); break;
-                case "eletromante": tint = new Color32(255, 226, 105, 255); break;
-                default: tint = Color.white; break;
-            }
-            Color color = prefabSprite.color * tint;
-            color.a = CurrentMago == null ? 0.35f : 1f;
-            sprite.color = color;
+            ApplyWizardAppearance(form);
         }
 
         private void CreateMagoStatsText()
@@ -876,7 +867,9 @@ namespace PrograMago.UnityIntegration
             rect.anchorMax = anchorMax;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-            item.GetComponent<Image>().color = color;
+            Image image = item.GetComponent<Image>();
+            image.color = color;
+            ApplyCreatedPanelArt(name, image);
             return rect;
         }
 
@@ -886,6 +879,8 @@ namespace PrograMago.UnityIntegration
             RectTransform rect = CreatePanel(name, parent, anchorMin, anchorMax,
                 new Color32(83, 67, 152, 255));
             Button button = rect.gameObject.AddComponent<Button>();
+            button.targetGraphic = rect.GetComponent<Image>();
+            ApplyButtonArt(button, name == "BattleButton");
             CreateLabel(name + "Label", rect, label, Vector2.zero, Vector2.one);
             return button;
         }
@@ -939,6 +934,7 @@ namespace PrograMago.UnityIntegration
                     combatStatusText.color = new Color32(219, 228, 224, 255);
                     break;
                 case CombatEventKind.Move:
+                    if (action.Actor == "Mago") AnimateWizardMove(action.Position);
                     combatStatusText.text = $"{actor} avança para a casa {action.Position + 1} para entrar no alcance.";
                     combatStatusText.color = new Color32(255, 214, 137, 255);
                     break;

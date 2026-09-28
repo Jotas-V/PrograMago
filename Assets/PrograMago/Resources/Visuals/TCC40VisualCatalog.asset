@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91adb3d05f561204e8828be9fa3ef2a4, type: 3}
+  m_Name: TCC40VisualCatalog
+  m_EditorClassIdentifier: PrograMago.Unity::PrograMago.UnityIntegration.TCC40VisualCatalog
+  spectralWizard: {fileID: 21300000, guid: 313de4bbc88958a41ab900a068bcf1b6, type: 3}
+  pyromancerController: {fileID: 22100000, guid: 0dc42b223b060bf4786e2112affbd9ec, type: 2}
+  hydromancerController: {fileID: 22100000, guid: d9d624cb56dd13a478e9a3cc428b5ef5, type: 2}
+  electromancerController: {fileID: 22100000, guid: 129c68bf894e0a7408eb267956e9afc5, type: 2}
+  workspacePanel: {fileID: 1344505198, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  codePanel: {fileID: -332417872, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  codeTray: {fileID: 1693572663, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  victoryPanel: {fileID: -360732180, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  battleButtonStates:
+  - {fileID: 683894319, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  - {fileID: -858657687, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  - {fileID: 2003424145, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  - {fileID: -1834825609, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  actionButtonStates:
+  - {fileID: 417708703, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  - {fileID: -1851470697, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  - {fileID: 1854223324, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  - {fileID: 2011651370, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
+  arenaWindFrames:
+  - {fileID: -37846550, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: -794261698, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: 1833421900, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: -748690559, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  arenaLeafFrames:
+  - {fileID: 1005761760, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: -1674558809, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: -829065057, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: 30600794, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  arenaFireflyFrames:
+  - {fileID: 1285780424, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: 1902031405, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: 437998230, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
+  - {fileID: -2134698272, guid: 3fb9acc5afc77ef4f83eb2b5e8ac757c, type: 3}
