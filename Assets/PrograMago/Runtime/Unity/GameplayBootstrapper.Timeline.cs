@@ -48,9 +48,10 @@ namespace PrograMago.UnityIntegration
             definitionStrip = CreatePanel("DefinitionBlocks", timelineContent, Vector2.zero, Vector2.zero, Color.clear);
             definitionStrip.pivot = Vector2.zero;
             definitionStrip.sizeDelta = new Vector2(306, 68);
-            TMP_Text label = CreateLabel("DefinitionBlocksTitle", definitionStrip, "SEQUÊNCIA DE CÓDIGO · clique para editar · arraste para ordenar", new Vector2(0, 0.75f), Vector2.one);
+            TMP_Text label = CreateLabel("DefinitionBlocksTitle", definitionStrip, string.Empty, new Vector2(0, 0.75f), Vector2.one);
             label.fontSizeMax = 14;
             label.alignment = TextAlignmentOptions.Left;
+            LayoutDefinitionStrip();
         }
 
         private UnityEngine.UI.Button CreateArrow(string name, Transform parent, string label, float x, float width)
@@ -75,7 +76,7 @@ namespace PrograMago.UnityIntegration
         {
             RectTransform panel = CreatePanel("CombatActionPanel", timelineContent, Vector2.zero, Vector2.zero, Color.clear);
             panel.pivot = Vector2.zero;
-            panel.anchoredPosition = new Vector2(320, 0);
+            panel.anchoredPosition = new Vector2(CombatActionStripStartX, 0);
             combatActionPanel = panel.gameObject;
             CreateInitialActionArrows();
         }
@@ -84,25 +85,19 @@ namespace PrograMago.UnityIntegration
         {
             if (combatActionPanel == null) return;
             combatActionButtons.Clear();
-            float width = combatCodeBlocks.Count * 148 + 85;
-            ((RectTransform)combatActionPanel.transform).sizeDelta = new Vector2(width, 68);
+            ((RectTransform)combatActionPanel.transform).sizeDelta = new Vector2(122, 68);
             TMP_Text title = CreateLabel("CombatActionTitle", combatActionPanel.transform,
-                "AÇÕES EM CICLO · arraste para ordenar · role para ver mais", new Vector2(0, 0.75f), Vector2.one);
+                "AÇÃO DE BATALHA", new Vector2(0, 0.75f), Vector2.one);
             title.alignment = TextAlignmentOptions.Left;
             title.fontSizeMax = 12;
-            title.gameObject.SetActive(false);
-            for (int i = 0; i < combatCodeBlocks.Count; i++)
+            for (int i = 0; i < Mathf.Min(1, combatCodeBlocks.Count); i++)
             {
                 int index = i;
-                var button = CreateArrow("CombatAction" + (i + 1), combatActionPanel.transform, CombatBlockLabel(combatCodeBlocks[i]), i * 148, 144);
+                var button = CreateArrow("CombatAction" + (i + 1), combatActionPanel.transform,
+                    CombatBlockLabel(combatCodeBlocks[i]), 0, 116);
                 button.onClick.AddListener(() => SelectCombatBlock(index));
-                button.gameObject.AddComponent<CombatActionDragHandle>().Configure(this, index);
                 combatActionButtons.Add(button);
             }
-            addCombatBlockButton = CreateArrow("AddCombatBlockButton", combatActionPanel.transform, "+", combatCodeBlocks.Count * 148, 40);
-
-            removeCombatBlockButton = CreateArrow("RemoveCombatBlockButton", combatActionPanel.transform, "−", combatCodeBlocks.Count * 148 + 42, 40);
-
             ResizeTimeline();
             RefreshCombatActionButtons();
         }
@@ -151,7 +146,8 @@ namespace PrograMago.UnityIntegration
                 var button = combatActionButtons[i];
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => SelectCombatBlock(index));
-                button.GetComponent<CombatActionDragHandle>().Configure(this, i);
+                CombatActionDragHandle dragHandle = button.GetComponent<CombatActionDragHandle>();
+                if (dragHandle != null) dragHandle.enabled = false;
             }
             ResizeTimeline();
             RefreshCombatActionButtons();
@@ -176,55 +172,31 @@ namespace PrograMago.UnityIntegration
 
         private void SelectCombatBlock(int index)
         {
+            if (index < 0 || index >= combatCodeBlocks.Count) return;
             StoreSelectedBlock();
             workspaceArea = WorkspaceArea.Classes;
             selectedCombatBlock = index;
             codeInput.SetTextWithoutNotify(combatCodeBlocks[index]);
+            UpdateWorkspaceUi();
             RefreshCodeBlockButtons();
             RefreshCombatActionButtons();
             feedbackText.color = new Color32(40, 82, 100, 255);
-            feedbackText.text = $"Comando {BlockNumber(index + 3)} · lance a magia com alcance e atributos atuais.\nArraste os comandos para definir a ordem de cada ciclo.";
-        }
-
-        private void AddCombatBlock()
-        {
-            if (combat != null || combatCodeBlocks.Count >= 16) return;
-            StoreSelectedBlock();
-            combatCodeBlocks.Add((CurrentMago == null ? "mago" : CurrentMago.InstanceName) + ".lancarMagia();");
-            timelineOrder.Add(combatCodeBlocks.Count + 2);
-            RebuildActionArrows();
-            SelectCombatBlock(combatCodeBlocks.Count - 1);
-            timelineScroll.horizontalNormalizedPosition = 1;
-            SaveProgress();
-        }
-
-        private void RemoveCombatBlock()
-        {
-            if (combat != null || selectedCombatBlock < 0 || combatCodeBlocks.Count <= 1) return;
-            int removed = selectedCombatBlock + 3;
-            timelineOrder.Remove(removed);
-            for (int i = 0; i < timelineOrder.Count; i++) if (timelineOrder[i] > removed) timelineOrder[i]--;
-            combatCodeBlocks.RemoveAt(selectedCombatBlock);
-            selectedCombatBlock = -1;
-            codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
-            RebuildActionArrows();
-            SaveProgress();
+            feedbackText.text = "Atacar · o comando é executado automaticamente em cada turno do Mago.";
         }
 
         private bool CompileTimeline()
         {
             StoreSelectedBlock();
-            var orderedIds = timelineOrder.FindAll(id => id >= 3);
-            var orderedCode = orderedIds.ConvertAll(id => combatCodeBlocks[id - 3]);
-            if (!CombatCodeCompiler.TryCompileBattle(orderedCode, CurrentMago == null ? "mago" : CurrentMago.InstanceName, out CombatAction[] actions, out int[] origins, out int block, out string error))
+            if (!CombatCodeCompiler.TryCompileBattle(combatCodeBlocks,
+                CurrentMago == null ? "mago" : CurrentMago.InstanceName,
+                out CombatAction[] actions, out int[] origins, out int block, out string error))
             {
                 feedbackText.color = new Color32(156, 39, 49, 255);
-                feedbackText.text = $"Comando {(block >= 0 ? BlockNumber(orderedIds[block]) : 1)}: {error}";
+                feedbackText.text = $"Comando {(block >= 0 ? block + 1 : 1)}: {error}";
                 if (block >= 0 && block < combatActionButtons.Count)
-                    combatActionButtons[orderedIds[block] - 3].targetGraphic.color = new Color32(155, 58, 66, 255);
+                    combatActionButtons[block].targetGraphic.color = new Color32(155, 58, 66, 255);
                 return false;
             }
-            for (int i = 0; i < origins.Length; i++) origins[i] = timelineOrder.IndexOf(orderedIds[origins[i]]);
             if (combat != null) combat.ConfigureActions(actions, origins);
             return true;
         }

@@ -94,14 +94,14 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
-        public void Tick_OutOfRangeStaysInPlaceWithoutDamaging()
+        public void Tick_OutOfRangeMovesWizardOneCellWithoutDamaging()
         {
             CombatEngine engine = CreateEngine(8, 5, 1, 10, 5, "neutro");
 
             CombatEvent action = engine.Tick();
 
-            Assert.That(action.Kind, Is.EqualTo(CombatEventKind.OutOfRange));
-            Assert.That(engine.WizardPosition, Is.Zero);
+            Assert.That(action.Kind, Is.EqualTo(CombatEventKind.Move));
+            Assert.That(engine.WizardPosition, Is.EqualTo(1));
             Assert.That(engine.Enemies[0].Life, Is.EqualTo(10));
         }
 

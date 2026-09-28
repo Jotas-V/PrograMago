@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Text;
 using PrograMago.Application;
+using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
 
 namespace PrograMago.UnityIntegration
@@ -45,88 +47,83 @@ namespace PrograMago.UnityIntegration
 
         private void RestoreTimelineOrder(int[] saved)
         {
-            for (int index = 0; index < combatCodeBlocks.Count; index++)
+            string attackCode = "lancarMagia();";
+            string instanceName = CurrentMago == null ? "mago" : CurrentMago.InstanceName;
+            for (int index = combatCodeBlocks.Count - 1; index >= 0; index--)
             {
-                string command = combatCodeBlocks[index] ?? string.Empty;
-                if (command.Contains("analisarAlvo") || command.Contains("selecionarMagia"))
-                    combatCodeBlocks[index] = "lancarMagia();";
+                if (CombatCodeCompiler.TryCompileBattle(new[] { combatCodeBlocks[index] },
+                    instanceName, out _, out _, out _, out _))
+                {
+                    attackCode = combatCodeBlocks[index];
+                    break;
+                }
             }
-            if (combatCodeBlocks.Count == 0)
-                combatCodeBlocks.Add("lancarMagia();");
-            int count = 3 + combatCodeBlocks.Count;
-            var seen = new HashSet<int>();
-            bool valid = saved != null && saved.Length == count;
-            if (valid)
-                foreach (int id in saved)
-                    if (id < 0 || id >= count || !seen.Add(id)) { valid = false; break; }
+            combatCodeBlocks.Clear();
+            combatCodeBlocks.Add(attackCode);
             timelineOrder.Clear();
-            if (valid) timelineOrder.AddRange(saved);
-            else for (int i = 0; i < count; i++) timelineOrder.Add(i);
+            timelineOrder.AddRange(new[] { 0, 1, 2, 3 });
+            RebuildActionArrows();
+            for (int index = 0; index < codeBlockButtons.Length; index++)
+            {
+                CombatActionDragHandle dragHandle = codeBlockButtons[index] == null
+                    ? null : codeBlockButtons[index].GetComponent<CombatActionDragHandle>();
+                if (dragHandle != null) dragHandle.enabled = false;
+            }
+            if (addCombatBlockButton != null) addCombatBlockButton.gameObject.SetActive(false);
+            if (removeCombatBlockButton != null) removeCombatBlockButton.gameObject.SetActive(false);
             RefreshCodeBlockButtons();
-            RefreshCombatActionButtons();
-            RefreshTimelineLayout();
         }
 
         public void MoveTimelineBlock(int sourceId, int targetId)
         {
-            if (!CanReorderCombatActions || sourceId == targetId || sourceId < 3 || targetId < 3) return;
-            int from = timelineOrder.IndexOf(sourceId), to = timelineOrder.IndexOf(targetId);
-            if (from < 0 || to < 0) return;
-            StoreSelectedBlock();
-            timelineOrder.RemoveAt(from);
-            timelineOrder.Insert(to, sourceId);
-            if (combat != null) { CompileTimeline(); trace.Clear(); }
-            RefreshCodeBlockButtons();
-            RefreshCombatActionButtons();
-            RefreshTimelineLayout();
-            SaveProgress();
+            // The gameplay timeline now contains one fixed Atacar block.
         }
 
         public void RefreshTimelineLayout()
         {
             if (timelineContent == null) return;
-            int actionCount = combatActionButtons.Count;
+            LayoutDefinitionStrip();
+            int actionCount = Mathf.Min(1, combatActionButtons.Count);
             for (int index = 0; index < actionCount; index++)
             {
                 var actionRect = (RectTransform)combatActionButtons[index].transform;
-                actionRect.anchoredPosition = new Vector2(index * 130, 10);
-                actionRect.sizeDelta = new Vector2(122, 42);
+                actionRect.anchoredPosition = new Vector2(index * 126, 9);
+                actionRect.sizeDelta = new Vector2(116, 41);
             }
-            timelineContent.sizeDelta = new Vector2(actionCount * 130 + 90, 68);
+            timelineContent.sizeDelta = new Vector2(TimelineContentWidth, 68);
             if (combatActionPanel != null)
             {
                 var panel = (RectTransform)combatActionPanel.transform;
-                panel.anchoredPosition = Vector2.zero;
-                panel.sizeDelta = timelineContent.sizeDelta;
-                panel.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
-                PositionTimelineControl("AddCombatBlockButton", actionCount * 130 + 12);
-                PositionTimelineControl("RemoveCombatBlockButton", actionCount * 130 + 48);
+                panel.anchorMin = panel.anchorMax = panel.pivot = Vector2.zero;
+                panel.anchoredPosition = new Vector2(CombatActionStripStartX, 0);
+                panel.sizeDelta = new Vector2(122, 68);
+                Image image = panel.GetComponent<Image>();
+                if (image != null) image.raycastTarget = false;
+                Transform title = panel.Find("CombatActionTitle");
+                if (title != null)
+                {
+                    title.gameObject.SetActive(true);
+                    TMP_Text titleText = title.GetComponent<TMP_Text>();
+                    if (titleText != null) titleText.text = "AÇÃO DE BATALHA";
+                    RectTransform titleRect = title.GetComponent<RectTransform>();
+                    titleRect.anchorMin = new Vector2(0, 0.75f);
+                    titleRect.anchorMax = Vector2.one;
+                    titleRect.offsetMin = titleRect.offsetMax = Vector2.zero;
+                }
             }
-            LayoutDefinitionStrip();
         }
 
         private void LayoutDefinitionStrip()
         {
-            if (definitionStrip == null) return;
-            if (editorPanel != null && definitionStrip.parent != editorPanel)
-                definitionStrip.SetParent(editorPanel, false);
-            if (definitionStrip.parent == editorPanel)
-            {
-                definitionStrip.anchorMin = new Vector2(0, 1);
-                definitionStrip.anchorMax = new Vector2(1, 1);
-                definitionStrip.pivot = new Vector2(0, 1);
-                definitionStrip.offsetMin = new Vector2(12, -72);
-                definitionStrip.offsetMax = new Vector2(-12, -4);
-                definitionStrip.GetComponent<UnityEngine.UI.Image>().raycastTarget = true;
-            }
-        }
-        private void PositionTimelineControl(string name, float x)
-        {
-            Transform item = combatActionPanel.transform.Find(name);
-            if (item == null) return;
-            var rect = (RectTransform)item;
-            rect.anchoredPosition = new Vector2(x, 10);
-            rect.sizeDelta = new Vector2(34, 42);
+            if (definitionStrip == null || timelineContent == null) return;
+            if (definitionStrip.parent != timelineContent)
+                definitionStrip.SetParent(timelineContent, false);
+            definitionStrip.anchorMin = definitionStrip.anchorMax = definitionStrip.pivot = Vector2.zero;
+            definitionStrip.anchoredPosition = Vector2.zero;
+            definitionStrip.sizeDelta = new Vector2(DefinitionStripWidth, 68);
+            definitionStrip.SetAsFirstSibling();
+            Image image = definitionStrip.GetComponent<Image>();
+            if (image != null) image.raycastTarget = false;
         }
 
         private UnityEngine.UI.Button TimelineButton(int id) => id < 3 ? codeBlockButtons[id] :
@@ -135,6 +132,5 @@ namespace PrograMago.UnityIntegration
         private UnityEngine.UI.Button TimelineButtonAt(int position) =>
             position >= 0 && position < timelineOrder.Count ? TimelineButton(timelineOrder[position]) : null;
 
-        private int BlockNumber(int id) => timelineOrder.IndexOf(id) + 1;
     }
 }

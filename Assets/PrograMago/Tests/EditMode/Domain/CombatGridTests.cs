@@ -33,14 +33,32 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
-        public void OutOfRange_WizardStaysPutAndDoesNoDamage()
+        public void OutOfRange_WizardAdvancesOneCellPerTurnUntilHeCanAttack()
         {
-            var engine = Create(14, Dummy());
-            var attack = engine.Tick();
-            Assert.That(attack.Kind.ToString(), Is.EqualTo("OutOfRange"));
-            for (int i = 0; i < 200; i++) engine.Tick();
-            Assert.That(engine.WizardPosition, Is.Zero);
+            var engine = Create(5, Dummy());
+            int moves = 0;
+            CombatEvent first = engine.Tick();
+
+            Assert.That(first.Kind, Is.EqualTo(CombatEventKind.Move));
+            Assert.That(engine.WizardPosition, Is.EqualTo(1));
             Assert.That(engine.Enemies[0].Life, Is.EqualTo(10));
+
+            CombatEvent next = null;
+            while (next == null) next = engine.Tick();
+            Assert.That(next.Kind, Is.EqualTo(CombatEventKind.Move));
+            Assert.That(engine.WizardPosition, Is.EqualTo(2));
+            Assert.That(engine.Enemies[0].Life, Is.EqualTo(10));
+
+            for (int tick = 0; tick < 1000 && engine.Outcome == CombatOutcome.InProgress; tick++)
+            {
+                CombatEvent action = engine.Tick();
+                if (action?.Kind == CombatEventKind.Move) moves++;
+            }
+
+            Assert.That(engine.WizardPosition, Is.EqualTo(10));
+            Assert.That(engine.Enemies[0].Life, Is.Zero);
+            Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Victory));
+            Assert.That(moves, Is.EqualTo(8));
         }
 
         [Test]
@@ -70,7 +88,9 @@ namespace PrograMago.Tests.Domain
                 Assert.That(engine.Enemies[0].Position, Is.Not.EqualTo(engine.Enemies[1].Position));
                 Assert.That(engine.Enemies[1].Position, Is.GreaterThan(0));
             }
-            Assert.That(engine.Enemies[1].Position, Is.EqualTo(1));
+            Assert.That(engine.Enemies[0].Position, Is.LessThan(15));
+            Assert.That(engine.Enemies[1].Position, Is.LessThan(14));
+            Assert.That(engine.Enemies[1].Position, Is.GreaterThan(engine.WizardPosition));
             Assert.That(engine.WizardLife, Is.LessThan(20));
         }
     }

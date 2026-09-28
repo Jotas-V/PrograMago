@@ -21,7 +21,6 @@ namespace PrograMago.UnityIntegration
             if (timelineContent == null || enemyGuide == null || magoStatsText == null ||
                 enemyStatsText == null || combatDefeatOverlay == null || editorPanel == null ||
                 pauseCombatButton == null || combatStatusText == null ||
-                addCombatBlockButton == null || removeCombatBlockButton == null ||
                 retryCombatButton == null || editAfterDefeatButton == null ||
                 tutorialPreviousButton == null || tutorialNextButton == null || copyEnemyExampleButton == null)
             {
@@ -36,15 +35,15 @@ namespace PrograMago.UnityIntegration
             combatStatusText.gameObject.SetActive(false);
             pauseCombatButton.gameObject.SetActive(false);
             combatDefeatOverlay.SetActive(false);
+            DisableLegacyTimelineControls();
             for (int i = 0; i < codeBlockButtons.Length; i++)
             {
                 int index = i;
                 codeBlockButtons[i].onClick.AddListener(() => SelectCodeBlock(index));
-                codeBlockButtons[i].GetComponent<CombatActionDragHandle>().ConfigureBlock(this, i);
+                CombatActionDragHandle dragHandle = codeBlockButtons[i].GetComponent<CombatActionDragHandle>();
+                if (dragHandle != null) dragHandle.enabled = false;
             }
             RebuildActionArrows();
-            addCombatBlockButton.onClick.AddListener(AddCombatBlock);
-            removeCombatBlockButton.onClick.AddListener(RemoveCombatBlock);
             pauseCombatButton.onClick.AddListener(ToggleCombatPause);
             retryCombatButton.onClick.AddListener(RetryCombat);
             editAfterDefeatButton.onClick.AddListener(EditAfterDefeat);
@@ -74,6 +73,7 @@ namespace PrograMago.UnityIntegration
             }
             EnsureWorkspaceControls();
             RestoreTimelineOrder(null);
+            DisableLegacyTimelineControls();
             SetTimelineAvailable(true);
             ShowEnemyGuide(true);
             var path = learningPath.ToDomain();
@@ -106,5 +106,21 @@ namespace PrograMago.UnityIntegration
             StandInCell(enemy, Domain.CombatEngine.CellCount - 1);
         }
 #endif
+
+        private void DisableLegacyTimelineControls()
+        {
+            if (addCombatBlockButton != null)
+            {
+                addCombatBlockButton.onClick.RemoveAllListeners();
+                addCombatBlockButton.interactable = false;
+                addCombatBlockButton.gameObject.SetActive(false);
+            }
+            if (removeCombatBlockButton != null)
+            {
+                removeCombatBlockButton.onClick.RemoveAllListeners();
+                removeCombatBlockButton.interactable = false;
+                removeCombatBlockButton.gameObject.SetActive(false);
+            }
+        }
     }
 }

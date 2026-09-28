@@ -60,6 +60,19 @@ namespace PrograMago.Tests.Application
             Assert.That(errorBlock, Is.EqualTo(0));
             Assert.That(error, Does.Contain("lancarMagia"));
         }
+
+        [Test]
+        public void BattleCompile_RejectsMultipleBlocksBecauseAttackRunsAutomatically()
+        {
+            CombatAction[] actions;
+            int[] origins;
+            int errorBlock;
+            string error;
+            Assert.That(CombatCodeCompiler.TryCompileBattle(
+                new[] { "lancarMagia();", "lancarMagia();" }, "jorge",
+                out actions, out origins, out errorBlock, out error), Is.False);
+            Assert.That(error, Does.Contain("único bloco Atacar"));
+        }
         private static object[] Compile(string[] blocks, bool expectedSuccess = true)
         {
             Type type = typeof(CodeBlockDocument).Assembly.GetType("PrograMago.Application.CombatCodeCompiler");

@@ -320,7 +320,8 @@ namespace PrograMago.Domain
             int distance = Math.Abs(target.Position - WizardPosition);
             if (distance > wizard.Range)
             {
-                return new CombatEvent(CurrentTick, "Mago", CombatEventKind.OutOfRange,
+                WizardPosition += Math.Sign(target.Position - WizardPosition);
+                return new CombatEvent(CurrentTick, "Mago", CombatEventKind.Move,
                     target.Source.VariableName, spell, 0, WizardPosition, executingBlock);
             }
             int damage = target.Source.Elemento == "neutro" ? wizard.Damage :
@@ -336,7 +337,7 @@ namespace PrograMago.Domain
         {
             if (Math.Abs(enemy.Position - WizardPosition) > enemy.Range)
             {
-                int next = enemy.Position - 1;
+                int next = enemy.Position + Math.Sign(WizardPosition - enemy.Position);
                 foreach (CombatEnemy occupant in enemies)
                     if (occupant != enemy && occupant.Life > 0 && occupant.Position == next)
                         return new CombatEvent(CurrentTick, enemy.Source.VariableName,

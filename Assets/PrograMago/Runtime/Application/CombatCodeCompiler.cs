@@ -21,9 +21,9 @@ namespace PrograMago.Application
             sourceBlocks = Array.Empty<int>();
             errorBlock = -1;
             error = null;
-            if (blocks == null || blocks.Count == 0 || blocks.Count > 16)
+            if (blocks == null || blocks.Count != 1)
             {
-                error = "Use de 1 a 16 blocos de combate.";
+                error = "Use um único bloco Atacar na timeline.";
                 return false;
             }
             if (string.IsNullOrWhiteSpace(instanceName))

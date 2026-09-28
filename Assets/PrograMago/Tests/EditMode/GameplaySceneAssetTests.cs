@@ -34,9 +34,25 @@ namespace PrograMago.Tests.UnityIntegration
         public void Scene_PersistsArenaTimelineAndTutorialBeforePlay()
         {
             foreach (string name in new[] { "ForestBackdrop0", "ForestBackdrop1", "ArenaCells",
-                "CodeTimeline", "CodeBlockButton1", "CombatAction1", "EnemyGuidePanel", "PauseCombatButton" })
+                "CodeTimeline", "DefinitionBlocks", "CodeBlockButton1", "MethodsWorkspaceButton",
+                "PreparationWorkspaceButton", "CombatAction1", "EnemyGuidePanel", "PauseCombatButton" })
                 Assert.That(FindSceneObjectOrNull(name), Is.Not.Null, name + " deve existir fora do Play.");
             Assert.That(FindSceneObject("ArenaCells").transform.childCount, Is.EqualTo(16));
+        }
+
+        [Test]
+        public void Scene_KeepsSelectorsAndSingleAttackInTheBottomTimeline()
+        {
+            Transform content = FindSceneObject("CodeTimeline").transform.Find("Viewport/Content");
+            GameObject definitions = FindSceneObject("DefinitionBlocks");
+            GameObject actions = FindSceneObject("CombatActionPanel");
+
+            Assert.That(definitions.transform.parent, Is.SameAs(content));
+            Assert.That(actions.transform.parent, Is.SameAs(content));
+            Assert.That(ReadString(FindSceneObject("CombatAction1Label"), "m_text"),
+                Is.EqualTo("1 · Atacar"));
+            Assert.That(FindSceneObject("AddCombatBlockButton").activeSelf, Is.False);
+            Assert.That(FindSceneObject("RemoveCombatBlockButton").activeSelf, Is.False);
         }
 
         [Test]

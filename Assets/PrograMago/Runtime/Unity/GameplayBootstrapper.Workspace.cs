@@ -7,26 +7,30 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
+        private const float DefinitionStripWidth = 564f;
+        private const float CombatActionStripStartX = 574f;
+        private const float TimelineContentWidth = 700f;
+
         private void EnsureWorkspaceControls()
         {
             if (definitionStrip == null || editorPanel == null) return;
             LayoutCodeFileButtons();
             EnsureWorkspaceTitles();
             methodsWorkspaceButton = FindOrCreateWorkspaceButton(methodsWorkspaceButton,
-                "MethodsWorkspaceButton", "Métodos", 420f);
+                "MethodsWorkspaceButton", "Métodos", 282f);
             preparationWorkspaceButton = FindOrCreateWorkspaceButton(preparationWorkspaceButton,
-                "PreparationWorkspaceButton", "Preparação", 546f);
+                "PreparationWorkspaceButton", "Preparação", 370f);
             approveMethodButton = FindOrCreateWorkspaceButton(approveMethodButton,
-                "ApproveMethodButton", "Aprovar método", 680f);
+                "ApproveMethodButton", "Aprovar método", 466f);
             methodsWorkspaceButton.onClick.RemoveAllListeners();
             methodsWorkspaceButton.onClick.AddListener(() => SelectWorkspace(WorkspaceArea.Methods));
             preparationWorkspaceButton.onClick.RemoveAllListeners();
             preparationWorkspaceButton.onClick.AddListener(() => SelectWorkspace(WorkspaceArea.Preparation));
             approveMethodButton.onClick.RemoveAllListeners();
             approveMethodButton.onClick.AddListener(ApproveMethod);
-            LayoutWorkspaceButton(methodsWorkspaceButton, 420f, 120f);
-            LayoutWorkspaceButton(preparationWorkspaceButton, 546f, 128f);
-            LayoutWorkspaceButton(approveMethodButton, 680f, 150f);
+            LayoutWorkspaceButton(methodsWorkspaceButton, 282f, 84f);
+            LayoutWorkspaceButton(preparationWorkspaceButton, 370f, 92f);
+            LayoutWorkspaceButton(approveMethodButton, 466f, 98f);
             UpdateWorkspaceUi();
         }
 
@@ -37,8 +41,8 @@ namespace PrograMago.UnityIntegration
                 if (codeBlockButtons[index] == null) continue;
                 RectTransform rect = codeBlockButtons[index].GetComponent<RectTransform>();
                 rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 130f, 6f);
-                rect.sizeDelta = new Vector2(124f, 40f);
+                rect.anchoredPosition = new Vector2(index * 94f, 6f);
+                rect.sizeDelta = new Vector2(90f, 40f);
             }
         }
 
@@ -46,8 +50,8 @@ namespace PrograMago.UnityIntegration
         {
             Transform legacyTitle = definitionStrip.Find("DefinitionBlocksTitle");
             if (legacyTitle != null) legacyTitle.gameObject.SetActive(false);
-            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "CÓDIGO DA FASE", 0f, 384f);
-            LayoutWorkspaceTitle("WizardConfigGroupTitle", "CONFIGURAÇÃO DO MAGO", 420f, 410f);
+            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "CÓDIGO DA FASE", 0f, 278f);
+            LayoutWorkspaceTitle("WizardConfigGroupTitle", "CONFIGURAÇÃO DO MAGO", 282f, 282f);
         }
 
         private void LayoutWorkspaceTitle(string name, string text, float x, float width)

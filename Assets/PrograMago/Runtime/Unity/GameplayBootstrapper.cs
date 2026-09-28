@@ -83,7 +83,7 @@ namespace PrograMago.UnityIntegration
         }
 
         public MagoState CurrentMago { get; private set; }
-        public bool CanReorderCombatActions => combat == null || (combat.IsPaused && combat.Outcome == CombatOutcome.InProgress);
+        public bool CanReorderCombatActions => false;
 
         public IReadOnlyList<EnemyState> CurrentEnemies { get; private set; } = Array.Empty<EnemyState>();
 
@@ -205,7 +205,6 @@ namespace PrograMago.UnityIntegration
                 {
                     combatCodeBlocks.Clear();
                     combatCodeBlocks.AddRange(saved.combatBlocks);
-                    RebuildActionArrows();
                 }
                 if (saved.version >= 2)
                 {
@@ -650,15 +649,16 @@ namespace PrograMago.UnityIntegration
             CreateTimelineStrip();
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
-                Button button = CreateArrow($"CodeBlockButton{index + 1}", definitionStrip, $"{index + 1} · Código", index * 102f, 100f);
+                Button button = CreateArrow($"CodeBlockButton{index + 1}", definitionStrip,
+                    $"{index + 1} · Código", index * 94f, 90f);
                 button.gameObject.name = $"CodeBlockButton{index + 1}";
                 button.onClick.RemoveAllListeners();
                 RectTransform rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.zero;
                 rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 102f, 9f);
-                rect.sizeDelta = new Vector2(100f, 41f);
+                rect.anchoredPosition = new Vector2(index * 94f, 6f);
+                rect.sizeDelta = new Vector2(90f, 40f);
                 TMP_Text label = button.GetComponentInChildren<TMP_Text>();
                 if (label != null)
                 {
@@ -669,7 +669,6 @@ namespace PrograMago.UnityIntegration
                 int selected = index;
                 button.onClick.AddListener(() => SelectCodeBlock(selected));
                 codeBlockButtons[index] = button;
-                button.gameObject.AddComponent<CombatActionDragHandle>().ConfigureBlock(this, index);
             }
 
             RefreshCodeBlockButtons();
@@ -771,7 +770,7 @@ namespace PrograMago.UnityIntegration
             else
             {
                 combat.Pause();
-                combatStatusText.text = "Pausado — arraste os blocos para mudar a ordem";
+                combatStatusText.text = "Pausado — continue para retomar a batalha";
             }
             pauseCombatButton.GetComponentInChildren<TMP_Text>().text =
                 combat.IsPaused ? "Continuar" : "Pausar";
@@ -779,9 +778,7 @@ namespace PrograMago.UnityIntegration
 
         public void ReorderCombatAction(int fromIndex, int toIndex)
         {
-            var actions = timelineOrder.FindAll(id => id >= 3);
-            if (fromIndex < 0 || toIndex < 0 || fromIndex >= actions.Count || toIndex >= actions.Count) return;
-            MoveTimelineBlock(actions[fromIndex], actions[toIndex]);
+            // Kept as a compatibility entry point for older scene/test references.
         }
         private void RetryCombat()
         {
@@ -908,7 +905,7 @@ namespace PrograMago.UnityIntegration
             switch (action.Kind)
             {
                 case CombatEventKind.OutOfRange:
-                    combatStatusText.text = $"Distância: {TargetDistance(action.Target)} casas · alcance: {CurrentMago.Alcance}. Fora do alcance! Segure R por 5s para editar o Mago.";
+                    combatStatusText.text = $"Alvo fora do alcance ({TargetDistance(action.Target)} casas). O movimento é automático.";
                     combatStatusText.color = new Color32(255, 214, 137, 255);
                     break;
                 case CombatEventKind.Blocked:
@@ -916,7 +913,7 @@ namespace PrograMago.UnityIntegration
                     combatStatusText.color = new Color32(219, 228, 224, 255);
                     break;
                 case CombatEventKind.Move:
-                    combatStatusText.text = $"{actor} avança: alvo fora do alcance";
+                    combatStatusText.text = $"{actor} avança para a casa {action.Position + 1} para entrar no alcance.";
                     combatStatusText.color = new Color32(255, 214, 137, 255);
                     break;
                 case CombatEventKind.NoTarget:
@@ -943,7 +940,7 @@ namespace PrograMago.UnityIntegration
         {
             if (combat == null) return;
             magoStatsText.text = $"Mago {CurrentMago.InstanceName} — Vida: {combat.WizardLife}/{CurrentMago.Vida}\n" +
-                $"Dano: {CurrentMago.Dano}  Alcance: {CurrentMago.Alcance}\n" +
+                $"Casa: {combat.WizardPosition + 1}  Dano: {CurrentMago.Dano}  Alcance: {CurrentMago.Alcance}\n" +
                 $"Iniciativa: {CurrentMago.Iniciativa}  Velocidade: {CurrentMago.VelocidadeAtaque}  Pontos: {25 - CurrentMago.RemainingPoints}/25";
             var summary = new StringBuilder();
             foreach (CombatEnemy enemy in combat.Enemies)
@@ -972,6 +969,7 @@ namespace PrograMago.UnityIntegration
                 enemyMarkers[index].SetActive(combat.Enemies[index].Life > 0 || HasCombatVisuals);
                 StandInCell(enemyMarkers[index], combat.Enemies[index].Position);
             }
+            UpdateReachIndicators();
         }
         private void HideCombatControls()
         {

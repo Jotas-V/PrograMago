@@ -90,11 +90,18 @@ namespace PrograMago.UnityIntegration
                     arenaWorldRect.width * 0.5f / (size.x * parentScale.x),
                     arenaWorldRect.height / (size.y * parentScale.y), 1 / parentScale.z);
             }
+            UpdateReachIndicators();
+        }
+
+        private void UpdateReachIndicators()
+        {
+            int magePosition = combat == null ? 0 : combat.WizardPosition;
             for (int i = 0; i < arenaCells.Length; i++)
             {
                 if (arenaCells[i] == null) continue;
-                bool reached = CurrentMago != null && i <= CurrentMago.Alcance;
-                arenaCells[i].color = i == 0 ? new Color32(121, 94, 192, 180) : reached
+                bool mageCell = i == magePosition;
+                bool reached = CurrentMago != null && Mathf.Abs(i - magePosition) <= CurrentMago.Alcance;
+                arenaCells[i].color = mageCell ? new Color32(121, 94, 192, 180) : reached
                     ? new Color32(71, 161, 158, 135) : new Color32(23, 34, 34, 135);
             }
         }
@@ -116,7 +123,7 @@ namespace PrograMago.UnityIntegration
         {
             if (combat != null)
                 foreach (CombatEnemy enemy in combat.Enemies)
-                    if (enemy.Source.VariableName == variableName) return enemy.Position - combat.WizardPosition;
+                    if (enemy.Source.VariableName == variableName) return Mathf.Abs(enemy.Position - combat.WizardPosition);
             return 0;
         }
     }
