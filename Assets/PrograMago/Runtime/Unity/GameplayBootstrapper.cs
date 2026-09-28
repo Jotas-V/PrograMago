@@ -552,8 +552,13 @@ namespace PrograMago.UnityIntegration
             classesLocked = battleNumber >= 4;
             if (battle.Criterion == ValidationCriterion.AddMagoSetters)
             {
+                FocusEditableDefinitionBlock(0);
                 setterDraftSource = codeBlocks.Snapshot()[0];
                 if (string.IsNullOrEmpty(approvedCode)) approvedCode = setterDraftSource;
+            }
+            else if (battle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy)
+            {
+                FocusEditableDefinitionBlock(1);
             }
             SetTimelineAvailable(battle.CompletionMode == BattleCompletionMode.OnCombatVictory);
             UpdateWorkspaceUi();

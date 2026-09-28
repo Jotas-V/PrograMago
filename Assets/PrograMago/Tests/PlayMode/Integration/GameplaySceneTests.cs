@@ -893,6 +893,9 @@ namespace PrograMago.Tests.Integration
                 "public void setIniciativa(int iniciativa) { this.iniciativa = iniciativa; } " +
                 "public void setVelocidadeAtaque(int velocidadeAtaque) { this.velocidadeAtaque = velocidadeAtaque; } ";
             string setterCode = magoCode.Replace("} Mago heroi", setters + "} Mago heroi");
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton1").interactable, Is.True);
+            Assert.That(codeInput.interactable, Is.True,
+                "A etapa de setters deve abrir no Mago e aceitar a implementação dos métodos.");
             codeInput.text = setterCode;
             battleButton.onClick.Invoke();
             yield return null;
@@ -905,7 +908,17 @@ namespace PrograMago.Tests.Integration
             FindSceneComponent<Button>("TutorialNextButton").onClick.Invoke();
             Assert.That(FindSceneComponent<TMP_Text>("TutorialBodyText").text, Does.Contain("public class Inimigo"));
             Assert.That(battleProgressText.text, Does.Contain("Batalha 5/9"));
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton2").interactable, Is.True);
+            Assert.That(codeInput.interactable, Is.True,
+                "A etapa do Inimigo precisa abrir diretamente no bloco que pode ser editado.");
+            Assert.That(FindSceneComponent<Button>("PreparationWorkspaceButton").interactable, Is.True,
+                "A redistribuição do Mago deve estar disponível depois da etapa dos setters.");
             Assert.That(victoryOverlay.activeSelf, Is.False);
+            FindSceneComponent<Button>("PreparationWorkspaceButton").onClick.Invoke();
+            Assert.That(codeInput.interactable, Is.True,
+                "O bloco Ajustes precisa aceitar chamadas aos setters já declarados.");
+            codeInput.text = "heroi.setAlcance(5);";
+            Assert.That(codeInput.text, Is.EqualTo("heroi.setAlcance(5);"));
             const string enemyCode =
                 "public class Inimigo { private String nome; private int vida; " +
                 "private String elemento; public Inimigo(String nome, int vida, String elemento) { " +

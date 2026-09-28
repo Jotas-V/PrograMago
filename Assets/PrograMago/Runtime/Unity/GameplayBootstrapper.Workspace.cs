@@ -237,11 +237,24 @@ namespace PrograMago.UnityIntegration
                 preparationWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Preparation
                     ? new Color32(91, 74, 190, 255)
                     : new Color32(39, 77, 92, 255);
-            if (workspaceArea == WorkspaceArea.Classes && classesLocked && editing)
+            if (workspaceArea == WorkspaceArea.Classes && classesLocked && editing && !classesEditable)
             {
                 feedbackText.color = new Color32(90, 86, 105, 255);
                 feedbackText.text = "Código protegido após a fase 3. Use Ajustes para redistribuir os atributos do Mago.";
             }
+        }
+
+        private void FocusEditableDefinitionBlock(int index)
+        {
+            if (codeInput == null || index < 0 || index >= codeBlockButtons.Length ||
+                !IsCodeBlockEditable(index)) return;
+
+            StoreWorkspaceText();
+            workspaceArea = WorkspaceArea.Classes;
+            selectedCombatBlock = -1;
+            codeBlocks.Select(index);
+            codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+            RefreshCodeBlockButtons();
         }
 
         private bool IsCodeBlockEditable(int index)
