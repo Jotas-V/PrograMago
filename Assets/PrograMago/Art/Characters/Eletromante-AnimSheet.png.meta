@@ -1,0 +1,489 @@
+fileFormatVersion: 2
+guid: 66a0e18d0097d6c429c0acd873a49add
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1337320422861630027
+    second: Eletromante-AnimSheet_0
+  - first:
+      213: -336055279276374115
+    second: Eletromante-AnimSheet_1
+  - first:
+      213: 5941062193354669299
+    second: Eletromante-AnimSheet_2
+  - first:
+      213: -4906884478239260297
+    second: Eletromante-AnimSheet_3
+  - first:
+      213: -1557404179504978246
+    second: Eletromante-AnimSheet_4
+  - first:
+      213: -8635240645293827734
+    second: Eletromante-AnimSheet_5
+  - first:
+      213: 2939506735222155912
+    second: Eletromante-AnimSheet_6
+  - first:
+      213: -6271364097795911048
+    second: Eletromante-AnimSheet_7
+  - first:
+      213: 4750006908379009072
+    second: Eletromante-AnimSheet_8
+  - first:
+      213: 6910151958299460759
+    second: Eletromante-AnimSheet_9
+  - first:
+      213: 949306300879820944
+    second: Eletromante-AnimSheet_10
+  - first:
+      213: 6788972924138637368
+    second: Eletromante-AnimSheet_11
+  - first:
+      213: -2612159039485986564
+    second: Eletromante-AnimSheet_12
+  - first:
+      213: -4556971469553543161
+    second: Eletromante-AnimSheet_13
+  - first:
+      213: 1775645518136848078
+    second: Eletromante-AnimSheet_14
+  - first:
+      213: 7325334170313994821
+    second: Eletromante-AnimSheet_15
+  - first:
+      213: 6682971139513969880
+    second: Eletromante-AnimSheet_16
+  - first:
+      213: 1666892921848540143
+    second: Eletromante-AnimSheet_17
+  - first:
+      213: -5618260353234036418
+    second: Eletromante-AnimSheet_18
+  - first:
+      213: 6610301835037416924
+    second: Eletromante-AnimSheet_19
+  - first:
+      213: -8012195787692096051
+    second: Eletromante-AnimSheet_20
+  - first:
+      213: 3599300801629996852
+    second: Eletromante-AnimSheet_21
+  - first:
+      213: 2704216549495767202
+    second: Eletromante-AnimSheet_22
+  - first:
+      213: -4350933875020250210
+    second: Eletromante-AnimSheet_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 300
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Eletromante_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cb66fcdb6fd9c148b406a220513e819
+      internalID: 892963086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 107943ff659a91c499f385a07dac4afd
+      internalID: 736621209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0ecf6d466116d94b8ecd2fef91468a5
+      internalID: -1124432295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f722174b42216da44ad928cc5f467d27
+      internalID: -197205514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f31d0697f9e4274cb355686e73e1a8f
+      internalID: 1037407540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Walk_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9edf53b3ae8e7b64f845a634013d90b8
+      internalID: 733313692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Walk_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2d6a27e01718514a9e0ca59830c60ab
+      internalID: -1165011908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Walk_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4764fffa86166b54897b56229494be62
+      internalID: 1037700093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d3ef8d778ed6ba459dcd6c71102b3f3
+      internalID: -921983177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 244daec91c190224e9ffe19c4c4e1779
+      internalID: 109911945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 586860dcbe319a94980c469e99e931bf
+      internalID: 65755702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40702d6e638e0fc46a0ebab3520676e2
+      internalID: 305085353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 84151ba6c5b5bf64aa357e0e33662070
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Eletromante-AnimSheet_0: 1337320422861630027
+      Eletromante-AnimSheet_1: -336055279276374115
+      Eletromante-AnimSheet_10: 949306300879820944
+      Eletromante-AnimSheet_11: 6788972924138637368
+      Eletromante-AnimSheet_12: -2612159039485986564
+      Eletromante-AnimSheet_13: -4556971469553543161
+      Eletromante-AnimSheet_14: 1775645518136848078
+      Eletromante-AnimSheet_15: 7325334170313994821
+      Eletromante-AnimSheet_16: 6682971139513969880
+      Eletromante-AnimSheet_17: 1666892921848540143
+      Eletromante-AnimSheet_18: -5618260353234036418
+      Eletromante-AnimSheet_19: 6610301835037416924
+      Eletromante-AnimSheet_2: 5941062193354669299
+      Eletromante-AnimSheet_20: -8012195787692096051
+      Eletromante-AnimSheet_21: 3599300801629996852
+      Eletromante-AnimSheet_22: 2704216549495767202
+      Eletromante-AnimSheet_23: -4350933875020250210
+      Eletromante-AnimSheet_3: -4906884478239260297
+      Eletromante-AnimSheet_4: -1557404179504978246
+      Eletromante-AnimSheet_5: -8635240645293827734
+      Eletromante-AnimSheet_6: 2939506735222155912
+      Eletromante-AnimSheet_7: -6271364097795911048
+      Eletromante-AnimSheet_8: 4750006908379009072
+      Eletromante-AnimSheet_9: 6910151958299460759
+      Eletromante_Attack_0: -921983177
+      Eletromante_Attack_1: 109911945
+      Eletromante_Attack_2: 65755702
+      Eletromante_Attack_3: 305085353
+      Eletromante_Idle_0: 892963086
+      Eletromante_Idle_1: 736621209
+      Eletromante_Idle_2: -1124432295
+      Eletromante_Idle_3: -197205514
+      Eletromante_Walk_0: 1037407540
+      Eletromante_Walk_1: 733313692
+      Eletromante_Walk_2: -1165011908
+      Eletromante_Walk_3: 1037700093
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

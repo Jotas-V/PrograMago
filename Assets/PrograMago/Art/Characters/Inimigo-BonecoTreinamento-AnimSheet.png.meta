@@ -1,0 +1,449 @@
+fileFormatVersion: 2
+guid: 37d2f1838b0eb2d4aa2b83c1f510a7fa
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5244955521970414420
+    second: Inimigo-BonecoTreinamento-AnimSheet_0
+  - first:
+      213: 5051324197497692582
+    second: Inimigo-BonecoTreinamento-AnimSheet_1
+  - first:
+      213: -6322247833056423737
+    second: Inimigo-BonecoTreinamento-AnimSheet_2
+  - first:
+      213: -7077261315804919326
+    second: Inimigo-BonecoTreinamento-AnimSheet_3
+  - first:
+      213: 4121580720350900590
+    second: Inimigo-BonecoTreinamento-AnimSheet_4
+  - first:
+      213: -8924812061896611883
+    second: Inimigo-BonecoTreinamento-AnimSheet_5
+  - first:
+      213: -815582923601158611
+    second: Inimigo-BonecoTreinamento-AnimSheet_6
+  - first:
+      213: -7737205311535541435
+    second: Inimigo-BonecoTreinamento-AnimSheet_7
+  - first:
+      213: -2265160009215498521
+    second: Inimigo-BonecoTreinamento-AnimSheet_8
+  - first:
+      213: 4837955948081066278
+    second: Inimigo-BonecoTreinamento-AnimSheet_9
+  - first:
+      213: -1253399615972792983
+    second: Inimigo-BonecoTreinamento-AnimSheet_10
+  - first:
+      213: 2592997915936934079
+    second: Inimigo-BonecoTreinamento-AnimSheet_11
+  - first:
+      213: -5857132617954074318
+    second: Inimigo-BonecoTreinamento-AnimSheet_12
+  - first:
+      213: -5472887102092232727
+    second: Inimigo-BonecoTreinamento-AnimSheet_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 300
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BonecoTreinamento_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eca3972ae68942749badabbf84897289
+      internalID: 337358917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6907be22b9b649e48a6c83a393e860e7
+      internalID: -462400276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6336d590843b8e548b832179dc1ab13b
+      internalID: -985516861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d9a2f86079d3ac49a13b9bb83685af8
+      internalID: 834424775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91fbf859f3f08d942b1f6406389ec600
+      internalID: 215693699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Walk_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f949293f42834a245bd68d80fb781894
+      internalID: 639466713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Walk_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65b6cea05ae90cb4c9a696a9cc77981b
+      internalID: -2133765621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Walk_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a73238cdafa5af4cbde038d2a3c7cf6
+      internalID: 566069309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c88caf9d086550b4c863df63ae499d87
+      internalID: -771169782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02ba112a7b68ee845a0cd4c1220b5edc
+      internalID: -750599532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9763abb7fbf51024cbb9db629d8a0754
+      internalID: 1891349199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BonecoTreinamento_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b8099a3e3949864eb93d84990b7d5e5
+      internalID: 1814596641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a477acdf533cd1f418a47be6f9ab81bb
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BonecoTreinamento_Attack_0: -771169782
+      BonecoTreinamento_Attack_1: -750599532
+      BonecoTreinamento_Attack_2: 1891349199
+      BonecoTreinamento_Attack_3: 1814596641
+      BonecoTreinamento_Idle_0: 337358917
+      BonecoTreinamento_Idle_1: -462400276
+      BonecoTreinamento_Idle_2: -985516861
+      BonecoTreinamento_Idle_3: 834424775
+      BonecoTreinamento_Walk_0: 215693699
+      BonecoTreinamento_Walk_1: 639466713
+      BonecoTreinamento_Walk_2: -2133765621
+      BonecoTreinamento_Walk_3: 566069309
+      Inimigo-BonecoTreinamento-AnimSheet_0: -5244955521970414420
+      Inimigo-BonecoTreinamento-AnimSheet_1: 5051324197497692582
+      Inimigo-BonecoTreinamento-AnimSheet_10: -1253399615972792983
+      Inimigo-BonecoTreinamento-AnimSheet_11: 2592997915936934079
+      Inimigo-BonecoTreinamento-AnimSheet_12: -5857132617954074318
+      Inimigo-BonecoTreinamento-AnimSheet_13: -5472887102092232727
+      Inimigo-BonecoTreinamento-AnimSheet_2: -6322247833056423737
+      Inimigo-BonecoTreinamento-AnimSheet_3: -7077261315804919326
+      Inimigo-BonecoTreinamento-AnimSheet_4: 4121580720350900590
+      Inimigo-BonecoTreinamento-AnimSheet_5: -8924812061896611883
+      Inimigo-BonecoTreinamento-AnimSheet_6: -815582923601158611
+      Inimigo-BonecoTreinamento-AnimSheet_7: -7737205311535541435
+      Inimigo-BonecoTreinamento-AnimSheet_8: -2265160009215498521
+      Inimigo-BonecoTreinamento-AnimSheet_9: 4837955948081066278
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

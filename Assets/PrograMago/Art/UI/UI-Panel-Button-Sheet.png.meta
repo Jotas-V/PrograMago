@@ -1,0 +1,509 @@
+fileFormatVersion: 2
+guid: 25dfc2d5bdcdf4046b5dc5ec2976097a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 17773507484848184
+    second: UI-Panel-Button-Sheet_0
+  - first:
+      213: 5009366564128642227
+    second: UI-Panel-Button-Sheet_1
+  - first:
+      213: 7033237446965852455
+    second: UI-Panel-Button-Sheet_2
+  - first:
+      213: 6108522061804266117
+    second: UI-Panel-Button-Sheet_3
+  - first:
+      213: 7525258212250211353
+    second: UI-Panel-Button-Sheet_4
+  - first:
+      213: 6938048696257842780
+    second: UI-Panel-Button-Sheet_5
+  - first:
+      213: -4801369173483115587
+    second: UI-Panel-Button-Sheet_6
+  - first:
+      213: -3272372995768136645
+    second: UI-Panel-Button-Sheet_7
+  - first:
+      213: -8861580741695462387
+    second: UI-Panel-Button-Sheet_8
+  - first:
+      213: -149419153783497981
+    second: UI-Panel-Button-Sheet_9
+  - first:
+      213: 5464325894495976950
+    second: UI-Panel-Button-Sheet_10
+  - first:
+      213: 3458890783059723589
+    second: UI-Panel-Button-Sheet_11
+  - first:
+      213: -3988435975387792646
+    second: UI-Panel-Button-Sheet_12
+  - first:
+      213: 1340203187563199908
+    second: UI-Panel-Button-Sheet_13
+  - first:
+      213: -703014442326762203
+    second: UI-Panel-Button-Sheet_14
+  - first:
+      213: 6870686304340906904
+    second: UI-Panel-Button-Sheet_15
+  - first:
+      213: -2707457085786619518
+    second: UI-Panel-Button-Sheet_16
+  - first:
+      213: 5430564894024200095
+    second: UI-Panel-Button-Sheet_17
+  - first:
+      213: 6868897206764642794
+    second: UI-Panel-Button-Sheet_18
+  - first:
+      213: -4488151343524629219
+    second: UI-Panel-Button-Sheet_19
+  - first:
+      213: 5549034351048991713
+    second: UI-Panel-Button-Sheet_20
+  - first:
+      213: 4931284869299179612
+    second: UI-Panel-Button-Sheet_21
+  - first:
+      213: -3405992557641099352
+    second: UI-Panel-Button-Sheet_22
+  - first:
+      213: -7694258618658656836
+    second: UI-Panel-Button-Sheet_23
+  - first:
+      213: 12218903045517058
+    second: UI-Panel-Button-Sheet_24
+  - first:
+      213: 6704052900001630647
+    second: UI-Panel-Button-Sheet_25
+  - first:
+      213: -3088834288981421195
+    second: UI-Panel-Button-Sheet_26
+  - first:
+      213: -2155850992508502328
+    second: UI-Panel-Button-Sheet_27
+  - first:
+      213: 3258089311135476707
+    second: UI-Panel-Button-Sheet_28
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: UI_WorkspacePanel
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 48, y: 48, z: 48, w: 48}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24e670eebe0c8e04f857a213423e333a
+      internalID: 1344505198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_CodePanel
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 48, y: 48, z: 48, w: 48}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cba951a1412c1f34da85342c12205101
+      internalID: -332417872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_CodeTray
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 48, y: 48, z: 48, w: 48}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29fd156ac286dfb46a5d1752f30bd0f3
+      internalID: 1693572663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_VictoryPanel
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 48, y: 48, z: 48, w: 48}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8640afeb9fffb394e99ba571be0ac813
+      internalID: -360732180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Battle_Idle
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab530bab47322864d9af324781ab5487
+      internalID: 683894319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Battle_Hover
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a54534b59f8d60749aa6b58f7e2b7136
+      internalID: -858657687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Battle_Pressed
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0bcbba5a8f7d34146a5330db7e60fabc
+      internalID: 2003424145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Battle_Disabled
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6da6ac3942521ed4095d030bdc212b64
+      internalID: -1834825609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Action_Idle
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c094a1956200c04eab0dfd68c6065ec
+      internalID: 417708703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Action_Hover
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7e23cf3ef59fb247a1423ae1a6b8d8e
+      internalID: -1851470697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Action_Pressed
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c4ec61d3364bca468ea78d7cbad473f
+      internalID: 1854223324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Action_Disabled
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 44, y: 22, z: 44, w: 22}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a257b7e58b08b6c479ad97f7b28f4df8
+      internalID: 2011651370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c384e83cdbf74fc4499956e2114c573b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      UI-Panel-Button-Sheet_0: 17773507484848184
+      UI-Panel-Button-Sheet_1: 5009366564128642227
+      UI-Panel-Button-Sheet_10: 5464325894495976950
+      UI-Panel-Button-Sheet_11: 3458890783059723589
+      UI-Panel-Button-Sheet_12: -3988435975387792646
+      UI-Panel-Button-Sheet_13: 1340203187563199908
+      UI-Panel-Button-Sheet_14: -703014442326762203
+      UI-Panel-Button-Sheet_15: 6870686304340906904
+      UI-Panel-Button-Sheet_16: -2707457085786619518
+      UI-Panel-Button-Sheet_17: 5430564894024200095
+      UI-Panel-Button-Sheet_18: 6868897206764642794
+      UI-Panel-Button-Sheet_19: -4488151343524629219
+      UI-Panel-Button-Sheet_2: 7033237446965852455
+      UI-Panel-Button-Sheet_20: 5549034351048991713
+      UI-Panel-Button-Sheet_21: 4931284869299179612
+      UI-Panel-Button-Sheet_22: -3405992557641099352
+      UI-Panel-Button-Sheet_23: -7694258618658656836
+      UI-Panel-Button-Sheet_24: 12218903045517058
+      UI-Panel-Button-Sheet_25: 6704052900001630647
+      UI-Panel-Button-Sheet_26: -3088834288981421195
+      UI-Panel-Button-Sheet_27: -2155850992508502328
+      UI-Panel-Button-Sheet_28: 3258089311135476707
+      UI-Panel-Button-Sheet_3: 6108522061804266117
+      UI-Panel-Button-Sheet_4: 7525258212250211353
+      UI-Panel-Button-Sheet_5: 6938048696257842780
+      UI-Panel-Button-Sheet_6: -4801369173483115587
+      UI-Panel-Button-Sheet_7: -3272372995768136645
+      UI-Panel-Button-Sheet_8: -8861580741695462387
+      UI-Panel-Button-Sheet_9: -149419153783497981
+      UI_Action_Disabled: 2011651370
+      UI_Action_Hover: -1851470697
+      UI_Action_Idle: 417708703
+      UI_Action_Pressed: 1854223324
+      UI_Battle_Disabled: -1834825609
+      UI_Battle_Hover: -858657687
+      UI_Battle_Idle: 683894319
+      UI_Battle_Pressed: 2003424145
+      UI_CodePanel: -332417872
+      UI_CodeTray: 1693572663
+      UI_VictoryPanel: -360732180
+      UI_WorkspacePanel: 1344505198
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

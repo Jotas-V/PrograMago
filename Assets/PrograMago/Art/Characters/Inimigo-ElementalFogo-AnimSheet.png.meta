@@ -1,0 +1,469 @@
+fileFormatVersion: 2
+guid: 3ba3e93394fb7d343913ba12818b6f40
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8625244387119096
+    second: Inimigo-ElementalFogo-AnimSheet_0
+  - first:
+      213: 2735106226740064143
+    second: Inimigo-ElementalFogo-AnimSheet_1
+  - first:
+      213: -3978090445495432933
+    second: Inimigo-ElementalFogo-AnimSheet_2
+  - first:
+      213: 8322954140081666148
+    second: Inimigo-ElementalFogo-AnimSheet_3
+  - first:
+      213: 211151344463186620
+    second: Inimigo-ElementalFogo-AnimSheet_4
+  - first:
+      213: -5429763886505408918
+    second: Inimigo-ElementalFogo-AnimSheet_5
+  - first:
+      213: 1233214716109594930
+    second: Inimigo-ElementalFogo-AnimSheet_6
+  - first:
+      213: -8684421003273153621
+    second: Inimigo-ElementalFogo-AnimSheet_7
+  - first:
+      213: 1337712582304195814
+    second: Inimigo-ElementalFogo-AnimSheet_8
+  - first:
+      213: -3475705415674939568
+    second: Inimigo-ElementalFogo-AnimSheet_9
+  - first:
+      213: 3759364639024264486
+    second: Inimigo-ElementalFogo-AnimSheet_10
+  - first:
+      213: -82532120341927736
+    second: Inimigo-ElementalFogo-AnimSheet_11
+  - first:
+      213: -2868297261729469135
+    second: Inimigo-ElementalFogo-AnimSheet_12
+  - first:
+      213: -4582026536323558957
+    second: Inimigo-ElementalFogo-AnimSheet_13
+  - first:
+      213: -3936265896745644494
+    second: Inimigo-ElementalFogo-AnimSheet_14
+  - first:
+      213: 8648135962927953865
+    second: Inimigo-ElementalFogo-AnimSheet_15
+  - first:
+      213: -418536624351532893
+    second: Inimigo-ElementalFogo-AnimSheet_16
+  - first:
+      213: -3511694190856725991
+    second: Inimigo-ElementalFogo-AnimSheet_17
+  - first:
+      213: -7223316329257391948
+    second: Inimigo-ElementalFogo-AnimSheet_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 300
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ElementalFogo_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b6d73733b0a762479e5756738b53210
+      internalID: -1731882688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7491d4c9c230f1c44a5411caaf47a7e8
+      internalID: -1152809383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 740ececc04e76424b89b41fd434be1f6
+      internalID: 779906480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bfdc9cb579a2a8946affdb063b25ddb1
+      internalID: 621277413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3ba2978985e9bd49b422087a25393d3
+      internalID: 2019278693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Walk_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc8b5a96581f5c447818cf365b3c61f4
+      internalID: -1303166796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Walk_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c66ea3f45ca9a245b5baad7a60a5c85
+      internalID: 712776527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Walk_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20fec042c76b31c4fabfaa4123e5fe22
+      internalID: 231769919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8067f3c657119e9428e54bda05d327be
+      internalID: 1775743727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00a273743096afd4b93a10facca337b3
+      internalID: 498644928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0583d86fb4f73714d94e2c32c2e43877
+      internalID: 1229230006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElementalFogo_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f48363263ff980e4f8398bf644e92c7a
+      internalID: 218742007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 88e34f898b0993a4da2ee9d1a910040c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ElementalFogo_Attack_0: 1775743727
+      ElementalFogo_Attack_1: 498644928
+      ElementalFogo_Attack_2: 1229230006
+      ElementalFogo_Attack_3: 218742007
+      ElementalFogo_Idle_0: -1731882688
+      ElementalFogo_Idle_1: -1152809383
+      ElementalFogo_Idle_2: 779906480
+      ElementalFogo_Idle_3: 621277413
+      ElementalFogo_Walk_0: 2019278693
+      ElementalFogo_Walk_1: -1303166796
+      ElementalFogo_Walk_2: 712776527
+      ElementalFogo_Walk_3: 231769919
+      Inimigo-ElementalFogo-AnimSheet_0: -8625244387119096
+      Inimigo-ElementalFogo-AnimSheet_1: 2735106226740064143
+      Inimigo-ElementalFogo-AnimSheet_10: 3759364639024264486
+      Inimigo-ElementalFogo-AnimSheet_11: -82532120341927736
+      Inimigo-ElementalFogo-AnimSheet_12: -2868297261729469135
+      Inimigo-ElementalFogo-AnimSheet_13: -4582026536323558957
+      Inimigo-ElementalFogo-AnimSheet_14: -3936265896745644494
+      Inimigo-ElementalFogo-AnimSheet_15: 8648135962927953865
+      Inimigo-ElementalFogo-AnimSheet_16: -418536624351532893
+      Inimigo-ElementalFogo-AnimSheet_17: -3511694190856725991
+      Inimigo-ElementalFogo-AnimSheet_18: -7223316329257391948
+      Inimigo-ElementalFogo-AnimSheet_2: -3978090445495432933
+      Inimigo-ElementalFogo-AnimSheet_3: 8322954140081666148
+      Inimigo-ElementalFogo-AnimSheet_4: 211151344463186620
+      Inimigo-ElementalFogo-AnimSheet_5: -5429763886505408918
+      Inimigo-ElementalFogo-AnimSheet_6: 1233214716109594930
+      Inimigo-ElementalFogo-AnimSheet_7: -8684421003273153621
+      Inimigo-ElementalFogo-AnimSheet_8: 1337712582304195814
+      Inimigo-ElementalFogo-AnimSheet_9: -3475705415674939568
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

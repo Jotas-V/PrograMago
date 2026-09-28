@@ -1,0 +1,525 @@
+fileFormatVersion: 2
+guid: 11b792679c0ed1f4f813bdba6514722e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4676119601369394506
+    second: Inimigo-SlimeAquatico-AnimSheet_0
+  - first:
+      213: 6333381039053806913
+    second: Inimigo-SlimeAquatico-AnimSheet_1
+  - first:
+      213: -4358519600984317124
+    second: Inimigo-SlimeAquatico-AnimSheet_2
+  - first:
+      213: 6989374182660217874
+    second: Inimigo-SlimeAquatico-AnimSheet_3
+  - first:
+      213: 1115675473365779445
+    second: Inimigo-SlimeAquatico-AnimSheet_4
+  - first:
+      213: -7686885019018837060
+    second: Inimigo-SlimeAquatico-AnimSheet_5
+  - first:
+      213: -7452367712844484070
+    second: Inimigo-SlimeAquatico-AnimSheet_6
+  - first:
+      213: 6530495966219349826
+    second: Inimigo-SlimeAquatico-AnimSheet_7
+  - first:
+      213: 3042901827230097397
+    second: Inimigo-SlimeAquatico-AnimSheet_8
+  - first:
+      213: -8755139504705790393
+    second: Inimigo-SlimeAquatico-AnimSheet_9
+  - first:
+      213: 3077225011872246288
+    second: Inimigo-SlimeAquatico-AnimSheet_10
+  - first:
+      213: 5421660026964682758
+    second: Inimigo-SlimeAquatico-AnimSheet_11
+  - first:
+      213: -4433849663598418698
+    second: Inimigo-SlimeAquatico-AnimSheet_12
+  - first:
+      213: -4523436610385314791
+    second: Inimigo-SlimeAquatico-AnimSheet_13
+  - first:
+      213: 2939755800841930628
+    second: Inimigo-SlimeAquatico-AnimSheet_14
+  - first:
+      213: -4366980098813360493
+    second: Inimigo-SlimeAquatico-AnimSheet_15
+  - first:
+      213: 6354271889134921807
+    second: Inimigo-SlimeAquatico-AnimSheet_16
+  - first:
+      213: -2682813775652002120
+    second: Inimigo-SlimeAquatico-AnimSheet_17
+  - first:
+      213: -6146372555255618684
+    second: Inimigo-SlimeAquatico-AnimSheet_18
+  - first:
+      213: -3285041871975075419
+    second: Inimigo-SlimeAquatico-AnimSheet_19
+  - first:
+      213: -4179558146338543759
+    second: Inimigo-SlimeAquatico-AnimSheet_20
+  - first:
+      213: 3289721057673115454
+    second: Inimigo-SlimeAquatico-AnimSheet_21
+  - first:
+      213: 6651276535057542635
+    second: Inimigo-SlimeAquatico-AnimSheet_22
+  - first:
+      213: 8015375889872987630
+    second: Inimigo-SlimeAquatico-AnimSheet_23
+  - first:
+      213: -1225096031346159097
+    second: Inimigo-SlimeAquatico-AnimSheet_24
+  - first:
+      213: 7767030235545893007
+    second: Inimigo-SlimeAquatico-AnimSheet_25
+  - first:
+      213: -3068574738603101737
+    second: Inimigo-SlimeAquatico-AnimSheet_26
+  - first:
+      213: 3152268508234039910
+    second: Inimigo-SlimeAquatico-AnimSheet_27
+  - first:
+      213: -5249159203797035610
+    second: Inimigo-SlimeAquatico-AnimSheet_28
+  - first:
+      213: -9055296743377261770
+    second: Inimigo-SlimeAquatico-AnimSheet_29
+  - first:
+      213: -3734681637237551548
+    second: Inimigo-SlimeAquatico-AnimSheet_30
+  - first:
+      213: 4960028381954491084
+    second: Inimigo-SlimeAquatico-AnimSheet_31
+  - first:
+      213: -3619190192627111770
+    second: Inimigo-SlimeAquatico-AnimSheet_32
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 300
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SlimeAquatico_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96f5df7a6c594cb45b6e6cbabd5d6d89
+      internalID: -328475135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 861389cf3a3b9424c8f1594d92afd835
+      internalID: -1053919186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4a891f91b7f5814ca6c31461a8dabf2
+      internalID: -727428017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd03f63fd79b8684e86d9165c0b2dc17
+      internalID: -401974156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07fe8e08959f8ec42abed7a3976a7cd5
+      internalID: -2113390990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Walk_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50676cd523987ae4fac11d77ba436f02
+      internalID: 1231197875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Walk_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae8cdd41fb079ed42a5e2517b41056f7
+      internalID: 2081722900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Walk_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0153d00451972bd45b88ad07131887a4
+      internalID: -1322687339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b2fb4a057637394dabbe9929b7b4463
+      internalID: -1287545531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b6ce0232e28d6243b134e951e10f0e4
+      internalID: 370969615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7690884d2e4a1d4bac2af17ff0df529
+      internalID: 1563043313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeAquatico_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bd2e00df2b73dc4f96ab4d0a21a0399
+      internalID: 1097636389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 40fd829d90a9e264ba2c04d979a4502f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Inimigo-SlimeAquatico-AnimSheet_0: 4676119601369394506
+      Inimigo-SlimeAquatico-AnimSheet_1: 6333381039053806913
+      Inimigo-SlimeAquatico-AnimSheet_10: 3077225011872246288
+      Inimigo-SlimeAquatico-AnimSheet_11: 5421660026964682758
+      Inimigo-SlimeAquatico-AnimSheet_12: -4433849663598418698
+      Inimigo-SlimeAquatico-AnimSheet_13: -4523436610385314791
+      Inimigo-SlimeAquatico-AnimSheet_14: 2939755800841930628
+      Inimigo-SlimeAquatico-AnimSheet_15: -4366980098813360493
+      Inimigo-SlimeAquatico-AnimSheet_16: 6354271889134921807
+      Inimigo-SlimeAquatico-AnimSheet_17: -2682813775652002120
+      Inimigo-SlimeAquatico-AnimSheet_18: -6146372555255618684
+      Inimigo-SlimeAquatico-AnimSheet_19: -3285041871975075419
+      Inimigo-SlimeAquatico-AnimSheet_2: -4358519600984317124
+      Inimigo-SlimeAquatico-AnimSheet_20: -4179558146338543759
+      Inimigo-SlimeAquatico-AnimSheet_21: 3289721057673115454
+      Inimigo-SlimeAquatico-AnimSheet_22: 6651276535057542635
+      Inimigo-SlimeAquatico-AnimSheet_23: 8015375889872987630
+      Inimigo-SlimeAquatico-AnimSheet_24: -1225096031346159097
+      Inimigo-SlimeAquatico-AnimSheet_25: 7767030235545893007
+      Inimigo-SlimeAquatico-AnimSheet_26: -3068574738603101737
+      Inimigo-SlimeAquatico-AnimSheet_27: 3152268508234039910
+      Inimigo-SlimeAquatico-AnimSheet_28: -5249159203797035610
+      Inimigo-SlimeAquatico-AnimSheet_29: -9055296743377261770
+      Inimigo-SlimeAquatico-AnimSheet_3: 6989374182660217874
+      Inimigo-SlimeAquatico-AnimSheet_30: -3734681637237551548
+      Inimigo-SlimeAquatico-AnimSheet_31: 4960028381954491084
+      Inimigo-SlimeAquatico-AnimSheet_32: -3619190192627111770
+      Inimigo-SlimeAquatico-AnimSheet_4: 1115675473365779445
+      Inimigo-SlimeAquatico-AnimSheet_5: -7686885019018837060
+      Inimigo-SlimeAquatico-AnimSheet_6: -7452367712844484070
+      Inimigo-SlimeAquatico-AnimSheet_7: 6530495966219349826
+      Inimigo-SlimeAquatico-AnimSheet_8: 3042901827230097397
+      Inimigo-SlimeAquatico-AnimSheet_9: -8755139504705790393
+      SlimeAquatico_Attack_0: -1287545531
+      SlimeAquatico_Attack_1: 370969615
+      SlimeAquatico_Attack_2: 1563043313
+      SlimeAquatico_Attack_3: 1097636389
+      SlimeAquatico_Idle_0: -328475135
+      SlimeAquatico_Idle_1: -1053919186
+      SlimeAquatico_Idle_2: -727428017
+      SlimeAquatico_Idle_3: -401974156
+      SlimeAquatico_Walk_0: -2113390990
+      SlimeAquatico_Walk_1: 1231197875
+      SlimeAquatico_Walk_2: 2081722900
+      SlimeAquatico_Walk_3: -1322687339
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

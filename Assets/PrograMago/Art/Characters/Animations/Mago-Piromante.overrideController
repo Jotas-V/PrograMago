@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Mago-Piromante
+  m_Controller: {fileID: 9100000, guid: 7bc06ecaf47eca543b6565ba64540aad, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: eb5787188c555974ab95cae9f9fc7800, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 8453130e8d34bf745a350ccd0d84bb67, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 3da7c05a8bcc87c4794a8e6fe83ed966, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3f307c1ea302a434dbcd75aa5f936a4a, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: df9208b3ee0e64f4596aed1f48737c0f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 48be55f4bf1dc954eb50b4d4b4cf9a3a, type: 2}

@@ -1,0 +1,513 @@
+fileFormatVersion: 2
+guid: 594bbe5190ecbd840ba7880ee4acbe70
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3406162904587703688
+    second: Inimigo-GolemGelo-AnimSheet_0
+  - first:
+      213: -2158643645585213459
+    second: Inimigo-GolemGelo-AnimSheet_1
+  - first:
+      213: -4118296579144360614
+    second: Inimigo-GolemGelo-AnimSheet_2
+  - first:
+      213: 1790312642038741759
+    second: Inimigo-GolemGelo-AnimSheet_3
+  - first:
+      213: -2297305678356269210
+    second: Inimigo-GolemGelo-AnimSheet_4
+  - first:
+      213: -5170058870143005139
+    second: Inimigo-GolemGelo-AnimSheet_5
+  - first:
+      213: 4411668978406352490
+    second: Inimigo-GolemGelo-AnimSheet_6
+  - first:
+      213: 3148612860124329631
+    second: Inimigo-GolemGelo-AnimSheet_7
+  - first:
+      213: 7468831048456413484
+    second: Inimigo-GolemGelo-AnimSheet_8
+  - first:
+      213: -1850162953367570750
+    second: Inimigo-GolemGelo-AnimSheet_9
+  - first:
+      213: -8111795293541893735
+    second: Inimigo-GolemGelo-AnimSheet_10
+  - first:
+      213: -5594480222899603076
+    second: Inimigo-GolemGelo-AnimSheet_11
+  - first:
+      213: -8830994710029550062
+    second: Inimigo-GolemGelo-AnimSheet_12
+  - first:
+      213: 837546240746353007
+    second: Inimigo-GolemGelo-AnimSheet_13
+  - first:
+      213: -3292957158299795277
+    second: Inimigo-GolemGelo-AnimSheet_14
+  - first:
+      213: -4472508643601694349
+    second: Inimigo-GolemGelo-AnimSheet_15
+  - first:
+      213: -7973247235966128473
+    second: Inimigo-GolemGelo-AnimSheet_16
+  - first:
+      213: 2006379718495980901
+    second: Inimigo-GolemGelo-AnimSheet_17
+  - first:
+      213: 8682140310390232046
+    second: Inimigo-GolemGelo-AnimSheet_18
+  - first:
+      213: 4967086395928796499
+    second: Inimigo-GolemGelo-AnimSheet_19
+  - first:
+      213: 5295410980024177458
+    second: Inimigo-GolemGelo-AnimSheet_20
+  - first:
+      213: -6418979741394549936
+    second: Inimigo-GolemGelo-AnimSheet_21
+  - first:
+      213: 2383672068186163254
+    second: Inimigo-GolemGelo-AnimSheet_22
+  - first:
+      213: 5942857709351826985
+    second: Inimigo-GolemGelo-AnimSheet_23
+  - first:
+      213: 7594762689270079389
+    second: Inimigo-GolemGelo-AnimSheet_24
+  - first:
+      213: -7347201070657215490
+    second: Inimigo-GolemGelo-AnimSheet_25
+  - first:
+      213: 6201933551106064167
+    second: Inimigo-GolemGelo-AnimSheet_26
+  - first:
+      213: 7158113153192628596
+    second: Inimigo-GolemGelo-AnimSheet_27
+  - first:
+      213: -756232476322764712
+    second: Inimigo-GolemGelo-AnimSheet_28
+  - first:
+      213: 2158539544282919993
+    second: Inimigo-GolemGelo-AnimSheet_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 300
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GolemGelo_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7054536b0d038d7458986b870a028115
+      internalID: 651475874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5024bfc658cecf041800d7d7bfb75cb8
+      internalID: -1638719990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e384c3b4c6ceaa2478aa56a345e28e62
+      internalID: 428083541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 724
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1161d7fcf66108e4a85f63934ce2e086
+      internalID: -1963233084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37a17b7464c9e1c418d048b4154e7d9f
+      internalID: -1454912387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Walk_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca9671942437dcb4592b54b79b378a84
+      internalID: -371863826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Walk_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e21007ec7d3f3274bbbb7c05ca4fc943
+      internalID: 821905042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Walk_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 362
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21e8ae53c3987e54cb344b4206440b5b
+      internalID: -1252142182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5349d193a9bc3e46b69ef27cf76404e
+      internalID: 1279522739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 134dbfb3a3509f84dbcb2d136bc956d4
+      internalID: -960028584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f8a3045d9750e74da94ae37f4e63731
+      internalID: -853106088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GolemGelo_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 362
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6ad911f4bbf3f444aebc8ed5dc57b6c
+      internalID: -2073234922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5256d9c19e17a3f489bcd43d76198f3a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GolemGelo_Attack_0: 1279522739
+      GolemGelo_Attack_1: -960028584
+      GolemGelo_Attack_2: -853106088
+      GolemGelo_Attack_3: -2073234922
+      GolemGelo_Idle_0: 651475874
+      GolemGelo_Idle_1: -1638719990
+      GolemGelo_Idle_2: 428083541
+      GolemGelo_Idle_3: -1963233084
+      GolemGelo_Walk_0: -1454912387
+      GolemGelo_Walk_1: -371863826
+      GolemGelo_Walk_2: 821905042
+      GolemGelo_Walk_3: -1252142182
+      Inimigo-GolemGelo-AnimSheet_0: 3406162904587703688
+      Inimigo-GolemGelo-AnimSheet_1: -2158643645585213459
+      Inimigo-GolemGelo-AnimSheet_10: -8111795293541893735
+      Inimigo-GolemGelo-AnimSheet_11: -5594480222899603076
+      Inimigo-GolemGelo-AnimSheet_12: -8830994710029550062
+      Inimigo-GolemGelo-AnimSheet_13: 837546240746353007
+      Inimigo-GolemGelo-AnimSheet_14: -3292957158299795277
+      Inimigo-GolemGelo-AnimSheet_15: -4472508643601694349
+      Inimigo-GolemGelo-AnimSheet_16: -7973247235966128473
+      Inimigo-GolemGelo-AnimSheet_17: 2006379718495980901
+      Inimigo-GolemGelo-AnimSheet_18: 8682140310390232046
+      Inimigo-GolemGelo-AnimSheet_19: 4967086395928796499
+      Inimigo-GolemGelo-AnimSheet_2: -4118296579144360614
+      Inimigo-GolemGelo-AnimSheet_20: 5295410980024177458
+      Inimigo-GolemGelo-AnimSheet_21: -6418979741394549936
+      Inimigo-GolemGelo-AnimSheet_22: 2383672068186163254
+      Inimigo-GolemGelo-AnimSheet_23: 5942857709351826985
+      Inimigo-GolemGelo-AnimSheet_24: 7594762689270079389
+      Inimigo-GolemGelo-AnimSheet_25: -7347201070657215490
+      Inimigo-GolemGelo-AnimSheet_26: 6201933551106064167
+      Inimigo-GolemGelo-AnimSheet_27: 7158113153192628596
+      Inimigo-GolemGelo-AnimSheet_28: -756232476322764712
+      Inimigo-GolemGelo-AnimSheet_29: 2158539544282919993
+      Inimigo-GolemGelo-AnimSheet_3: 1790312642038741759
+      Inimigo-GolemGelo-AnimSheet_4: -2297305678356269210
+      Inimigo-GolemGelo-AnimSheet_5: -5170058870143005139
+      Inimigo-GolemGelo-AnimSheet_6: 4411668978406352490
+      Inimigo-GolemGelo-AnimSheet_7: 3148612860124329631
+      Inimigo-GolemGelo-AnimSheet_8: 7468831048456413484
+      Inimigo-GolemGelo-AnimSheet_9: -1850162953367570750
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
