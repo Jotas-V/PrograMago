@@ -237,11 +237,6 @@ namespace PrograMago.UnityIntegration
                 preparationWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Preparation
                     ? new Color32(91, 74, 190, 255)
                     : new Color32(39, 77, 92, 255);
-            if (workspaceArea == WorkspaceArea.Classes && classesLocked && editing && !classesEditable)
-            {
-                feedbackText.color = new Color32(90, 86, 105, 255);
-                feedbackText.text = "Código protegido após a fase 3. Use Ajustes para redistribuir os atributos do Mago.";
-            }
         }
 
         private void FocusEditableDefinitionBlock(int index)
@@ -260,16 +255,14 @@ namespace PrograMago.UnityIntegration
         private bool IsCodeBlockEditable(int index)
         {
             if (learningFlowPresenter == null) return index < 2;
+            if (index == 0) return true;
             if (index == 2)
                 return learningFlowPresenter.Progress.CurrentBattle.Criterion ==
                     ValidationCriterion.UsePolymorphicMagoReference;
-            if (!classesLocked) return index < 2;
-            switch (learningFlowPresenter.Progress.CurrentBattle.Criterion)
-            {
-                case ValidationCriterion.AddMagoSetters: return index == 0;
-                case ValidationCriterion.ConstructAndInstantiateEnemy: return index == 1;
-                default: return false;
-            }
+            return index == 1 &&
+                (learningFlowPresenter.Progress.CurrentBattleIndex < 3 ||
+                 learningFlowPresenter.Progress.CurrentBattle.Criterion ==
+                    ValidationCriterion.ConstructAndInstantiateEnemy);
         }
 
         private void ResetWorkspace()
@@ -279,32 +272,8 @@ namespace PrograMago.UnityIntegration
             preparationCode = string.Empty;
             declaredMago = null;
             preparedMago = null;
-            classesLocked = false;
             interactionEnabled = true;
             workspaceArea = WorkspaceArea.Classes;
-            setterDraftSource = string.Empty;
-        }
-
-        private bool KeepApprovedMagoSource()
-        {
-            if (learningFlowPresenter == null || workspaceArea != WorkspaceArea.Classes ||
-                codeBlocks.ActiveIndex != 0 ||
-                learningFlowPresenter.Progress.CurrentBattle.Criterion != ValidationCriterion.AddMagoSetters)
-                return true;
-
-            if (MagoSourceInsertion.TryExtract(approvedCode, codeInput.text, out _, out string error))
-            {
-                setterDraftSource = codeInput.text;
-                return true;
-            }
-
-            string restore = string.IsNullOrEmpty(setterDraftSource)
-                ? codeBlocks.Snapshot()[0] : setterDraftSource;
-            codeInput.SetTextWithoutNotify(restore);
-            codeBlocks.SetActiveText(restore);
-            feedbackText.color = new Color32(156, 39, 49, 255);
-            feedbackText.text = error;
-            return false;
         }
     }
 }

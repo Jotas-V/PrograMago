@@ -894,9 +894,15 @@ namespace PrograMago.Tests.Integration
                 "public void setVelocidadeAtaque(int velocidadeAtaque) { this.velocidadeAtaque = velocidadeAtaque; } ";
             string setterCode = magoCode.Replace("} Mago heroi", setters + "} Mago heroi");
             Assert.That(FindSceneComponent<Button>("CodeBlockButton1").interactable, Is.True);
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton2").interactable, Is.False,
+                "O bloco do Inimigo só deve ser liberado na etapa de criação do Inimigo.");
             Assert.That(codeInput.interactable, Is.True,
                 "A etapa de setters deve abrir no Mago e aceitar a implementação dos métodos.");
+            Assert.That(codeInput.readOnly, Is.False,
+                "O campo de código não deve ser somente leitura na etapa dos setters.");
             codeInput.text = setterCode;
+            Assert.That(codeInput.text, Is.EqualTo(setterCode),
+                "O bloco do Mago deve continuar editável enquanto o jogador implementa os setters.");
             battleButton.onClick.Invoke();
             yield return null;
             Assert.That(nextBattleButton.interactable, Is.True);
@@ -909,11 +915,22 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneComponent<TMP_Text>("TutorialBodyText").text, Does.Contain("public class Inimigo"));
             Assert.That(battleProgressText.text, Does.Contain("Batalha 5/9"));
             Assert.That(FindSceneComponent<Button>("CodeBlockButton2").interactable, Is.True);
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton1").interactable, Is.True,
+                "O bloco do Mago não deve ser bloqueado depois que os setters forem aprovados.");
             Assert.That(codeInput.interactable, Is.True,
                 "A etapa do Inimigo precisa abrir diretamente no bloco que pode ser editado.");
             Assert.That(FindSceneComponent<Button>("PreparationWorkspaceButton").interactable, Is.True,
                 "A redistribuição do Mago deve estar disponível depois da etapa dos setters.");
             Assert.That(victoryOverlay.activeSelf, Is.False);
+            FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
+            Assert.That(codeInput.interactable, Is.True,
+                "O jogador deve conseguir voltar ao bloco do Mago na etapa do Inimigo.");
+            string updatedMagoCode = setterCode.Replace("private int dano;",
+                "private int dano    ;");
+            codeInput.text = updatedMagoCode;
+            Assert.That(codeInput.text, Is.EqualTo(updatedMagoCode),
+                "O código do Mago deve permanecer livremente editável em etapas posteriores.");
+            codeInput.text = setterCode;
             FindSceneComponent<Button>("PreparationWorkspaceButton").onClick.Invoke();
             Assert.That(codeInput.interactable, Is.True,
                 "O bloco Ajustes precisa aceitar chamadas aos setters já declarados.");

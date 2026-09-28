@@ -83,7 +83,6 @@ namespace PrograMago.UnityIntegration
             magoStatsText.text = "Prévia do Mago · atributos definidos pelo código";
             enemyStatsText.text = "Prévia do Boneco · casa 16";
             combatStatusText.text = "Prévia do Editor · o progresso do jogador é carregado somente no Play";
-            classesLocked = false;
             workspaceArea = WorkspaceArea.Classes;
             UpdateWorkspaceUi();
             feedbackText.text = string.Empty;

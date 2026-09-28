@@ -71,8 +71,6 @@ namespace PrograMago.UnityIntegration
         private string preparationCode = string.Empty;
         private MagoState declaredMago;
         private MagoState preparedMago;
-        private bool classesLocked;
-        private string setterDraftSource = string.Empty;
         private bool interactionEnabled = true;
         private WorkspaceArea workspaceArea = WorkspaceArea.Classes;
 
@@ -549,12 +547,10 @@ namespace PrograMago.UnityIntegration
                 $"NO JOGO\n{battle.Lesson.GameEffect}";
             objectiveText.text = $"TAREFA\n{battle.Lesson.Task}";
             hintText.text = string.Empty;
-            classesLocked = battleNumber >= 4;
             if (battle.Criterion == ValidationCriterion.AddMagoSetters)
             {
                 FocusEditableDefinitionBlock(0);
-                setterDraftSource = codeBlocks.Snapshot()[0];
-                if (string.IsNullOrEmpty(approvedCode)) approvedCode = setterDraftSource;
+                if (string.IsNullOrEmpty(approvedCode)) approvedCode = codeBlocks.Snapshot()[0];
             }
             else if (battle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy)
             {
@@ -659,7 +655,6 @@ namespace PrograMago.UnityIntegration
         }
         private void HandleCodeChanged(string _)
         {
-            if (!KeepApprovedMagoSource()) return;
             StoreWorkspaceText();
             bool setterLesson = learningFlowPresenter != null &&
                 learningFlowPresenter.Progress.CurrentBattle.Criterion == ValidationCriterion.AddMagoSetters;
