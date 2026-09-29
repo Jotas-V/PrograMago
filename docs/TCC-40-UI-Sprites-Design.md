@@ -57,3 +57,23 @@ As medidas vêm dos RectTransforms da MainScene. A integração deve preservar e
 1. Produzir os sprites modulares da transição, superfícies, molduras, abas e botões com a paleta da arena.
 2. Conferir transparência, recortes e bordas 9-slice nos metadados.
 3. No TCC-42, aplicar as artes nas caixas medidas, validar legibilidade e posicionamento na resolução de referência e acrescentar o feedback de clique. A arena fica fora dessa integração.
+
+## Arquivos produzidos para esta direção
+
+As artes abaixo são fontes PNG, sem texto embutido. O mapeamento reaproveita peles de botão e molduras onde a mesma função visual se repete, evitando variantes sem uso.
+
+| Arquivo | Uso na cena | Caixa de referência |
+| --- | --- | ---: |
+| `UI-Soil-Transition-PixelArt.png` | faixa estreita que liga a BottomArea ao chão da arena | faixa horizontal, alvo visual de 24–32 px |
+| `UI-Code-Editor-Panel-PixelArt.png` | moldura externa do editor e moldura reutilizada para o card de vitória/derrota | 1420 × 732; card 1080 × 720 |
+| `UI-CodeInput-Surface-PixelArt.png` | superfície interna escura para texto de código | 1396 × 636 |
+| `UI-Code-Timeline-Track-PixelArt.png` | fundo da faixa de abas e ações de batalha | 1200 × 68 |
+| `UI-Button-Primary-PixelArt.png` | botão Batalhar | 180 × 56 |
+| `UI-Button-Secondary-PixelArt.png` | navegação, copiar exemplo e botões dos blocos | 201 × 35; 419 × 35; blocos 82 × 40 |
+| `UI-Tutorial-Panel-PixelArt.png` | fundo do painel de instruções, com texto separado | 460 × 732 |
+
+A textura grande de terra foi descartada: a direção aprovada usa o solo apenas na faixa de transição, sem uma textura competindo com o editor. As duas peles de botão foram recompostas para preencher melhor a caixa visual e reduzir as margens transparentes.
+
+## Integração pendente no Unity
+
+As artes ainda precisam ser importadas como sprites, configurar filtro Point/mipmaps/compressão conforme a regra do projeto, definir as bordas 9-slice para molduras e botões e associar cada imagem aos RectTransforms indicados. Esses ajustes ficam para TCC-42 no Unity Sprite Editor. A arena não foi editada.
