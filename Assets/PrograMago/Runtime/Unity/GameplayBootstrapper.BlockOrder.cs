@@ -78,8 +78,8 @@ namespace PrograMago.UnityIntegration
             for (int index = 0; index < actionCount; index++)
             {
                 var actionRect = (RectTransform)combatActionButtons[index].transform;
-                actionRect.anchoredPosition = new Vector2(index * 126, 9);
-                actionRect.sizeDelta = new Vector2(116, 41);
+                actionRect.anchoredPosition = new Vector2(index * 146, 9);
+                actionRect.sizeDelta = new Vector2(136, 41);
             }
             timelineContent.sizeDelta = new Vector2(TimelineContentWidth, 68);
             if (combatActionPanel != null)
@@ -87,7 +87,7 @@ namespace PrograMago.UnityIntegration
                 var panel = (RectTransform)combatActionPanel.transform;
                 panel.anchorMin = panel.anchorMax = panel.pivot = Vector2.zero;
                 panel.anchoredPosition = new Vector2(CombatActionStripStartX, 0);
-                panel.sizeDelta = new Vector2(122, 68);
+                panel.sizeDelta = new Vector2(144, 68);
                 Image image = panel.GetComponent<Image>();
                 if (image != null) image.raycastTarget = false;
                 Transform title = panel.Find("CombatActionTitle");

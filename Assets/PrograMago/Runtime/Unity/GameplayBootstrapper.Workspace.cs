@@ -9,9 +9,9 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
-        private const float DefinitionStripWidth = 365f;
-        private const float CombatActionStripStartX = 375f;
-        private const float TimelineContentWidth = 500f;
+        private const float DefinitionStripWidth = 510f;
+        private const float CombatActionStripStartX = 520f;
+        private const float TimelineContentWidth = 680f;
 
         private void EnsureWorkspaceControls()
         {
@@ -19,7 +19,7 @@ namespace PrograMago.UnityIntegration
             LayoutCodeFileButtons();
             EnsureWorkspaceTitles();
             preparationWorkspaceButton = FindOrCreateWorkspaceButton(preparationWorkspaceButton,
-                "PreparationWorkspaceButton", "Ajustes", 260f);
+                "PreparationWorkspaceButton", "Ajustes", 384f);
             approveMethodButton = FindOrCreateWorkspaceButton(approveMethodButton,
                 "ApproveMethodButton", "Aprovar método", 0f);
             if (methodsWorkspaceButton != null)
@@ -34,7 +34,7 @@ namespace PrograMago.UnityIntegration
                 approveMethodButton.onClick.RemoveAllListeners();
                 approveMethodButton.gameObject.SetActive(false);
             }
-            LayoutWorkspaceButton(preparationWorkspaceButton, 260f, 98f);
+            LayoutWorkspaceButton(preparationWorkspaceButton, 384f, 120f);
             RefreshCodeBlockButtons();
             UpdateWorkspaceUi();
         }
@@ -46,8 +46,8 @@ namespace PrograMago.UnityIntegration
                 if (codeBlockButtons[index] == null) continue;
                 RectTransform rect = codeBlockButtons[index].GetComponent<RectTransform>();
                 rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 86f, 6f);
-                rect.sizeDelta = new Vector2(82f, 40f);
+                rect.anchoredPosition = new Vector2(index * 128f, 6f);
+                rect.sizeDelta = new Vector2(120f, 40f);
             }
         }
 
@@ -55,8 +55,8 @@ namespace PrograMago.UnityIntegration
         {
             Transform legacyTitle = definitionStrip.Find("DefinitionBlocksTitle");
             if (legacyTitle != null) legacyTitle.gameObject.SetActive(false);
-            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 0f, 254f);
-            LayoutWorkspaceTitle("WizardConfigGroupTitle", "AJUSTES", 258f, 102f);
+            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 0f, 376f);
+            LayoutWorkspaceTitle("WizardConfigGroupTitle", "AJUSTES", 384f, 120f);
         }
 
         private void LayoutWorkspaceTitle(string name, string text, float x, float width)
@@ -68,8 +68,8 @@ namespace PrograMago.UnityIntegration
             label.text = text;
             label.color = new Color32(218, 219, 231, 255);
             label.fontStyle = FontStyles.Bold;
-            label.fontSizeMin = 10f;
-            label.fontSizeMax = 12f;
+            label.fontSizeMin = 12f;
+            label.fontSizeMax = 14f;
             label.alignment = TextAlignmentOptions.BottomLeft;
             label.raycastTarget = false;
             RectTransform rect = label.rectTransform;

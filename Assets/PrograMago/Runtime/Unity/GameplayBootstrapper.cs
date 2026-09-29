@@ -483,6 +483,7 @@ namespace PrograMago.UnityIntegration
                 {
                     Animator animator = marker.AddComponent<Animator>();
                     animator.runtimeAnimatorController = visualCatalog.trainingDummyController;
+                    animator.speed = 0.78f;
                     animator.Play("Idle", 0, 0f);
                 }
                 float distance = Vector3.Dot(
@@ -675,20 +676,23 @@ namespace PrograMago.UnityIntegration
             {
                 string[] labels = { "1 · Mago", "2 · Inimigo", "3 · Estratégia" };
                 Button button = CreateArrow($"CodeBlockButton{index + 1}", definitionStrip,
-                    labels[index], index * 86f, 82f);
+                    labels[index], index * 128f, 120f);
                 button.gameObject.name = $"CodeBlockButton{index + 1}";
                 button.onClick.RemoveAllListeners();
                 RectTransform rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.zero;
                 rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 86f, 6f);
-                rect.sizeDelta = new Vector2(82f, 40f);
+                rect.anchoredPosition = new Vector2(index * 128f, 6f);
+                rect.sizeDelta = new Vector2(120f, 40f);
                 TMP_Text label = button.GetComponentInChildren<TMP_Text>();
                 if (label != null)
                 {
                     label.text = labels[index];
-                    label.fontSize = 16;
+                    label.enableAutoSizing = true;
+                    label.fontSizeMin = 10f;
+                    label.fontSizeMax = 15f;
+                    label.enableWordWrapping = false;
                 }
 
                 int selected = index;

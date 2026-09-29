@@ -14,6 +14,8 @@ namespace PrograMago.UnityIntegration
         private SpriteRenderer windRenderer;
         private SpriteRenderer leavesRenderer;
         private SpriteRenderer fireflyRenderer;
+        private Coroutine windTraverseRoutine;
+        private Coroutine leavesTraverseRoutine;
         private RuntimeAnimatorController wizardBaseController;
         private Vector3 wizardSpectralAnchor;
         private bool wizardSpectralFormActive;
@@ -39,7 +41,7 @@ namespace PrograMago.UnityIntegration
                 foreach (SpriteRenderer backdrop in scenery)
                     if (backdrop != null) backdrop.sprite = forestBackground;
 
-            Sprite codeEditorBoard = Resources.Load<Sprite>("Visuals/CodeEditorBoardWide");
+            Sprite codeEditorBoard = Resources.Load<Sprite>("Visuals/CodeEditorBoardFrame");
             Image[] images = Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (Image image in images)
             {
@@ -104,9 +106,9 @@ namespace PrograMago.UnityIntegration
                 RectTransform editorTextRect = codeInput.GetComponent<RectTransform>();
                 if (editorTextRect != null)
                 {
-                    // Align the text viewport with the inset center of the wooden editor board.
-                    editorTextRect.anchorMin = new Vector2(0.18f, 0.13f);
-                    editorTextRect.anchorMax = new Vector2(0.82f, 0.76f);
+                    // Keep code clear of the thin wood trim while using nearly all of the board.
+                    editorTextRect.anchorMin = new Vector2(0.055f, 0.105f);
+                    editorTextRect.anchorMax = new Vector2(0.945f, 0.91f);
                     editorTextRect.offsetMin = Vector2.zero;
                     editorTextRect.offsetMax = Vector2.zero;
                 }
@@ -128,6 +130,7 @@ namespace PrograMago.UnityIntegration
                 TMP_Text buttonLabel = button.GetComponentInChildren<TMP_Text>(true);
                 if (buttonLabel != null)
                 {
+                    LayoutButtonLabel(button, buttonLabel);
                     buttonLabel.color = new Color32(255, 246, 222, 255);
                     buttonLabel.fontStyle = FontStyles.Bold;
                 }
@@ -273,6 +276,31 @@ namespace PrograMago.UnityIntegration
             if (button.GetComponent<ButtonJuice>() == null) button.gameObject.AddComponent<ButtonJuice>();
         }
 
+        private static void LayoutButtonLabel(Button button, TMP_Text label)
+        {
+            RectTransform buttonRect = button == null ? null : button.GetComponent<RectTransform>();
+            RectTransform labelRect = label == null ? null : label.rectTransform;
+            if (buttonRect == null || labelRect == null) return;
+
+            bool squareButton = buttonRect.rect.width > 0f && buttonRect.rect.height > 0f &&
+                buttonRect.rect.width <= buttonRect.rect.height * 1.2f;
+            bool codeTab = button.name.StartsWith("CodeBlockButton");
+            labelRect.anchorMin = squareButton ? new Vector2(0.06f, 0.035f) :
+                new Vector2(codeTab ? 0.20f : 0.22f, 0.04f);
+            labelRect.anchorMax = squareButton ? new Vector2(0.94f, 0.34f) :
+                new Vector2(0.97f, 0.96f);
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+            labelRect.pivot = new Vector2(0.5f, 0.5f);
+            label.alignment = TextAlignmentOptions.Center;
+            label.enableAutoSizing = true;
+            label.enableWordWrapping = false;
+            label.overflowMode = TextOverflowModes.Ellipsis;
+            label.fontSizeMin = codeTab ? 10f : 9f;
+            label.fontSizeMax = codeTab ? 15f : 18f;
+            label.margin = Vector4.zero;
+        }
+
         private void EnsureArenaAtmosphere()
         {
             if (visualCatalog == null) return;
@@ -283,11 +311,11 @@ namespace PrograMago.UnityIntegration
                 arenaAtmosphereRoot.SetParent(transform, false);
             }
 
-            windRenderer = EnsureAmbientSprite("Wind", visualCatalog.arenaWindFrames, 0.14f, -98,
-                new Color(0.82f, 0.95f, 0.85f, 0.48f));
-            leavesRenderer = EnsureAmbientSprite("Leaves", visualCatalog.arenaLeafFrames, 0.16f, -96,
-                new Color(1f, 1f, 1f, 0.9f));
-            fireflyRenderer = EnsureAmbientSprite("Firefly", visualCatalog.arenaFireflyFrames, 0.12f, -94,
+            windRenderer = EnsureAmbientSprite("Wind", visualCatalog.arenaWindFrames, 0.28f, -98,
+                new Color(0.82f, 0.95f, 0.85f, 0.34f));
+            leavesRenderer = EnsureAmbientSprite("Leaves", visualCatalog.arenaLeafFrames, 0.31f, -96,
+                new Color(1f, 1f, 1f, 0.72f));
+            fireflyRenderer = EnsureAmbientSprite("Firefly", visualCatalog.arenaFireflyFrames, 0.23f, -94,
                 new Color(1f, 0.95f, 0.69f, 0.82f));
         }
 
@@ -316,10 +344,14 @@ namespace PrograMago.UnityIntegration
         {
             if (renderer == null || renderer.sprite == null || arenaWorldRect.width <= 0 || arenaWorldRect.height <= 0)
                 return;
-            renderer.transform.position = new Vector3(
-                arenaWorldRect.xMin + arenaWorldRect.width * horizontal,
-                arenaWorldRect.yMin + arenaWorldRect.height * vertical,
-                0f);
+            SizeAmbientSprite(renderer, widthFraction, heightFraction);
+            SetAmbientSpritePosition(renderer, horizontal, vertical);
+        }
+
+        private void SizeAmbientSprite(SpriteRenderer renderer, float widthFraction, float heightFraction)
+        {
+            if (renderer == null || renderer.sprite == null || arenaWorldRect.width <= 0 || arenaWorldRect.height <= 0)
+                return;
             Vector2 spriteSize = renderer.sprite.bounds.size;
             Vector3 parentScale = renderer.transform.parent.lossyScale;
             renderer.transform.localScale = new Vector3(
@@ -328,11 +360,80 @@ namespace PrograMago.UnityIntegration
                 1f / Mathf.Max(0.0001f, parentScale.z));
         }
 
+        private void SetAmbientSpritePosition(SpriteRenderer renderer, float horizontal, float vertical)
+        {
+            if (renderer == null || arenaWorldRect.width <= 0 || arenaWorldRect.height <= 0) return;
+            renderer.transform.position = new Vector3(
+                arenaWorldRect.xMin + arenaWorldRect.width * horizontal,
+                arenaWorldRect.yMin + arenaWorldRect.height * vertical,
+                0f);
+        }
+
         private void UpdateArenaAtmosphere()
         {
-            PlaceAmbientSprite(windRenderer, 0.43f, 0.68f, 0.24f, 0.12f);
-            PlaceAmbientSprite(leavesRenderer, 0.57f, 0.59f, 0.09f, 0.13f);
+            if (UnityEngine.Application.isPlaying)
+            {
+                SizeAmbientSprite(windRenderer, 0.24f, 0.12f);
+                SizeAmbientSprite(leavesRenderer, 0.09f, 0.13f);
+                if (windTraverseRoutine == null && windRenderer != null)
+                    windTraverseRoutine = StartCoroutine(DriftAmbientSprite(windRenderer, 0.24f, 0.12f, 0.56f, 0.82f));
+                if (leavesTraverseRoutine == null && leavesRenderer != null)
+                    leavesTraverseRoutine = StartCoroutine(DriftAmbientSprite(leavesRenderer, 0.09f, 0.13f, 0.55f, 0.8f));
+            }
+            else
+            {
+                PlaceAmbientSprite(windRenderer, 0.43f, 0.68f, 0.24f, 0.12f);
+                PlaceAmbientSprite(leavesRenderer, 0.57f, 0.59f, 0.09f, 0.13f);
+            }
             PlaceAmbientSprite(fireflyRenderer, 0.72f, 0.74f, 0.045f, 0.08f);
+        }
+
+        private IEnumerator DriftAmbientSprite(SpriteRenderer renderer, float widthFraction,
+            float heightFraction, float minHeight, float maxHeight)
+        {
+            if (renderer == null) yield break;
+            renderer.enabled = false;
+            Color baseColor = renderer.color;
+            bool leftToRight = Random.value >= 0.5f;
+
+            while (renderer != null)
+            {
+                while (arenaWorldRect.width <= 0f || arenaWorldRect.height <= 0f)
+                    yield return null;
+
+                renderer.enabled = false;
+                yield return new WaitForSecondsRealtime(Random.Range(2.2f, 5.2f));
+                if (renderer == null) yield break;
+
+                float startX = leftToRight ? -widthFraction * 0.65f : 1f + widthFraction * 0.65f;
+                float endX = leftToRight ? 1f + widthFraction * 0.65f : -widthFraction * 0.65f;
+                float height = Random.Range(minHeight, maxHeight);
+                float phase = Random.Range(0f, Mathf.PI * 2f);
+                float duration = Random.Range(5.5f, 7.5f);
+                float elapsed = 0f;
+                renderer.enabled = true;
+
+                while (elapsed < duration && renderer != null)
+                {
+                    elapsed += Time.unscaledDeltaTime;
+                    float t = Mathf.Clamp01(elapsed / duration);
+                    float vertical = height + Mathf.Sin(t * Mathf.PI * 2f + phase) * 0.018f;
+                    SetAmbientSpritePosition(renderer, Mathf.Lerp(startX, endX, t), vertical);
+                    float fadeIn = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.13f));
+                    float fadeOut = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((1f - t) / 0.13f));
+                    Color color = baseColor;
+                    color.a *= fadeIn * fadeOut;
+                    renderer.color = color;
+                    yield return null;
+                }
+
+                if (renderer != null)
+                {
+                    renderer.color = baseColor;
+                    renderer.enabled = false;
+                }
+                leftToRight = !leftToRight;
+            }
         }
 
         private void ApplyWizardAppearance(string form)
@@ -368,6 +469,7 @@ namespace PrograMago.UnityIntegration
             if (animator != null)
             {
                 animator.enabled = true;
+                animator.speed = 0.78f;
                 RuntimeAnimatorController controller = form switch
                 {
                     "piromante" => visualCatalog == null ? null : visualCatalog.pyromancerController,
@@ -416,7 +518,7 @@ namespace PrograMago.UnityIntegration
             if (animator != null && animator.enabled) animator.SetBool("Walking", true);
             Vector3 start = actor.transform.position;
             Vector3 destination = GetActorCellPosition(actor, destinationCell);
-            const float duration = 0.24f;
+            const float duration = 0.44f;
             float elapsed = 0f;
             while (elapsed < duration && actor != null)
             {
@@ -482,14 +584,21 @@ namespace PrograMago.UnityIntegration
         private IEnumerator DamageFlash(SpriteRenderer sprite, CombatElement element, Color baseColor)
         {
             Color elementColor = ElementColor(element);
-            sprite.color = Color.Lerp(baseColor, elementColor, 0.72f);
-            yield return new WaitForSecondsRealtime(0.14f);
+            sprite.color = Color.Lerp(baseColor, elementColor, 0.58f);
+            const float duration = 0.26f;
+            float elapsed = 0f;
+            while (elapsed < duration && sprite != null)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                sprite.color = Color.Lerp(Color.Lerp(baseColor, elementColor, 0.58f), baseColor,
+                    Mathf.Clamp01(elapsed / duration));
+                yield return null;
+            }
             if (sprite != null)
             {
                 if (wizardInstance != null && sprite.gameObject == wizardInstance)
                     ApplyWizardFormTint(combat == null ? "neutro" : combat.WizardForm);
-                else
-                    sprite.color = baseColor;
+                else sprite.color = baseColor;
                 damageFlashes.Remove(sprite);
                 damageFlashBaseColors.Remove(sprite);
             }
