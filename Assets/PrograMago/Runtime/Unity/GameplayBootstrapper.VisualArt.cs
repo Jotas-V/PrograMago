@@ -32,29 +32,60 @@ namespace PrograMago.UnityIntegration
 
         private void ApplyTCC40PresentationArt()
         {
-            if (visualCatalog == null) return;
+            ApplyWorkspaceGround();
 
             Sprite forestBackground = Resources.Load<Sprite>("Arena/ForestArena");
             if (forestBackground != null && scenery != null)
                 foreach (SpriteRenderer backdrop in scenery)
                     if (backdrop != null) backdrop.sprite = forestBackground;
 
+            Sprite codeEditorBoard = Resources.Load<Sprite>("Visuals/CodeEditorBoardWide");
             Image[] images = Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (Image image in images)
             {
-                Sprite panelSprite = image.name switch
+                if (image == null) continue;
+                if (image.name == "BottomArea") continue;
+                if (image.name == "CodeInput")
                 {
-                    "CodeEditorPanel" => visualCatalog.workspacePanel,
-                    "CodeInput" => visualCatalog.codePanel,
+                    SetTransparentPanelImage(image, true);
+                    continue;
+                }
+                if (image.name == "TutorialPanel")
+                {
+                    image.sprite = null;
+                    image.type = Image.Type.Simple;
+                    image.color = new Color32(243, 240, 225, 255);
+                    image.preserveAspect = false;
+                    image.raycastTarget = false;
+                    continue;
+                }
+                if (image.name == "EnemyGuidePanel")
+                {
+                    SetTransparentPanelImage(image, false);
+                    continue;
+                }
+                if (image.name == "CodeEditorPanel")
+                {
+                    if (codeEditorBoard != null) ApplyPanelSprite(image, codeEditorBoard, false);
+                    else
+                    {
+                        image.sprite = null;
+                        image.type = Image.Type.Simple;
+                        image.color = new Color32(47, 38, 30, 255);
+                        image.raycastTarget = false;
+                    }
+                    continue;
+                }
+
+                Sprite panelSprite = visualCatalog == null ? null : image.name switch
+                {
                     "CodeTimeline" => visualCatalog.codeTray,
-                    "BottomArea" => visualCatalog.codeTray,
                     "VictoryCard" => visualCatalog.victoryPanel,
                     "MagoStatusCard" => visualCatalog.codePanel,
                     "EnemyStatusCard" => visualCatalog.codePanel,
                     "CombatMessageCard" => visualCatalog.codePanel,
                     "CombatDefeatOverlay" => visualCatalog.codePanel,
-                    "EnemyGuidePanel" => visualCatalog.workspacePanel,
-                    "TutorialPanel" => visualCatalog.workspacePanel,
+
                     "RestartProgressPanel" => visualCatalog.workspacePanel,
                     _ => null
                 };
@@ -63,18 +94,44 @@ namespace PrograMago.UnityIntegration
 
             Image inputImage = codeInput == null ? null : codeInput.targetGraphic as Image;
             if (inputImage == null && codeInput != null) inputImage = codeInput.GetComponent<Image>();
-            if (inputImage != null) ApplyPanelSprite(inputImage, visualCatalog.codePanel, true);
+            if (inputImage != null)
+            {
+                SetTransparentPanelImage(inputImage, true);
+                inputImage.color = new Color32(28, 31, 43, 238);
+            }
             if (codeInput != null)
             {
+                RectTransform editorTextRect = codeInput.GetComponent<RectTransform>();
+                if (editorTextRect != null)
+                {
+                    // Align the text viewport with the inset center of the wooden editor board.
+                    editorTextRect.anchorMin = new Vector2(0.18f, 0.13f);
+                    editorTextRect.anchorMax = new Vector2(0.82f, 0.76f);
+                    editorTextRect.offsetMin = Vector2.zero;
+                    editorTextRect.offsetMax = Vector2.zero;
+                }
+                // Keep the hit target but prevent Selectable color transitions from tinting the clear editor surface.
+                codeInput.targetGraphic = null;
+                if (inputImage != null) inputImage.raycastTarget = true;
                 if (codeInput.textComponent != null)
                     codeInput.textComponent.color = new Color32(232, 238, 222, 255);
                 if (codeInput.placeholder != null)
                     codeInput.placeholder.color = new Color32(157, 174, 161, 255);
             }
 
+            if (visualCatalog == null) return;
+
             Button[] buttons = Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (Button button in buttons)
+            {
                 ApplyButtonArt(button, button.name == "BattleButton");
+                TMP_Text buttonLabel = button.GetComponentInChildren<TMP_Text>(true);
+                if (buttonLabel != null)
+                {
+                    buttonLabel.color = new Color32(255, 246, 222, 255);
+                    buttonLabel.fontStyle = FontStyles.Bold;
+                }
+            }
 
             if (victoryTitleText != null)
             {
@@ -87,8 +144,32 @@ namespace PrograMago.UnityIntegration
             if (victoryAchievementText != null) victoryAchievementText.color = new Color32(74, 58, 34, 255);
             if (victoryReviewText != null) victoryReviewText.color = new Color32(58, 54, 43, 255);
             SetChildTextColor("EnemyGuidePanel", new Color32(58, 54, 43, 255));
-            SetChildTextColor("TutorialPanel", new Color32(58, 54, 43, 255));
             SetChildTextColor("RestartProgressPanel", new Color32(74, 58, 34, 255));
+        }
+
+        private void ApplyWorkspaceGround()
+        {
+            GameObject bottomArea = GameObject.Find("BottomArea");
+            Sprite earthBackground = Resources.Load<Sprite>("Arena/WorkspaceEarthBackground");
+            if (bottomArea == null || earthBackground == null) return;
+
+            Image background = bottomArea.GetComponent<Image>();
+            if (background == null) background = bottomArea.AddComponent<Image>();
+            background.sprite = earthBackground;
+            background.type = Image.Type.Simple;
+            background.color = Color.white;
+            background.preserveAspect = false;
+            background.raycastTarget = false;
+        }
+
+        private static void SetTransparentPanelImage(Image image, bool receivesInput)
+        {
+            if (image == null) return;
+            image.sprite = null;
+            image.type = Image.Type.Simple;
+            image.color = Color.clear;
+            image.preserveAspect = false;
+            image.raycastTarget = receivesInput;
         }
 
         private void SetChildTextColor(string panelName, Color color)
@@ -98,7 +179,11 @@ namespace PrograMago.UnityIntegration
             {
                 if (item.name != panelName) continue;
                 TMP_Text[] labels = item.GetComponentsInChildren<TMP_Text>(true);
-                foreach (TMP_Text label in labels) label.color = color;
+                foreach (TMP_Text label in labels)
+                {
+                    if (label.GetComponentInParent<Button>() != null) continue;
+                    label.color = color;
+                }
             }
         }
 
@@ -122,7 +207,6 @@ namespace PrograMago.UnityIntegration
                 "EnemyStatusCard" => visualCatalog.codePanel,
                 "CombatMessageCard" => visualCatalog.codePanel,
                 "CombatDefeatOverlay" => visualCatalog.codePanel,
-                "EnemyGuidePanel" => visualCatalog.workspacePanel,
                 _ => null
             };
             if (sprite != null) ApplyPanelSprite(image, sprite, false);
@@ -131,16 +215,47 @@ namespace PrograMago.UnityIntegration
         private void ApplyButtonArt(Button button, bool battleButtonStyle)
         {
             if (button == null || visualCatalog == null) return;
-            Sprite[] states = battleButtonStyle
+            RectTransform buttonRect = button.GetComponent<RectTransform>();
+            bool squareBattleButton = battleButtonStyle && buttonRect != null &&
+                buttonRect.rect.width > 0f && buttonRect.rect.height > 0f &&
+                buttonRect.rect.width <= buttonRect.rect.height;
+            // The in-game Battle button is horizontal, so reuse the existing horizontal action-button states.
+            Sprite[] states = squareBattleButton
                 ? visualCatalog.battleButtonStates : visualCatalog.actionButtonStates;
             if (states == null || states.Length < 4 || states[0] == null) return;
 
             Graphic previousGraphic = button.targetGraphic;
+            if (previousGraphic == null) previousGraphic = button.GetComponent<Graphic>();
             Image image = button.GetComponent<Image>();
+            if (image == null) image = previousGraphic as Image;
+            if (image == null && previousGraphic != null && !(previousGraphic is Image))
+            {
+                Transform artChild = button.transform.Find("ButtonArt");
+                if (artChild == null)
+                {
+                    var artObject = new GameObject("ButtonArt", typeof(RectTransform),
+                        typeof(CanvasRenderer), typeof(Image));
+                    artChild = artObject.transform;
+                    artChild.SetParent(button.transform, false);
+                    RectTransform artRect = artObject.GetComponent<RectTransform>();
+                    artRect.anchorMin = Vector2.zero;
+                    artRect.anchorMax = Vector2.one;
+                    artRect.offsetMin = Vector2.zero;
+                    artRect.offsetMax = Vector2.zero;
+                    artChild.SetAsFirstSibling();
+                }
+                image = artChild.GetComponent<Image>();
+                if (image == null) image = artChild.gameObject.AddComponent<Image>();
+                previousGraphic.enabled = false;
+                previousGraphic.raycastTarget = false;
+            }
             if (image == null) image = button.gameObject.AddComponent<Image>();
-            if (previousGraphic != null && previousGraphic != image) previousGraphic.enabled = false;
             TimelineArrowGraphic arrow = button.GetComponent<TimelineArrowGraphic>();
-            if (arrow != null) arrow.enabled = false;
+            if (arrow != null)
+            {
+                arrow.enabled = false;
+                arrow.raycastTarget = false;
+            }
 
             image.sprite = states[0];
             image.type = Image.Type.Sliced;
