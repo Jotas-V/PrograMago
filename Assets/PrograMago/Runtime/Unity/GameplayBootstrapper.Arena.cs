@@ -79,19 +79,44 @@ namespace PrograMago.UnityIntegration
             Vector3 bottom = arenaCamera.ScreenToWorldPoint(new Vector3(arenaCorners[0].x, arenaCorners[0].y, depth));
             Vector3 top = arenaCamera.ScreenToWorldPoint(new Vector3(arenaCorners[2].x, arenaCorners[2].y, depth));
             arenaWorldRect = Rect.MinMaxRect(bottom.x, bottom.y, top.x, top.y);
-            for (int i = 0; i < scenery.Length; i++)
-            {
-                if (scenery[i] == null || scenery[i].sprite == null) continue;
-                scenery[i].transform.position = new Vector3(arenaWorldRect.xMin + arenaWorldRect.width * (0.25f + i * 0.5f), arenaWorldRect.center.y, 0);
-                Vector2 size = scenery[i].sprite.bounds.size;
-                // The bootstrapper lives under a scaled Canvas; dimensions here are world units.
-                Vector3 parentScale = scenery[i].transform.parent.lossyScale;
-                scenery[i].transform.localScale = new Vector3(
-                    arenaWorldRect.width * 0.5f / (size.x * parentScale.x),
-                    arenaWorldRect.height / (size.y * parentScale.y), 1 / parentScale.z);
-            }
+            UpdateArenaScenery();
             UpdateReachIndicators();
             UpdateArenaAtmosphere();
+        }
+
+        private void UpdateArenaScenery()
+        {
+            if (arenaWorldRect.width <= 0f || arenaWorldRect.height <= 0f) return;
+            Sprite background = scenery.Length > 0 && scenery[0] != null
+                ? scenery[0].sprite : Resources.Load<Sprite>("Arena/ForestArena");
+            if (background == null) return;
+            Vector2 size = background.bounds.size;
+            if (size.x <= 0f || size.y <= 0f) return;
+            float scale = arenaWorldRect.height / size.y;
+            float tileWidth = size.x * scale;
+            int count = Mathf.Max(1, Mathf.CeilToInt(arenaWorldRect.width / tileWidth));
+            if (scenery.Length < count) System.Array.Resize(ref scenery, count);
+            for (int i = 0; i < scenery.Length; i++)
+            {
+                if (scenery[i] == null && i < count)
+                {
+                    var item = new GameObject("ForestBackdrop" + i, typeof(SpriteRenderer));
+                    item.transform.SetParent(transform, false);
+                    scenery[i] = item.GetComponent<SpriteRenderer>();
+                }
+                if (scenery[i] == null) continue;
+                scenery[i].enabled = i < count;
+                if (i >= count) continue;
+                scenery[i].sprite = background;
+                scenery[i].sortingOrder = -100;
+                scenery[i].flipX = i % 2 == 1;
+                scenery[i].transform.position = new Vector3(
+                    arenaWorldRect.xMin + tileWidth * (i + 0.5f), arenaWorldRect.center.y, 0f);
+                // Preserve the source proportions and repeat only as far as the viewport needs.
+                Vector3 parentScale = scenery[i].transform.parent.lossyScale;
+                scenery[i].transform.localScale = new Vector3(
+                    scale / parentScale.x, scale / parentScale.y, 1f / parentScale.z);
+            }
         }
 
         private void UpdateReachIndicators()

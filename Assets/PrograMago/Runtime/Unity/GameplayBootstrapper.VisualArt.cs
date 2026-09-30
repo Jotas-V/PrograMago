@@ -15,7 +15,6 @@ namespace PrograMago.UnityIntegration
         private SpriteRenderer leavesRenderer;
         private SpriteRenderer fireflyRenderer;
         private Coroutine windTraverseRoutine;
-        private Coroutine leavesTraverseRoutine;
         private RuntimeAnimatorController wizardBaseController;
         private Vector3 wizardSpectralAnchor;
         private bool wizardSpectralFormActive;
@@ -35,272 +34,175 @@ namespace PrograMago.UnityIntegration
         private void ApplyTCC40PresentationArt()
         {
             ApplyWorkspaceGround();
-
-            Sprite forestBackground = Resources.Load<Sprite>("Arena/ForestArena");
-            if (forestBackground != null && scenery != null)
-                foreach (SpriteRenderer backdrop in scenery)
-                    if (backdrop != null) backdrop.sprite = forestBackground;
-
-            Sprite codeEditorBoard = Resources.Load<Sprite>("Visuals/CodeEditorBoardFrame");
-            Image[] images = Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (Image image in images)
+            foreach (Image image in Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                if (image == null) continue;
-                if (image.name == "BottomArea") continue;
-                if (image.name == "CodeInput")
+                switch (image.name)
                 {
-                    SetTransparentPanelImage(image, true);
-                    continue;
+                    case "CodeEditorPanel": case "TutorialPanel": case "VictoryCard":
+                    case "RestartProgressPanel":
+                        ApplyPaperPanel(image, new Color32(231, 216, 177, 255)); break;
+                    case "MagoStatusCard": case "EnemyStatusCard":
+                        ApplyPaperPanel(image, new Color32(233, 220, 184, 245)); break;
+                    case "CodeTimeline":
+                        ApplyPaperPanel(image, new Color32(193, 169, 126, 255)); break;
+                    case "CombatMessageCard": case "CombatDefeatOverlay":
+                        ApplyPaperPanel(image, new Color32(231, 216, 177, 255)); break;
+                    case "CodeInput": case "EnemyGuidePanel":
+                        SetTransparentPanelImage(image, image.name == "CodeInput"); break;
+                    case "Viewport":
+                        if (image.transform.parent.name == "CodeTimeline") { image.sprite = null; image.color = Color.white; image.raycastTarget = true; var mask = image.GetComponent<Mask>(); if (mask != null) mask.showMaskGraphic = false; }
+                        break;
                 }
-                if (image.name == "TutorialPanel")
-                {
-                    image.sprite = null;
-                    image.type = Image.Type.Simple;
-                    image.color = new Color32(243, 240, 225, 255);
-                    image.preserveAspect = false;
-                    image.raycastTarget = false;
-                    continue;
-                }
-                if (image.name == "EnemyGuidePanel")
-                {
-                    SetTransparentPanelImage(image, false);
-                    continue;
-                }
-                if (image.name == "CodeEditorPanel")
-                {
-                    if (codeEditorBoard != null) ApplyPanelSprite(image, codeEditorBoard, false);
-                    else
-                    {
-                        image.sprite = null;
-                        image.type = Image.Type.Simple;
-                        image.color = new Color32(47, 38, 30, 255);
-                        image.raycastTarget = false;
-                    }
-                    continue;
-                }
-
-                Sprite panelSprite = visualCatalog == null ? null : image.name switch
-                {
-                    "CodeTimeline" => visualCatalog.codeTray,
-                    "VictoryCard" => visualCatalog.victoryPanel,
-                    "MagoStatusCard" => visualCatalog.codePanel,
-                    "EnemyStatusCard" => visualCatalog.codePanel,
-                    "CombatMessageCard" => visualCatalog.codePanel,
-                    "CombatDefeatOverlay" => visualCatalog.codePanel,
-
-                    "RestartProgressPanel" => visualCatalog.workspacePanel,
-                    _ => null
-                };
-                if (panelSprite != null) ApplyPanelSprite(image, panelSprite, false);
-            }
-
-            Image inputImage = codeInput == null ? null : codeInput.targetGraphic as Image;
-            if (inputImage == null && codeInput != null) inputImage = codeInput.GetComponent<Image>();
-            if (inputImage != null)
-            {
-                SetTransparentPanelImage(inputImage, true);
-                inputImage.color = new Color32(28, 31, 43, 238);
             }
             if (codeInput != null)
             {
-                RectTransform editorTextRect = codeInput.GetComponent<RectTransform>();
-                if (editorTextRect != null)
-                {
-                    // Keep code clear of the thin wood trim while using nearly all of the board.
-                    editorTextRect.anchorMin = new Vector2(0.055f, 0.105f);
-                    editorTextRect.anchorMax = new Vector2(0.945f, 0.91f);
-                    editorTextRect.offsetMin = Vector2.zero;
-                    editorTextRect.offsetMax = Vector2.zero;
-                }
-                // Keep the hit target but prevent Selectable color transitions from tinting the clear editor surface.
+                var rect = codeInput.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(.025f, .13f);
+                rect.anchorMax = new Vector2(.975f, .97f);
+                rect.offsetMin = rect.offsetMax = Vector2.zero;
                 codeInput.targetGraphic = null;
-                if (inputImage != null) inputImage.raycastTarget = true;
-                if (codeInput.textComponent != null)
-                    codeInput.textComponent.color = new Color32(232, 238, 222, 255);
-                if (codeInput.placeholder != null)
-                    codeInput.placeholder.color = new Color32(157, 174, 161, 255);
+                if (codeInput.textComponent != null) codeInput.textComponent.color = new Color32(47, 39, 30, 255);
+                if (codeInput.placeholder != null) codeInput.placeholder.color = new Color32(103, 87, 66, 255);
             }
-
-            if (visualCatalog == null) return;
-
-            Button[] buttons = Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (Button button in buttons)
+            foreach (string name in new[]{"BottomArea", "MagoStatusCard", "EnemyStatusCard", "CombatMessageCard", "VictoryCard", "RestartProgressPanel"})
+                SetChildTextColor(name, new Color32(47, 39, 30, 255));
+            foreach (Button button in Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 ApplyButtonArt(button, button.name == "BattleButton");
-                TMP_Text buttonLabel = button.GetComponentInChildren<TMP_Text>(true);
-                if (buttonLabel != null)
-                {
-                    LayoutButtonLabel(button, buttonLabel);
-                    buttonLabel.color = new Color32(255, 246, 222, 255);
-                    buttonLabel.fontStyle = FontStyles.Bold;
-                }
+                var label = button.GetComponentInChildren<TMP_Text>(true);
+                if (label != null) { LayoutButtonLabel(button, label); label.color = new Color32(255, 245, 214, 255); label.fontStyle = FontStyles.Bold; }
             }
-
-            if (victoryTitleText != null)
+            foreach (var panel in Object.FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                victoryTitleText.color = new Color32(96, 61, 26, 255);
-                victoryTitleText.fontStyle = FontStyles.Bold;
-                victoryTitleText.enableAutoSizing = true;
-                victoryTitleText.fontSizeMin = 20;
-                victoryTitleText.fontSizeMax = 42;
+                if (panel.name != "VictoryCard") continue;
+                panel.anchorMin = new Vector2(.15f, .19f);
+                panel.anchorMax = new Vector2(.85f, .81f);
+                panel.pivot = new Vector2(.5f, .5f);
+                panel.offsetMin = panel.offsetMax = Vector2.zero;
+                LayoutPaperText(victoryTitleText, new Vector2(.07f,.73f), new Vector2(.93f,.91f), 38);
+                LayoutPaperText(victoryAchievementText, new Vector2(.07f,.49f), new Vector2(.93f,.70f), 24);
+                LayoutPaperText(victoryReviewText, new Vector2(.07f,.25f), new Vector2(.93f,.47f), 22);
+                if (nextBattleButton != null)
+                {
+                    var rect = nextBattleButton.GetComponent<RectTransform>();
+                    rect.anchorMin = new Vector2(.27f,.07f); rect.anchorMax = new Vector2(.73f,.19f);
+                    rect.offsetMin = rect.offsetMax = Vector2.zero;
+                }
+                panel.SetAsLastSibling();
             }
-            if (victoryAchievementText != null) victoryAchievementText.color = new Color32(74, 58, 34, 255);
-            if (victoryReviewText != null) victoryReviewText.color = new Color32(58, 54, 43, 255);
-            SetChildTextColor("EnemyGuidePanel", new Color32(58, 54, 43, 255));
-            SetChildTextColor("RestartProgressPanel", new Color32(74, 58, 34, 255));
+            if (victoryOverlay != null)
+            {
+                var shade = victoryOverlay.GetComponent<Image>();
+                if (shade != null) { shade.sprite = null; shade.color = new Color32(0, 0, 0, 196); shade.raycastTarget = true; }
+            }
+        }
+
+        private static void LayoutPaperText(TMP_Text text, Vector2 min, Vector2 max, float size)
+        {
+            if (text == null) return;
+            var rect = text.rectTransform;
+            rect.anchorMin = min; rect.anchorMax = max;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            text.alignment = TextAlignmentOptions.Center;
+            text.enableAutoSizing = true; text.fontSizeMin = 16; text.fontSizeMax = size;
+            text.enableWordWrapping = true;
+            text.overflowMode = TextOverflowModes.Truncate;
+            text.color = new Color32(47, 39, 30, 255);
         }
 
         private void ApplyWorkspaceGround()
         {
-            GameObject bottomArea = GameObject.Find("BottomArea");
-            Sprite earthBackground = Resources.Load<Sprite>("Arena/WorkspaceEarthBackground");
-            if (bottomArea == null || earthBackground == null) return;
+            var area = GameObject.Find("BottomArea");
+            if (area == null) return;
+            var image = area.GetComponent<Image>();
+            if (image == null) image = area.AddComponent<Image>();
+            image.sprite = null; image.type = Image.Type.Simple;
+            image.color = new Color32(45, 48, 35, 255); image.raycastTarget = false;
+        }
 
-            Image background = bottomArea.GetComponent<Image>();
-            if (background == null) background = bottomArea.AddComponent<Image>();
-            background.sprite = earthBackground;
-            background.type = Image.Type.Simple;
-            background.color = Color.white;
-            background.preserveAspect = false;
-            background.raycastTarget = false;
+        private static void ApplyPaperPanel(Image image, Color color)
+        {
+            image.sprite = null; image.type = Image.Type.Simple;
+            image.color = color; image.preserveAspect = false; image.raycastTarget = false;
+            var border = image.transform.Find("PaperBorder");
+            if (border == null)
+            {
+                var go = new GameObject("PaperBorder", typeof(RectTransform), typeof(CanvasRenderer), typeof(PaperPanelBorder));
+                border = go.transform; border.SetParent(image.transform, false);
+            }
+            var rect = border.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            border.SetAsFirstSibling();
         }
 
         private static void SetTransparentPanelImage(Image image, bool receivesInput)
         {
             if (image == null) return;
-            image.sprite = null;
-            image.type = Image.Type.Simple;
-            image.color = Color.clear;
-            image.preserveAspect = false;
-            image.raycastTarget = receivesInput;
+            image.sprite = null; image.type = Image.Type.Simple;
+            image.color = Color.clear; image.preserveAspect = false; image.raycastTarget = receivesInput;
         }
 
         private void SetChildTextColor(string panelName, Color color)
         {
-            Transform[] objects = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (Transform item in objects)
-            {
-                if (item.name != panelName) continue;
-                TMP_Text[] labels = item.GetComponentsInChildren<TMP_Text>(true);
-                foreach (TMP_Text label in labels)
-                {
-                    if (label.GetComponentInParent<Button>() != null) continue;
-                    label.color = color;
-                }
-            }
-        }
-
-        private void ApplyPanelSprite(Image image, Sprite sprite, bool receivesInput)
-        {
-            if (image == null || sprite == null) return;
-            image.sprite = sprite;
-            image.type = Image.Type.Sliced;
-            image.color = Color.white;
-            image.preserveAspect = false;
-            image.raycastTarget = receivesInput;
+            foreach (Transform item in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (item.name == panelName)
+                    foreach (TMP_Text label in item.GetComponentsInChildren<TMP_Text>(true))
+                        if (label.GetComponentInParent<Button>() == null) label.color = color;
         }
 
         private void ApplyCreatedPanelArt(string name, Image image)
         {
-            if (visualCatalog == null || image == null) return;
-            Sprite sprite = name switch
-            {
-                "CodeTimeline" => visualCatalog.codeTray,
-                "MagoStatusCard" => visualCatalog.codePanel,
-                "EnemyStatusCard" => visualCatalog.codePanel,
-                "CombatMessageCard" => visualCatalog.codePanel,
-                "CombatDefeatOverlay" => visualCatalog.codePanel,
-                _ => null
-            };
-            if (sprite != null) ApplyPanelSprite(image, sprite, false);
+            if (name == "CodeTimeline") ApplyPaperPanel(image, new Color32(193, 169, 126, 255));
+            else if (name == "MagoStatusCard" || name == "EnemyStatusCard" || name == "CombatMessageCard" || name == "CombatDefeatOverlay")
+                ApplyPaperPanel(image, new Color32(231, 216, 177, 255));
         }
 
         private void ApplyButtonArt(Button button, bool battleButtonStyle)
         {
-            if (button == null || visualCatalog == null) return;
-            RectTransform buttonRect = button.GetComponent<RectTransform>();
-            bool squareBattleButton = battleButtonStyle && buttonRect != null &&
-                buttonRect.rect.width > 0f && buttonRect.rect.height > 0f &&
-                buttonRect.rect.width <= buttonRect.rect.height;
-            // The in-game Battle button is horizontal, so reuse the existing horizontal action-button states.
-            Sprite[] states = squareBattleButton
-                ? visualCatalog.battleButtonStates : visualCatalog.actionButtonStates;
-            if (states == null || states.Length < 4 || states[0] == null) return;
-
-            Graphic previousGraphic = button.targetGraphic;
-            if (previousGraphic == null) previousGraphic = button.GetComponent<Graphic>();
-            Image image = button.GetComponent<Image>();
-            if (image == null) image = previousGraphic as Image;
-            if (image == null && previousGraphic != null && !(previousGraphic is Image))
+            if (button == null) return;
+            var image = button.GetComponent<Image>();
+            if (image == null)
             {
-                Transform artChild = button.transform.Find("ButtonArt");
-                if (artChild == null)
+                var previous = button.targetGraphic;
+                var art = button.transform.Find("ButtonArt");
+                if (art == null)
                 {
-                    var artObject = new GameObject("ButtonArt", typeof(RectTransform),
-                        typeof(CanvasRenderer), typeof(Image));
-                    artChild = artObject.transform;
-                    artChild.SetParent(button.transform, false);
-                    RectTransform artRect = artObject.GetComponent<RectTransform>();
-                    artRect.anchorMin = Vector2.zero;
-                    artRect.anchorMax = Vector2.one;
-                    artRect.offsetMin = Vector2.zero;
-                    artRect.offsetMax = Vector2.zero;
-                    artChild.SetAsFirstSibling();
+                    var go = new GameObject("ButtonArt", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                    art = go.transform; art.SetParent(button.transform, false);
+                    var rect = go.GetComponent<RectTransform>();
+                    rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+                    rect.offsetMin = rect.offsetMax = Vector2.zero;
                 }
-                image = artChild.GetComponent<Image>();
-                if (image == null) image = artChild.gameObject.AddComponent<Image>();
-                previousGraphic.enabled = false;
-                previousGraphic.raycastTarget = false;
+                image = art.GetComponent<Image>(); art.SetAsFirstSibling();
+                if (previous != null && previous != image) { previous.enabled = false; previous.raycastTarget = false; }
             }
-            if (image == null) image = button.gameObject.AddComponent<Image>();
-            TimelineArrowGraphic arrow = button.GetComponent<TimelineArrowGraphic>();
-            if (arrow != null)
-            {
-                arrow.enabled = false;
-                arrow.raycastTarget = false;
-            }
-
-            image.sprite = states[0];
-            image.type = Image.Type.Sliced;
-            image.preserveAspect = false;
-            image.color = Color.white;
-            image.raycastTarget = true;
-            button.targetGraphic = image;
-            button.transition = Selectable.Transition.SpriteSwap;
-            SpriteState spriteState = button.spriteState;
-            spriteState.highlightedSprite = states[1];
-            spriteState.pressedSprite = states[2];
-            spriteState.disabledSprite = states[3];
-            button.spriteState = spriteState;
-
+            var arrow = button.GetComponent<TimelineArrowGraphic>();
+            if (arrow != null) { arrow.enabled = false; arrow.raycastTarget = false; }
+            ApplyPaperPanel(image, Color.white);
+            image.raycastTarget = true; button.targetGraphic = image;
+            button.transition = Selectable.Transition.ColorTint;
+            var colors = button.colors;
+            colors.normalColor = battleButtonStyle ? new Color32(65, 88, 53, 255) : new Color32(105, 77, 47, 255);
+            colors.highlightedColor = new Color32(128, 101, 63, 255);
+            colors.pressedColor = new Color32(66, 51, 34, 255);
+            colors.selectedColor = colors.normalColor;
+            colors.disabledColor = new Color32(102, 97, 79, 255);
+            colors.fadeDuration = .12f; button.colors = colors;
             if (button.GetComponent<ButtonJuice>() == null) button.gameObject.AddComponent<ButtonJuice>();
         }
 
         private static void LayoutButtonLabel(Button button, TMP_Text label)
         {
-            RectTransform buttonRect = button == null ? null : button.GetComponent<RectTransform>();
-            RectTransform labelRect = label == null ? null : label.rectTransform;
-            if (buttonRect == null || labelRect == null) return;
-
-            bool squareButton = buttonRect.rect.width > 0f && buttonRect.rect.height > 0f &&
-                buttonRect.rect.width <= buttonRect.rect.height * 1.2f;
-            bool codeTab = button.name.StartsWith("CodeBlockButton");
-            labelRect.anchorMin = squareButton ? new Vector2(0.06f, 0.035f) :
-                new Vector2(codeTab ? 0.20f : 0.22f, 0.04f);
-            labelRect.anchorMax = squareButton ? new Vector2(0.94f, 0.34f) :
-                new Vector2(0.97f, 0.96f);
-            labelRect.offsetMin = Vector2.zero;
-            labelRect.offsetMax = Vector2.zero;
-            labelRect.pivot = new Vector2(0.5f, 0.5f);
+            var rect = label.rectTransform;
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = new Vector2(7, 4); rect.offsetMax = new Vector2(-7, -4);
             label.alignment = TextAlignmentOptions.Center;
-            label.enableAutoSizing = true;
-            label.enableWordWrapping = false;
+            label.enableAutoSizing = true; label.enableWordWrapping = false;
             label.overflowMode = TextOverflowModes.Ellipsis;
-            label.fontSizeMin = codeTab ? 10f : 9f;
-            label.fontSizeMax = codeTab ? 15f : 18f;
+            label.fontSizeMin = 10; label.fontSizeMax = button.name == "NextBattleButton" ? 24 : 18;
             label.margin = Vector4.zero;
         }
-
         private void EnsureArenaAtmosphere()
         {
             if (visualCatalog == null) return;
@@ -354,9 +256,11 @@ namespace PrograMago.UnityIntegration
                 return;
             Vector2 spriteSize = renderer.sprite.bounds.size;
             Vector3 parentScale = renderer.transform.parent.lossyScale;
+            float scale = Mathf.Min(arenaWorldRect.width * widthFraction / spriteSize.x,
+                arenaWorldRect.height * heightFraction / spriteSize.y);
             renderer.transform.localScale = new Vector3(
-                arenaWorldRect.width * widthFraction / (spriteSize.x * Mathf.Max(0.0001f, parentScale.x)),
-                arenaWorldRect.height * heightFraction / (spriteSize.y * Mathf.Max(0.0001f, parentScale.y)),
+                scale / Mathf.Max(0.0001f, parentScale.x),
+                scale / Mathf.Max(0.0001f, parentScale.y),
                 1f / Mathf.Max(0.0001f, parentScale.z));
         }
 
@@ -373,17 +277,15 @@ namespace PrograMago.UnityIntegration
         {
             if (UnityEngine.Application.isPlaying)
             {
-                SizeAmbientSprite(windRenderer, 0.24f, 0.12f);
-                SizeAmbientSprite(leavesRenderer, 0.09f, 0.13f);
+                SizeAmbientSprite(windRenderer, 0.14f, 0.23f);
+                SizeAmbientSprite(leavesRenderer, 0.06f, 0.16f);
                 if (windTraverseRoutine == null && windRenderer != null)
-                    windTraverseRoutine = StartCoroutine(DriftAmbientSprite(windRenderer, 0.24f, 0.12f, 0.56f, 0.82f));
-                if (leavesTraverseRoutine == null && leavesRenderer != null)
-                    leavesTraverseRoutine = StartCoroutine(DriftAmbientSprite(leavesRenderer, 0.09f, 0.13f, 0.55f, 0.8f));
+                    windTraverseRoutine = StartCoroutine(DriftAmbientSprite(windRenderer, 0.14f, 0.23f, 0.56f, 0.72f));
             }
             else
             {
-                PlaceAmbientSprite(windRenderer, 0.43f, 0.68f, 0.24f, 0.12f);
-                PlaceAmbientSprite(leavesRenderer, 0.57f, 0.59f, 0.09f, 0.13f);
+                PlaceAmbientSprite(windRenderer, 0.43f, 0.68f, 0.14f, 0.23f);
+                PlaceAmbientSprite(leavesRenderer, 0.39f, 0.655f, 0.06f, 0.16f);
             }
             PlaceAmbientSprite(fireflyRenderer, 0.72f, 0.74f, 0.045f, 0.08f);
         }
@@ -394,7 +296,9 @@ namespace PrograMago.UnityIntegration
             if (renderer == null) yield break;
             renderer.enabled = false;
             Color baseColor = renderer.color;
-            bool leftToRight = Random.value >= 0.5f;
+            SpriteRenderer follower = renderer == windRenderer ? leavesRenderer : null;
+            Color followerBaseColor = follower == null ? Color.white : follower.color;
+            if (follower != null) follower.enabled = false;
 
             while (renderer != null)
             {
@@ -402,16 +306,18 @@ namespace PrograMago.UnityIntegration
                     yield return null;
 
                 renderer.enabled = false;
-                yield return new WaitForSecondsRealtime(Random.Range(2.2f, 5.2f));
+                if (follower != null) follower.enabled = false;
+                yield return new WaitForSecondsRealtime(Random.Range(1.8f, 3.5f));
                 if (renderer == null) yield break;
 
-                float startX = leftToRight ? -widthFraction * 0.65f : 1f + widthFraction * 0.65f;
-                float endX = leftToRight ? 1f + widthFraction * 0.65f : -widthFraction * 0.65f;
+                float startX = -widthFraction * 0.65f;
+                float endX = 1f + widthFraction * 0.65f + 0.04f;
                 float height = Random.Range(minHeight, maxHeight);
                 float phase = Random.Range(0f, Mathf.PI * 2f);
-                float duration = Random.Range(5.5f, 7.5f);
+                float duration = Random.Range(6.5f, 8.5f);
                 float elapsed = 0f;
                 renderer.enabled = true;
+                if (follower != null) follower.enabled = true;
 
                 while (elapsed < duration && renderer != null)
                 {
@@ -424,6 +330,14 @@ namespace PrograMago.UnityIntegration
                     Color color = baseColor;
                     color.a *= fadeIn * fadeOut;
                     renderer.color = color;
+                    if (follower != null)
+                    {
+                        SetAmbientSpritePosition(follower, Mathf.Lerp(startX, endX, t) - 0.04f,
+                            vertical - 0.025f);
+                        Color followerColor = followerBaseColor;
+                        followerColor.a *= fadeIn * fadeOut;
+                        follower.color = followerColor;
+                    }
                     yield return null;
                 }
 
@@ -432,7 +346,11 @@ namespace PrograMago.UnityIntegration
                     renderer.color = baseColor;
                     renderer.enabled = false;
                 }
-                leftToRight = !leftToRight;
+                if (follower != null)
+                {
+                    follower.color = followerBaseColor;
+                    follower.enabled = false;
+                }
             }
         }
 
@@ -469,7 +387,7 @@ namespace PrograMago.UnityIntegration
             if (animator != null)
             {
                 animator.enabled = true;
-                animator.speed = 0.78f;
+                animator.speed = 0.40f;
                 RuntimeAnimatorController controller = form switch
                 {
                     "piromante" => visualCatalog == null ? null : visualCatalog.pyromancerController,

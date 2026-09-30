@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 512d8a14000fa7048b1d9f1a2133da56
+guid: 7fd946986715ba4408f534afef30f503
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -19,7 +19,8 @@ TextureImporter:
     second: Hidromante_Attack_4
   - first:
       213: 415072312
-    second: Hidromante_Attack_5  externalObjects: {}
+    second: Hidromante_Attack_5
+  externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
@@ -65,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 425
+  spritePixelsToUnits: 424.3094
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -118,11 +119,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1024
+        y: 1056
         width: 512
-        height: 512
+        height: 480
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: 0.0055939225}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -144,7 +145,7 @@ TextureImporter:
         width: 512
         height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: 0.069697425}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,11 +163,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 512
+        y: 552
         width: 512
-        height: 512
+        height: 472
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: 0.018400598}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,11 +185,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
-        y: 512
+        y: 552
         width: 512
-        height: 512
+        height: 472
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: 0.0078073787}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -207,10 +208,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 512
-        height: 512
+        width: 460
+        height: 552
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5565217, y: 0.06464689}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -227,12 +228,12 @@ TextureImporter:
       name: Hidromante_Attack_5
       rect:
         serializedVersion: 2
-        x: 512
+        x: 460
         y: 0
-        width: 512
+        width: 564
         height: 512
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5460993, y: 0.069697425}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -244,7 +245,8 @@ TextureImporter:
       vertices: []
       indices: 
       edges: []
-      weights: []    outline: []
+      weights: []
+    outline: []
     customData: 
     physicsShape: []
     bones: []
@@ -258,12 +260,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      Hidromante_Attack_4: 703876537
+      Hidromante_Attack_5: 415072312
       Hidromante_Idle_4: 1919179485
       Hidromante_Idle_5: 1325300962
       Hidromante_Walk_4: 1446918877
       Hidromante_Walk_5: 963983445
-      Hidromante_Attack_4: 703876537
-      Hidromante_Attack_5: 415072312  mipmapLimitGroupName: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
