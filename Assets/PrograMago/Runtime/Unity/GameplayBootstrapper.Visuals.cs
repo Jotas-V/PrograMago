@@ -10,7 +10,18 @@ namespace PrograMago.UnityIntegration
         private readonly Dictionary<CombatElement, GameObject> projectilePrefabs = new Dictionary<CombatElement, GameObject>();
         private readonly Queue<CombatEvent> trace = new Queue<CombatEvent>();
         private float nextTraceTime;
-        private bool HasCombatVisuals => projectiles.Exists(item => item != null);
+        private bool HasCombatVisuals => projectiles.Exists(item => item != null) ||
+            movingActors.Count > 0 || IsAttackPlaying(wizardInstance) || enemyMarkers.Exists(IsAttackPlaying);
+
+        private static bool IsAttackPlaying(GameObject actor)
+        {
+            if (actor == null || !actor.activeInHierarchy) return false;
+            Animator animator = actor.GetComponent<Animator>();
+            if (animator == null || !animator.isActiveAndEnabled || animator.runtimeAnimatorController == null)
+                return false;
+            return animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") ||
+                (animator.IsInTransition(0) && animator.GetNextAnimatorStateInfo(0).IsName("Attack"));
+        }
 
         private void PresentCombatStep(CombatEvent step)
         {

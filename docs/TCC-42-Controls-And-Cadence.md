@@ -1,0 +1,15 @@
+# TCC-42 — botões inferiores e ritmo das animações
+
+A interface de pergaminho simples foi aprovada pelo usuário e comitada antes destes ajustes no commit 61271ca, na branch existente codex/TCC-12. O commit inclui a integração anterior dos magos e a composição aprovada; alterações preexistentes de documentos acadêmicos, metadados dos inimigos, UI antiga e fallback TMP ficaram fora dele.
+
+Após a aprovação: botões de código aumentados para 144, 160 e 184 unidades de largura, conforme o texto. Todos os controles inferiores usam altura 48 e a mesma linha de apoio, incluindo Ajustes, Atacar e Batalhar. A barra passou a 84 de altura, com títulos separados dos botões. Layout persistido na MainScene e aplicado também em runtime. Textos verificados em 18 pt, sem overflow, em 1440×1080; capturas reais também em 1920×1080.
+
+Velocidade compartilhada de Animator em 0,30 para as quatro formas do mago e para o boneco animado em runtime. A configuração é aplicada pelo bootstrapper ao personagem instanciado; a prévia do mago foi ajustada nesta sessão do Editor (Animator.speed não é uma propriedade persistida no prefab). Idle, Walk e Attack existentes mantêm duração de clip 0,5 s (ciclo efetivo aproximadamente 1,67 s). Partículas e regras de combate não tiveram seu ritmo alterado.
+
+A conclusão visual da vitória agora considera ataque em execução e deslocamentos além dos projéteis. Isso impede a abertura da tela final antes de o movimento visual terminar. Conferidos em Play Mode no mago e no boneco: Walk, Idle, Attack e retorno a Idle; o detector de ataque permanece verdadeiro durante o ataque e falso após o término.
+
+Nesta etapa anterior, foram mantidos seis quadros por sequência do mago e quatro do boneco. A ampliação experimental para oito foi retirada após feedback do usuário; a configuração ativa mantém seis no mago e quatro no boneco, em 0,30. Histórico em TCC-42-Eight-Frame-Animations.md. Não criados oito quadros apenas por repetição. O ritmo mais lento aumenta o tempo de permanência por desenho: cerca de 0,28 s no mago e 0,42 s no boneco. Novos intermediários podem melhorar a fluidez, mas precisam preservar silhueta e proporções; as diferenças artísticas já documentadas no mago continuam. As folhas adicionais dos inimigos ainda exigem sua própria integração e revisão visual. Esta etapa resolve velocidade, alinhamento e corte da apresentação final; não declara resolvida toda a suavidade artística.
+
+Dois testes novos reproduziram as falhas antes das correções e passaram: alinhamento/espaço dos controles e espera pelo fim do movimento. Suíte final 317/319, com as mesmas falhas anteriores de caminho antigo do sprite e preparação não idempotente da cena. Resultado em tmp/tcc42-layout-speed-tests.json; verificação runtime em tmp/tcc42-layout-speed-runtime.json; capturas em tmp/tcc42-controls-review/tcc42-controls-{1920,1440}.png.
+
+Game View original restaurada; Unity fora de Play Mode. Esta entrega publica os ajustes posteriores em um novo commit, preservando o commit 61271ca da versão aprovada. A issue permanece In Progress para novas etapas.

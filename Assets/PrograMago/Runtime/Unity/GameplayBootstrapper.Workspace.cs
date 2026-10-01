@@ -9,9 +9,13 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
-        private const float DefinitionStripWidth = 510f;
-        private const float CombatActionStripStartX = 520f;
-        private const float TimelineContentWidth = 680f;
+        private const float DefinitionStripWidth = 692f;
+        private const float CombatActionStripStartX = 704f;
+        private const float TimelineContentWidth = 884f;
+        private const float TimelineHeight = 84f;
+        private const float TimelineButtonHeight = 48f;
+        private const float TimelineButtonBottom = 8f;
+        private static readonly float[] CodeFileButtonWidths = { 144f, 160f, 184f };
 
         private void EnsureWorkspaceControls()
         {
@@ -19,11 +23,12 @@ namespace PrograMago.UnityIntegration
             LayoutCodeFileButtons();
             EnsureWorkspaceTitles();
             preparationWorkspaceButton = FindOrCreateWorkspaceButton(preparationWorkspaceButton,
-                "PreparationWorkspaceButton", "Ajustes", 384f);
+                "PreparationWorkspaceButton", "Ajustes", 536f);
             approveMethodButton = FindOrCreateWorkspaceButton(approveMethodButton,
                 "ApproveMethodButton", "Aprovar método", 0f);
             if (methodsWorkspaceButton != null)
             {
+                LayoutWorkspaceButton(methodsWorkspaceButton, 536f, 144f);
                 methodsWorkspaceButton.onClick.RemoveAllListeners();
                 methodsWorkspaceButton.gameObject.SetActive(false);
             }
@@ -34,20 +39,22 @@ namespace PrograMago.UnityIntegration
                 approveMethodButton.onClick.RemoveAllListeners();
                 approveMethodButton.gameObject.SetActive(false);
             }
-            LayoutWorkspaceButton(preparationWorkspaceButton, 384f, 120f);
+            LayoutWorkspaceButton(preparationWorkspaceButton, 536f, 144f);
             RefreshCodeBlockButtons();
             UpdateWorkspaceUi();
         }
 
         private void LayoutCodeFileButtons()
         {
+            float x = 0f;
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
                 if (codeBlockButtons[index] == null) continue;
                 RectTransform rect = codeBlockButtons[index].GetComponent<RectTransform>();
                 rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-                rect.anchoredPosition = new Vector2(index * 128f, 6f);
-                rect.sizeDelta = new Vector2(120f, 40f);
+                rect.anchoredPosition = new Vector2(x, TimelineButtonBottom);
+                rect.sizeDelta = new Vector2(CodeFileButtonWidths[index], TimelineButtonHeight);
+                x += CodeFileButtonWidths[index] + 12f;
             }
         }
 
@@ -55,8 +62,8 @@ namespace PrograMago.UnityIntegration
         {
             Transform legacyTitle = definitionStrip.Find("DefinitionBlocksTitle");
             if (legacyTitle != null) legacyTitle.gameObject.SetActive(false);
-            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 0f, 376f);
-            LayoutWorkspaceTitle("WizardConfigGroupTitle", "AJUSTES", 384f, 120f);
+            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 0f, 512f);
+            LayoutWorkspaceTitle("WizardConfigGroupTitle", "AJUSTES", 536f, 144f);
         }
 
         private void LayoutWorkspaceTitle(string name, string text, float x, float width)
@@ -74,7 +81,7 @@ namespace PrograMago.UnityIntegration
             label.raycastTarget = false;
             RectTransform rect = label.rectTransform;
             rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-            rect.anchoredPosition = new Vector2(x + 4f, 50f);
+            rect.anchoredPosition = new Vector2(x + 4f, 64f);
             rect.sizeDelta = new Vector2(width - 8f, 16f);
         }
 
@@ -100,8 +107,8 @@ namespace PrograMago.UnityIntegration
             if (button == null) return;
             RectTransform rect = button.GetComponent<RectTransform>();
             rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-            rect.anchoredPosition = new Vector2(x, 9f);
-            rect.sizeDelta = new Vector2(width, 41f);
+            rect.anchoredPosition = new Vector2(x, TimelineButtonBottom);
+            rect.sizeDelta = new Vector2(width, TimelineButtonHeight);
         }
 
         private void SelectWorkspace(WorkspaceArea area)

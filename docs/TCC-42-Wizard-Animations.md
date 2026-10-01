@@ -1,8 +1,10 @@
 # TCC-42 — animações das quatro formas do mago
 
-Aplicação da direção aprovada na TCC-40, limitada nesta entrega ao Mago base, Piromante, Hidromante e Eletromante. Branch existente: `codex/TCC-12`. Alterações locais, sem commit.
+Aplicação da direção aprovada na TCC-40. Branch existente: `codex/TCC-12`. Integração inicial e interface aprovadas comitadas em `61271ca`. A configuração ativa voltou aos seis quadros do mago, mantendo velocidade 0,30, após o usuário considerar as oito poses repetitivas e pouco fluidas. O experimento retirado está em [TCC-42-Eight-Frame-Animations.md](TCC-42-Eight-Frame-Animations.md).
 
-Os doze clipes de Idle, Walk e Attack usam seis sprites distintos, preservando os quatro originais e intercalando os dois novos. Idle/Walk seguem 0,4,1,2,5,3; Attack segue 0,4,1,5,2,3. A amostragem passou de 8 para 12 fps para conservar ciclos de 0,5 s; a velocidade de Animator está em 0,40 (ciclo efetivo de 1,25 s). Idle e Walk continuam em loop; Attack permanece sem loop.
+## Integração inicial de seis quadros (histórico)
+
+Os doze clipes de Idle, Walk e Attack usam seis sprites distintos, preservando os quatro originais e intercalando os dois novos. Idle/Walk seguem 0,4,1,2,5,3; Attack segue 0,4,1,5,2,3. A amostragem passou de 8 para 12 fps para conservar ciclos de 0,5 s; a velocidade de Animator está em 0,30 (ciclo efetivo de aproximadamente 1,67 s). Idle e Walk continuam em loop; Attack permanece sem loop.
 
 Foram corrigidas linhas YAML concatenadas nas quatro folhas adicionais. Os GUIDs únicos já presentes no checkout foram preservados. O PPU adicional usa `PPU original * 512 / 362`; filtro Point, sem mipmaps e sem compressão. Os controllers/overrides existentes já referenciam os clipes editados.
 
@@ -35,10 +37,12 @@ A integração dos clipes pode ser reaplicada pelo menu **PrograMago > Art > Int
 
 ## Ajuste posterior de velocidade e cenário
 
-As quatro formas agora usam Animator.speed=0,40, após o pedido de uma nova redução. A verificação anterior das transições Idle/Walk/Attack e retorno ao Idle em Play Mode foi realizada em 0,60.
+As quatro formas agora usam Animator.speed=0,30, após o pedido de uma nova redução. A verificação anterior das transições Idle/Walk/Attack e retorno ao Idle em Play Mode foi realizada em 0,60.
 
 O fundo de floresta agora mantém a proporção da textura pela altura da arena e repete blocos espelhados até cobrir a largura necessária, ocultando os excedentes. Vento, folhas e vaga-lume também mantêm escala uniforme. Folhas seguem o mesmo grupo de vento sempre da esquerda para a direita, com deslocamento de 4% da largura atrás dele. Cada passagem dura 6,5–8,5 s, com pausa de 1,8–3,5 s e entrada/saída suaves.
 
 Revisão na Game View real em 1920×1080 e 1440×1080: floresta sem lacunas, árvores sem alongamento e efeitos discretos acompanhando a composição. Os sprites do cenário podem ser mantidos; não foi necessário redesenhar PNGs. A repetição espelhada é perceptível, mas não apresenta corte abrupto. Esta conclusão se refere ao cenário; a ressalva artística dos quadros adicionais do mago acima permanece.
 
 Três testes de apresentação passaram após reproduzir as falhas antes das correções. Suíte completa: 313/315; permanecem as mesmas duas falhas de GameplaySceneAssetTests já registradas. Capturas finais em `tmp/tcc42-scenery-review/tcc42-scenery-final-1920-motion.png` e `tcc42-scenery-final-1440.png`; resultado completo em `tmp/tcc42-visual-review/scenery-editmode-results.json`. Capturas usam quatro atores temporários para comparar formas; eles são removidos ao sair de Play Mode.
+
+A versão aprovada da interface e a integração anterior foram comitadas em 61271ca. Os ajustes posteriores de controles e velocidade estão descritos em TCC-42-Controls-And-Cadence.md.

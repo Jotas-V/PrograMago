@@ -483,7 +483,7 @@ namespace PrograMago.UnityIntegration
                 {
                     Animator animator = marker.AddComponent<Animator>();
                     animator.runtimeAnimatorController = visualCatalog.trainingDummyController;
-                    animator.speed = 0.78f;
+                    animator.speed = CharacterAnimationSpeed;
                     animator.Play("Idle", 0, 0f);
                 }
                 float distance = Vector3.Dot(

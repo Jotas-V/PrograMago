@@ -74,20 +74,30 @@ namespace PrograMago.UnityIntegration
         {
             if (timelineContent == null) return;
             LayoutDefinitionStrip();
+            RectTransform strip = timelineContent.parent.parent.GetComponent<RectTransform>();
+            strip.offsetMin = new Vector2(12, 10);
+            strip.offsetMax = new Vector2(-208, 10 + TimelineHeight);
+            if (battleButton != null)
+            {
+                var battleRect = battleButton.GetComponent<RectTransform>();
+                battleRect.anchorMin = battleRect.anchorMax = battleRect.pivot = new Vector2(1, 0);
+                battleRect.anchoredPosition = new Vector2(-12, 10 + TimelineButtonBottom);
+                battleRect.sizeDelta = new Vector2(180, TimelineButtonHeight);
+            }
             int actionCount = Mathf.Min(1, combatActionButtons.Count);
             for (int index = 0; index < actionCount; index++)
             {
                 var actionRect = (RectTransform)combatActionButtons[index].transform;
-                actionRect.anchoredPosition = new Vector2(index * 146, 9);
-                actionRect.sizeDelta = new Vector2(136, 41);
+                actionRect.anchoredPosition = new Vector2(index * 172, TimelineButtonBottom);
+                actionRect.sizeDelta = new Vector2(160, TimelineButtonHeight);
             }
-            timelineContent.sizeDelta = new Vector2(TimelineContentWidth, 68);
+            timelineContent.sizeDelta = new Vector2(TimelineContentWidth, TimelineHeight);
             if (combatActionPanel != null)
             {
                 var panel = (RectTransform)combatActionPanel.transform;
                 panel.anchorMin = panel.anchorMax = panel.pivot = Vector2.zero;
                 panel.anchoredPosition = new Vector2(CombatActionStripStartX, 0);
-                panel.sizeDelta = new Vector2(144, 68);
+                panel.sizeDelta = new Vector2(172, TimelineHeight);
                 Image image = panel.GetComponent<Image>();
                 if (image != null) image.raycastTarget = false;
                 Transform title = panel.Find("CombatActionTitle");
@@ -111,7 +121,7 @@ namespace PrograMago.UnityIntegration
                 definitionStrip.SetParent(timelineContent, false);
             definitionStrip.anchorMin = definitionStrip.anchorMax = definitionStrip.pivot = Vector2.zero;
             definitionStrip.anchoredPosition = Vector2.zero;
-            definitionStrip.sizeDelta = new Vector2(DefinitionStripWidth, 68);
+            definitionStrip.sizeDelta = new Vector2(DefinitionStripWidth, TimelineHeight);
             definitionStrip.SetAsFirstSibling();
             Image image = definitionStrip.GetComponent<Image>();
             if (image != null) image.raycastTarget = false;

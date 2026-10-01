@@ -9,6 +9,7 @@ namespace PrograMago.UnityIntegration
 {
     public sealed partial class GameplayBootstrapper
     {
+        private const float CharacterAnimationSpeed = 0.30f;
         private TCC40VisualCatalog visualCatalog;
         private Transform arenaAtmosphereRoot;
         private SpriteRenderer windRenderer;
@@ -387,7 +388,7 @@ namespace PrograMago.UnityIntegration
             if (animator != null)
             {
                 animator.enabled = true;
-                animator.speed = 0.40f;
+                animator.speed = CharacterAnimationSpeed;
                 RuntimeAnimatorController controller = form switch
                 {
                     "piromante" => visualCatalog == null ? null : visualCatalog.pyromancerController,

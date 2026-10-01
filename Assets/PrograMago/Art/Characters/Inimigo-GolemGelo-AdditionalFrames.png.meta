@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 512d8a14000fa7048b1d9f1a2133da56
+guid: 4e1ef6102f08f3943a6ed21f0987d55c
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -19,7 +19,8 @@ TextureImporter:
     second: GolemGelo_Attack_4
   - first:
       213: 515409528
-    second: GolemGelo_Attack_5  externalObjects: {}
+    second: 
+  externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
@@ -65,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 425
+  spritePixelsToUnits: 424.3094
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -118,11 +119,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1024
+        y: 1064
         width: 512
-        height: 512
+        height: 472
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: -0.0006671976}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,11 +141,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
-        y: 1024
+        y: 1064
         width: 512
-        height: 512
+        height: 472
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: -0.0006671976}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,11 +163,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 512
+        y: 576
         width: 512
-        height: 512
+        height: 448
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: -0.02525651}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,11 +185,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
-        y: 512
+        y: 576
         width: 512
-        height: 512
+        height: 448
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: -0.02525651}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -208,9 +209,9 @@ TextureImporter:
         x: 0
         y: 0
         width: 512
-        height: 512
+        height: 568
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: 0.11740331}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -230,9 +231,9 @@ TextureImporter:
         x: 512
         y: 0
         width: 512
-        height: 512
+        height: 568
       alignment: 9
-      pivot: {x: 0.5, y: 0}
+      pivot: {x: 0.5, y: 0.11388219}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -244,7 +245,8 @@ TextureImporter:
       vertices: []
       indices: 
       edges: []
-      weights: []    outline: []
+      weights: []
+    outline: []
     customData: 
     physicsShape: []
     bones: []
@@ -258,12 +260,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      GolemGelo_Attack_4: 1470130223
+      GolemGelo_Attack_5: 515409528
       GolemGelo_Idle_4: 1728585331
       GolemGelo_Idle_5: 1767928701
       GolemGelo_Walk_4: 276152025
       GolemGelo_Walk_5: 170853582
-      GolemGelo_Attack_4: 1470130223
-      GolemGelo_Attack_5: 515409528  mipmapLimitGroupName: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
