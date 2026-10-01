@@ -53,6 +53,12 @@ namespace PrograMago.Language
                 return new EnemyConstructionValidator(rules).Validate(tokens, exercise);
             }
 
+            if (criterion == ValidationCriterion.DefineAndCallSpellMethod ||
+                criterion == ValidationCriterion.ExtendMago ||
+                criterion == ValidationCriterion.OverrideSpellWithSuper)
+            {
+                return new ElementalSpellValidator(rules).Validate(tokens, exercise, criterion);
+            }
             if (criterion == ValidationCriterion.DeclareMagoClass)
             {
                 ClassDeclarationValidationResult result = new ClassDeclarationValidator().Validate(

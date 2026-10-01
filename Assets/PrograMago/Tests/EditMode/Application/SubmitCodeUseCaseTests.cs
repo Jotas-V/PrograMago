@@ -165,7 +165,7 @@ namespace PrograMago.Tests.Application
         }
 
         [Test]
-        public void Execute_UnimplementedSpellCriterion_ReturnsControlledFailure()
+        public void Execute_SpellCriterionWithoutBaseMethod_ReturnsEducationalFailure()
         {
             var session = CreateSession();
             SubmitCodeUseCase useCase = CreateUseCase(session);
@@ -175,7 +175,9 @@ namespace PrograMago.Tests.Application
                 "public class Mago {}",
                 ValidationCriterion.DefineAndCallSpellMethod));
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Diagnostic.Code, Is.EqualTo("VALID001"));
+            Assert.That(result.Diagnostic.Code, Is.EqualTo("SPELL001"));
+            Assert.That(result.Program, Is.Null);
+            Assert.That(session.HasDeclaredClass, Is.False);
         }
 
         [Test]
@@ -202,6 +204,30 @@ namespace PrograMago.Tests.Application
             var enemies = property.GetValue(result) as System.Collections.Generic.IReadOnlyList<EnemyState>;
             Assert.That(enemies, Has.Count.EqualTo(1));
             Assert.That(enemies[0].Name, Is.EqualTo("Boneco de Treinamento"));
+        }
+
+        [Test]
+        public void Execute_OverrideThenInvalidSuper_PreservesApprovedSessionAndRejectsPartialProgram()
+        {
+            var session = CreateSession();
+            var useCase = CreateUseCase(session);
+            string source = PrograMago.Tests.Language.ElementalSpellValidationTests.BaseProgram +
+                "public class Piromante extends Mago { " +
+                PrograMago.Tests.Language.ElementalSpellValidationTests.OverrideBody + " }";
+            var approved = useCase.Execute(source, ValidationCriterion.OverrideSpellWithSuper);
+            Assert.That(approved.IsSuccess, Is.True, approved.Diagnostic?.Detail);
+            Assert.That(approved.SatisfiedCriterion, Is.EqualTo(ValidationCriterion.OverrideSpellWithSuper));
+            Assert.That(approved.Program.TotalPoints, Is.EqualTo(25));
+            Assert.That(approved.Enemies, Has.Count.EqualTo(1));
+
+            var rejected = useCase.Execute(source.Replace("super.lancarMagia(inimigo)", "super.lancarMagia(outro)"),
+                ValidationCriterion.OverrideSpellWithSuper);
+            Assert.That(rejected.IsSuccess, Is.False);
+            Assert.That(rejected.Diagnostic.Code, Is.EqualTo("SUPER001"));
+            Assert.That(rejected.Program, Is.Null);
+            Assert.That(rejected.Enemies, Is.Null);
+            Assert.That(rejected.SatisfiedCriterion, Is.Null);
+            Assert.That(session.HasDeclaredClass, Is.True);
         }
 
         private static LearningSession CreateSession()
