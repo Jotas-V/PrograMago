@@ -186,9 +186,10 @@ namespace PrograMago.UnityIntegration
                 RenderWizard();
                 return true;
             }
-            ValidationCriterion preparationCriterion = learningFlowPresenter.Progress.CurrentBattle.Criterion ==
-                ValidationCriterion.DefineAndCallSpellMethod
-                ? ValidationCriterion.DefineAndCallSpellMethod : ValidationCriterion.AddMagoSetters;
+            ValidationCriterion currentCriterion = learningFlowPresenter.Progress.CurrentBattle.Criterion;
+            ValidationCriterion preparationCriterion = currentCriterion == ValidationCriterion.DefineAndCallSpellMethod ||
+                currentCriterion == ValidationCriterion.ExtendMago || currentCriterion == ValidationCriterion.OverrideSpellWithSuper
+                ? currentCriterion : ValidationCriterion.AddMagoSetters;
             string setterSource = preparationCriterion == ValidationCriterion.AddMagoSetters
                 ? codeBlocks.Snapshot()[0] : SourceCode;
             TokenizationResult setterTokens = new CodeTokenizer().Tokenize(setterSource);
@@ -274,7 +275,8 @@ namespace PrograMago.UnityIntegration
             return index == 1 &&
                 (learningFlowPresenter.Progress.CurrentBattleIndex < 3 ||
                  learningFlowPresenter.Progress.CurrentBattle.Criterion ==
-                    ValidationCriterion.ConstructAndInstantiateEnemy);
+                    ValidationCriterion.ConstructAndInstantiateEnemy ||
+                 learningFlowPresenter.Progress.CurrentBattle.Criterion == ValidationCriterion.OverrideSpellWithSuper);
         }
 
         private void ResetWorkspace()

@@ -201,7 +201,17 @@ namespace PrograMago.UnityIntegration
                 return false;
             }
             string strategySource = codeBlocks.Snapshot()[2];
-            if (string.IsNullOrWhiteSpace(strategySource))
+            ValidationCriterion criterion = learningFlowPresenter.Progress.CurrentBattle.Criterion;
+            if (criterion == ValidationCriterion.ExtendMago || criterion == ValidationCriterion.OverrideSpellWithSuper)
+            {
+                if (!CombatCodeCompiler.TryCompileElementalLesson(SourceCode, criterion,
+                    out compiledStrategy, out PrograMago.Language.Diagnostic diagnostic))
+                {
+                    ShowError(diagnostic);
+                    return false;
+                }
+            }
+            else if (string.IsNullOrWhiteSpace(strategySource))
             {
                 compiledStrategy = new CombatStrategy(null, "neutro");
             }

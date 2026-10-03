@@ -243,6 +243,14 @@ namespace PrograMago.UnityIntegration
             nextBattleButton.onClick.AddListener(HandleNextBattle);
             codeInput.onValueChanged.AddListener(HandleCodeChanged);
             learningFlowPresenter.Initialize();
+            if (saved != null)
+            {
+                // Rendering the lesson may focus Mago; reload must preserve the saved selection.
+                codeBlocks.Select(saved.activeBlock);
+                codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+                RefreshCodeBlockButtons();
+                UpdateWorkspaceUi();
+            }
         }
 
         private void OnDestroy()
@@ -551,7 +559,9 @@ namespace PrograMago.UnityIntegration
             objectiveText.text = $"TAREFA\n{battle.Lesson.Task}";
             hintText.text = string.Empty;
             if (battle.Criterion == ValidationCriterion.AddMagoSetters ||
-                battle.Criterion == ValidationCriterion.DefineAndCallSpellMethod)
+                battle.Criterion == ValidationCriterion.DefineAndCallSpellMethod ||
+                battle.Criterion == ValidationCriterion.ExtendMago ||
+                battle.Criterion == ValidationCriterion.OverrideSpellWithSuper)
             {
                 FocusEditableDefinitionBlock(0);
                 if (string.IsNullOrEmpty(approvedCode)) approvedCode = codeBlocks.Snapshot()[0];
@@ -647,7 +657,7 @@ namespace PrograMago.UnityIntegration
         {
             if (learningFlowPresenter.Progress.CurrentBattle.CompletionMode == BattleCompletionMode.OnCombatVictory)
             {
-                if (!TryApplyPreparation() || !CompileTimeline()) return;
+                if (!CompileTimeline() || !TryApplyPreparation()) return;
             }
             presenter.Battle();
             if (learningFlowPresenter.Progress.Stage == LearningStage.BattleInProgress &&

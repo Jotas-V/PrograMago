@@ -1,6 +1,6 @@
 # PrograMago — exemplos das nove fases
 
-O caminho pedagógico tem nove etapas. A TCC-12 prepara as fases 1 a 5, incluindo a primeira batalha com o Boneco. A integração da TCC-13 libera a fase 6 (método de magia). As fases 7 a 9 documentam a continuação de subclasses e estratégia elemental e permanecem bloqueadas até as próximas integrações. O código permanece livremente editável.
+O caminho pedagógico tem nove etapas. A TCC-12 prepara as fases 1 a 5, incluindo a primeira batalha com o Boneco. A integração da TCC-13 libera a fase 6 (método de magia). A integração da TCC-14/TCC-15 libera as fases 7 e 8 com Piromante e Golem de Gelo. A fase 9 permanece bloqueada até a integração de polimorfismo e estratégia. O código permanece livremente editável.
 
 Os exemplos abaixo são cumulativos quando indicado. As três primeiras fases preenchem o bloco **Mago**; a fase 4 acrescenta os setters à mesma classe. Na fase 5, o jogador mantém esse bloco e escreve a classe/instância do inimigo no bloco **Inimigo**. **Ajustes** é um espaço separado para chamadas de setter antes da batalha. **Estratégia** só será liberado depois que classes elementais e inimigos elementais estiverem disponíveis.
 
@@ -118,7 +118,7 @@ O Mago começa na casa 1 e o Boneco na casa 16. Fora do alcance, o Mago avança 
 
 ## Fase 6 — declarar uma magia
 
-Etapa preparada para a continuação; a validação e a disponibilidade em jogo ainda dependem da progressão posterior.
+Etapa disponível após vencer o Boneco. Declare o método dentro de Mago e, fora da classe, chame mago.lancarMagia(boneco); usando o nome da sua instância.
 
 ```java
 public void lancarMagia(Inimigo alvo) {
@@ -128,7 +128,7 @@ public void lancarMagia(Inimigo alvo) {
 
 ## Fase 7 — criar subclasses elementais
 
-Uma subclasse representa uma forma do único Mago, sem criar um segundo ator:
+Acrescente a subclasse ao documento Mago, depois das classes existentes. Nesta atividade Piromante é a forma de fogo do único Mago; mantenha o Boneco e a chamada de magia. A estratégia condicional será ensinada na fase 9:
 
 ```java
 public class Piromante extends Mago {
@@ -137,7 +137,7 @@ public class Piromante extends Mago {
 
 ## Fase 8 — sobrescrever comportamento
 
-As formas alteram aparência e magia do mesmo Mago. A referência à classe base preserva os atributos e a posição.
+Acrescente o método abaixo dentro de Piromante. No bloco Inimigo, substitua a instância do Boneco por `Inimigo golem = new Inimigo("Golem de Gelo", 12, "gelo");`. Atualize a chamada no documento Mago para `mago.lancarMagia(golem);`, usando o nome do seu Mago. A forma Piromante permanece fixa nesta atividade; fogo é eficaz contra gelo. Os Ajustes continuam disponíveis e a instância única mantém sua build.
 
 ```java
 @Override

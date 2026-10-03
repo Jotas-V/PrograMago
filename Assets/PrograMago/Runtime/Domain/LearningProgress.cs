@@ -32,6 +32,13 @@ namespace PrograMago.Domain
                 path.Battles[playableBattleCount].Criterion == ValidationCriterion.DefineAndCallSpellMethod)
                 playableBattleCount++;
 
+            if (playableBattleCount < path.Battles.Count &&
+                path.Battles[playableBattleCount].Criterion == ValidationCriterion.ExtendMago)
+                playableBattleCount++;
+            if (playableBattleCount < path.Battles.Count &&
+                path.Battles[playableBattleCount].Criterion == ValidationCriterion.OverrideSpellWithSuper)
+                playableBattleCount++;
+
             attemptCounts = new int[playableBattleCount];
             failedCounts = new int[playableBattleCount];
             completed = new bool[playableBattleCount];

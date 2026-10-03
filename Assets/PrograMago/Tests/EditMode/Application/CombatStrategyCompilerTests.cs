@@ -56,5 +56,36 @@ namespace PrograMago.Tests.Application
             Assert.That(method, Is.Not.Null, "Estratégia compilada precisa expor " + name + ".");
             return (T)method.Invoke(target, new object[] { value });
         }
-    }
+        [NUnit.Framework.TestCase(false)]
+        [NUnit.Framework.TestCase(true)]
+        public void ElementalLesson_UsesDeclaredPiromanteWithoutChoosingFromTarget(bool overwrite)
+        {
+            var method = typeof(PrograMago.Application.CombatCodeCompiler).GetMethod("TryCompileElementalLesson");
+            NUnit.Framework.Assert.That(method, NUnit.Framework.Is.Not.Null);
+            string source = PrograMago.Tests.Language.ElementalSpellValidationTests.BaseProgram;
+            if (overwrite) source = source.Replace("Boneco de Treinamento", "Golem de Gelo")
+                .Replace("10, \"neutro\"", "12, \"gelo\"");
+            source += "public class Piromante extends Mago {" +
+                (overwrite ? PrograMago.Tests.Language.ElementalSpellValidationTests.OverrideBody : "") + "}";
+            object[] arguments = { source, overwrite ? ValidationCriterion.OverrideSpellWithSuper : ValidationCriterion.ExtendMago, null, null };
+            NUnit.Framework.Assert.That(method.Invoke(null, arguments), NUnit.Framework.Is.True);
+            var strategy = (CombatStrategy)arguments[2];
+            NUnit.Framework.Assert.That(strategy.FormFor("gelo"), NUnit.Framework.Is.EqualTo("piromante"));
+            NUnit.Framework.Assert.That(strategy.FormFor("fogo"), NUnit.Framework.Is.EqualTo("piromante"));
+        }
+
+        [NUnit.Framework.TestCase("Hidromante", false)]
+        [NUnit.Framework.TestCase("Piromante", true)]
+        public void ElementalLesson_RejectsWrongFormOrEnemy(string name, bool overwrite)
+        {
+            var method = typeof(PrograMago.Application.CombatCodeCompiler).GetMethod("TryCompileElementalLesson");
+            NUnit.Framework.Assert.That(method, NUnit.Framework.Is.Not.Null);
+            string source = PrograMago.Tests.Language.ElementalSpellValidationTests.BaseProgram +
+                "public class " + name + " extends Mago {" +
+                (overwrite ? PrograMago.Tests.Language.ElementalSpellValidationTests.OverrideBody : "") + "}";
+            object[] arguments = { source, overwrite ? ValidationCriterion.OverrideSpellWithSuper : ValidationCriterion.ExtendMago, null, null };
+            NUnit.Framework.Assert.That(method.Invoke(null, arguments), NUnit.Framework.Is.False);
+            NUnit.Framework.Assert.That(arguments[2], NUnit.Framework.Is.Null);
+            NUnit.Framework.Assert.That(arguments[3], NUnit.Framework.Is.Not.Null);
+        }    }
 }

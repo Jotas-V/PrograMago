@@ -1015,13 +1015,83 @@ namespace PrograMago.Tests.Integration
             Assert.That(victoryOverlay.activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
                 Is.EqualTo("A primeira magia funcionou!"));
-            Assert.That(nextBattleButton.interactable, Is.False);
+            Assert.That(nextBattleButton.interactable, Is.True);
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
             Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Primeira magia"));
             Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
                 Is.EqualTo(spellCode + " heroi.lancarMagia(boneco);"));
+        }
+        [UnityTest]
+        public IEnumerator ElementalLessons_PiromanteAndGolemCanBeCompletedAndRestored()
+        {
+            yield return FirstMagic_AfterBonecoVictoryCanBeLearnedAndRestored();
+            bootstrapper = Object.FindFirstObjectByType<GameplayBootstrapper>();
+            codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
+            battleButton = FindSceneComponent<Button>("BattleButton");
+            feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
+            victoryOverlay = FindSceneObject("VictoryOverlay");
+            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Especialização elemental"));
+            string baseCode = codeInput.text;
+            codeInput.text = baseCode + " public class Piromante extends Inimigo {}";
+            battleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+            Assert.That(feedbackText.text, Does.Contain("INHERIT001"));
+            string inherited = baseCode + " public class Piromante extends Mago {}";
+            codeInput.text = inherited;
+            battleButton.onClick.Invoke();
+            yield return null;
+            CombatEngine engine = (CombatEngine)typeof(GameplayBootstrapper).GetField(
+                "combat", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            Assert.That(engine, Is.Not.Null);
+            for (int tick = 0; tick < 200 && engine.Outcome == CombatOutcome.InProgress; tick++)
+                bootstrapper.AdvanceCombatTick();
+            Assert.That(engine.WizardForm, Is.EqualTo("piromante"));
+            Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Victory));
+            Assert.That(FindSceneObject("WizardSpawnPoint").transform.childCount, Is.EqualTo(1));
+            float deadline = Time.realtimeSinceStartup + 5f;
+            while (!victoryOverlay.activeSelf && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Cada Mago, uma magia"));
+            string overrideCode = inherited.Replace("public class Piromante extends Mago {}",
+                "public class Piromante extends Mago { @Override public void lancarMagia(Inimigo alvo) { super.lancarMagia(alvo); } }")
+                .Replace("lancarMagia(boneco)", "lancarMagia(golem)");
+            codeInput.text = overrideCode;
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            Assert.That(codeInput.interactable, Is.True);
+            string golemCode = codeInput.text.Replace("Inimigo boneco", "Inimigo golem")
+                .Replace("Boneco de Treinamento", "Golem de Gelo")
+                .Replace("10, \"neutro\"", "12, \"gelo\"");
+            codeInput.text = golemCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+            engine = (CombatEngine)typeof(GameplayBootstrapper).GetField(
+                "combat", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            Assert.That(engine, Is.Not.Null, feedbackText.text);
+            bool fireHit = false;
+            for (int tick = 0; tick < 200 && engine.Outcome == CombatOutcome.InProgress; tick++)
+            {
+                bootstrapper.AdvanceCombatTick();
+                foreach (var action in engine.EventsThisTick)
+                    fireHit |= action.Actor == "Mago" && action.Kind == CombatEventKind.Hit && action.Element == CombatElement.Fire;
+            }
+            Assert.That(fireHit, Is.True);
+            Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Victory));
+            deadline = Time.realtimeSinceStartup + 5f;
+            while (!victoryOverlay.activeSelf && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            Assert.That(FindSceneComponent<Button>("NextBattleButton").interactable, Is.False);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Cada Mago, uma magia"));
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo(golemCode));
         }
         [UnityTest]
         public IEnumerator PhaseOne_ReloadAfterFirstVictory_PreservesReviewAndCanAdvance()

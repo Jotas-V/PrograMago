@@ -16,10 +16,12 @@ namespace PrograMago.Language
             };
 
         private readonly MagoValidationRules rules;
+        private readonly bool requireTrainingDummy;
 
-        public EnemyConstructionValidator(MagoValidationRules rules)
+        public EnemyConstructionValidator(MagoValidationRules rules, bool requireTrainingDummy = true)
         {
             this.rules = rules ?? throw new ArgumentNullException(nameof(rules));
+            this.requireTrainingDummy = requireTrainingDummy;
         }
 
         public ExerciseValidationResult Validate(
@@ -55,7 +57,7 @@ namespace PrograMago.Language
                     return mago;
                 }
 
-                IReadOnlyList<EnemyState> enemies = ParseEnemy(parts);
+                IReadOnlyList<EnemyState> enemies = ParseEnemy(parts, requireTrainingDummy);
                 return ExerciseValidationResult.Success(
                     ValidationCriterion.ConstructAndInstantiateEnemy,
                     mago.Program,
@@ -157,7 +159,7 @@ namespace PrograMago.Language
             return parts;
         }
 
-        private static IReadOnlyList<EnemyState> ParseEnemy(ProgramParts parts)
+        private static IReadOnlyList<EnemyState> ParseEnemy(ProgramParts parts, bool requireTrainingDummy)
         {
             var allTokens = new List<Token>(parts.EnemyClass);
             foreach (List<Token> instance in parts.EnemyInstances)
@@ -332,7 +334,7 @@ namespace PrograMago.Language
                 enemies.Add(new EnemyState(variable.Lexeme, name, vida, elemento));
             }
 
-            if (enemies.Count == 0 || !ContainsTrainingDummy(enemies))
+            if (enemies.Count == 0 || (requireTrainingDummy && !ContainsTrainingDummy(enemies)))
             {
                 throw cursor.Failure("ENEMY010", "Instancie o Boneco de Treinamento nesta batalha.");
             }

@@ -142,7 +142,7 @@ MonoBehaviour:
     purpose: Ela permite reutilizar o que todos os magos compartilham e concentrar em cada subclasse apenas sua especialidade.
     usageExample: public class Piromante extends Mago {}
     gameEffect: A subclasse muda o tipo elemental do Mago sem reconstruir todas as suas capacidades básicas.
-    task: Crie Piromante como uma subclasse pública que herda de Mago.
+    task: Acrescente public class Piromante extends Mago {} ao documento Mago. Mantenha o Boneco de Treinamento e a chamada de magia. Nesta atividade a forma Piromante usa fogo; a escolha por if/else será ensinada depois.
     hints:
     - A nova classe se chama Piromante.
     - Em Java, a relação de herança usa a palavra-chave extends.
@@ -162,12 +162,12 @@ MonoBehaviour:
     purpose: Classes relacionadas podem responder de modos diferentes à mesma operação sem perder o comportamento comum quando ele ainda é útil.
     usageExample: '@Override public void lancarMagia(Inimigo inimigo) { super.lancarMagia(inimigo); }'
     gameEffect: Piromante, Hidromante e Eletromante produzem ataques visuais diferentes ao lançar a mesma ação.
-    task: Sobrescreva lancarMagia em uma subclasse elemental e reutilize a implementação base com super.
+    task: Sobrescreva lancarMagia no Piromante usando @Override e super.lancarMagia(alvo). No bloco Inimigo, substitua o Boneco pelo Golem de Gelo (12 de vida, gelo). Atualize a chamada da magia para usar a nova instância. A forma Piromante continua fixa nesta atividade.
     hints:
     - Mantenha a mesma assinatura de lancarMagia definida em Mago.
     - Marque a redefinição com @Override.
     - Dentro do novo método, super acessa o comportamento herdado.
-    - 'Use super.lancarMagia(inimigo); antes de acrescentar o efeito elemental.'
+    - 'Dentro do método, escreva somente super.lancarMagia(inimigo); usando o mesmo parâmetro. No bloco Inimigo, substitua a instância por Inimigo golem = new Inimigo("Golem de Gelo", 12, "gelo"); e atualize a chamada para mago.lancarMagia(golem); usando o nome do seu Mago.'
     criterion: 6
     completionMode: 0
     victoryTitle: Magia especializada!

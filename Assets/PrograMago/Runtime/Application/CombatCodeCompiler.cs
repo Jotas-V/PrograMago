@@ -9,6 +9,46 @@ namespace PrograMago.Application
     // The timeline exposes a deliberately small command language, not arbitrary C# execution.
     public static class CombatCodeCompiler
     {
+        // These guided activities use an explicitly declared Piromante, not target-driven selection.
+        public static bool TryCompileElementalLesson(string source, ValidationCriterion criterion,
+            out CombatStrategy strategy, out Diagnostic diagnostic)
+        {
+            strategy = null;
+            diagnostic = null;
+            TokenizationResult tokenization = new CodeTokenizer().Tokenize(source);
+            if (!tokenization.IsSuccess) { diagnostic = tokenization.Diagnostic; return false; }
+            var exercise = new ExerciseDefinition("elemental-lesson", "Mago", "Implemente o Piromante.");
+            ExerciseValidationResult validation = new ExerciseCodeValidator().Validate(tokenization.Tokens, exercise, criterion);
+            if (!validation.IsSuccess) { diagnostic = validation.Diagnostic; return false; }
+            bool piromante = false;
+            bool piromanteOverride = false;
+            var tokens = tokenization.Tokens;
+            for (int index = 0; index + 5 < tokens.Count; index++)
+            {
+                if (tokens[index].Lexeme != "public" || tokens[index + 1].Lexeme != "class" ||
+                    tokens[index + 2].Lexeme != "Piromante") continue;
+                piromante = true;
+                int depth = 1;
+                for (int member = index + 6; member < tokens.Count && depth > 0; member++)
+                {
+                    if (tokens[member].Lexeme == "{") depth++;
+                    else if (tokens[member].Lexeme == "}") depth--;
+                    else if (depth == 1 && tokens[member].Lexeme == "@") piromanteOverride = true;
+                }
+            }
+            bool overwrite = criterion == ValidationCriterion.OverrideSpellWithSuper;
+            string enemy = overwrite ? "Golem de Gelo" : "Boneco de Treinamento";
+            if (!piromante || (overwrite && !piromanteOverride) ||
+                validation.Enemies.Count != 1 || validation.Enemies[0].Name != enemy)
+            {
+                diagnostic = new Diagnostic("LESSON001", tokens[0].Position,
+                    overwrite ? "Sobrescreva lancarMagia no Piromante e instancie somente o Golem de Gelo (12, gelo)." :
+                        "Declare Piromante extends Mago e mantenha somente o Boneco de Treinamento nesta atividade.");
+                return false;
+            }
+            strategy = new CombatStrategy(null, "piromante");
+            return true;
+        }
         public static string[] DefaultBlocks() => new[]
             { "analisarAlvo();", "selecionarMagia();", "lancarMagia();" };
 

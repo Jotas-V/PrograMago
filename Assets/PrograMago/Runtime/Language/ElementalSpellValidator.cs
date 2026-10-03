@@ -98,7 +98,8 @@ namespace PrograMago.Language
 
                 // Only verified additions are removed. All remaining tokens still go through
                 // the existing class, constructor, setter, instance and attribute validation.
-                ExerciseValidationResult basis = new EnemyConstructionValidator(rules).Validate(originalProgram, exercise);
+                ExerciseValidationResult basis = new EnemyConstructionValidator(rules,
+                    criterion != ValidationCriterion.OverrideSpellWithSuper).Validate(originalProgram, exercise);
                 if (!basis.IsSuccess) return basis;
                 foreach (List<Token> call in calls)
                 {

@@ -534,6 +534,62 @@ namespace PrograMago.Tests.Domain
             Assert.That(snapshot.sourceBlocks[0], Is.EqualTo("wizard"));
             Assert.That(snapshot.preparationCode, Is.EqualTo("heroi.setAlcance(5);"));
         }
+        [Test]
+        public void ElementalProgression_OpensInheritanceAndOverrideButKeepsPolymorphismLocked()
+        {
+            var path = new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2),
+                CreateBattle("method", 3, ValidationCriterion.DefineAndCallSpellMethod, 2),
+                CreateBattle("inheritance", 4, ValidationCriterion.ExtendMago, 3),
+                CreateBattle("override", 5, ValidationCriterion.OverrideSpellWithSuper, 3),
+                CreateBattle("final", 6, ValidationCriterion.UsePolymorphicMagoReference, 4)
+            });
+            var progress = new LearningProgress(path);
+            for (int index = 0; index < 5; index++)
+            {
+                Assert.That(progress.CurrentBattleIndex, Is.EqualTo(index));
+                progress.RegisterSubmission();
+                Assert.That(progress.TryStartBattle(path.Battles[index].Criterion), Is.True);
+                progress.ReportVictory();
+                Assert.That(progress.ContinueAfterVictory(), Is.EqualTo(index < 4));
+            }
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("override"));
+            Assert.That(progress.CanContinueAfterVictory, Is.False);
+        }
+        [Test]
+        public void SnapshotV4_CompletedSixActivitiesCanContinueIntoInheritanceWithoutLosingProgress()
+        {
+            var path = new LearningPath(new[]
+            {
+                CreateBattle("class", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("attributes", 2, ValidationCriterion.AddPrivateAttributes),
+                CreateBattle("constructor", 3, ValidationCriterion.ConstructAndInstantiateMago),
+                CreateBattle("setters", 4, ValidationCriterion.AddMagoSetters),
+                CreateBattle("enemy", 5, ValidationCriterion.ConstructAndInstantiateEnemy, 2),
+                CreateBattle("spell", 6, ValidationCriterion.DefineAndCallSpellMethod, 2),
+                CreateBattle("inheritance", 7, ValidationCriterion.ExtendMago, 3),
+                CreateBattle("override", 8, ValidationCriterion.OverrideSpellWithSuper, 3),
+                CreateBattle("final", 9, ValidationCriterion.UsePolymorphicMagoReference, 4)
+            });
+            var snapshot = new PhaseOneSaveData
+            {
+                battleIds = new[] { "class", "attributes", "constructor", "setters", "enemy", "spell" },
+                attemptCounts = new[] { 1, 1, 1, 1, 1, 2 }, failedCounts = new[] { 0, 0, 0, 0, 0, 1 },
+                completed = new[] { true, true, true, true, true, true },
+                currentBattleIndex = 5, stage = LearningStage.VictoryReview,
+                sourceBlocks = new[] { "wizard", "enemy", "" }, activeBlock = 0
+            };
+            var progress = new LearningProgress(path);
+            progress.RestorePhaseOne(snapshot);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("spell"));
+            Assert.That(progress.GetAttemptCount("spell"), Is.EqualTo(2));
+            Assert.That(progress.IsCompleted("inheritance"), Is.False);
+            Assert.That(progress.IsCompleted("override"), Is.False);
+            Assert.That(progress.ContinueAfterVictory(), Is.True);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("inheritance"));
+        }
         private static BattleDefinition CreateBattle(
             string id,
             int order,
