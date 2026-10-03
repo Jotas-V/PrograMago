@@ -550,7 +550,8 @@ namespace PrograMago.UnityIntegration
                 $"NO JOGO\n{battle.Lesson.GameEffect}";
             objectiveText.text = $"TAREFA\n{battle.Lesson.Task}";
             hintText.text = string.Empty;
-            if (battle.Criterion == ValidationCriterion.AddMagoSetters)
+            if (battle.Criterion == ValidationCriterion.AddMagoSetters ||
+                battle.Criterion == ValidationCriterion.DefineAndCallSpellMethod)
             {
                 FocusEditableDefinitionBlock(0);
                 if (string.IsNullOrEmpty(approvedCode)) approvedCode = codeBlocks.Snapshot()[0];

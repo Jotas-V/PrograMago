@@ -238,7 +238,7 @@ namespace PrograMago.Tests.Domain
         }
 
         [Test]
-        public void ContinueAfterVictory_NextMethodBattleStaysLocked()
+        public void ContinueAfterVictory_EnemyVictoryOpensMethodBattle()
         {
             var progress = new LearningProgress(new LearningPath(new[]
             {
@@ -256,10 +256,10 @@ namespace PrograMago.Tests.Domain
 
             Assert.That(progress.HasCompletedPhaseOne, Is.True);
             Assert.That(progress.TotalPhaseOneAttempts, Is.EqualTo(1));
-            Assert.That(progress.CanContinueAfterVictory, Is.False);
-            Assert.That(progress.ContinueAfterVictory(), Is.False);
-            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("enemy"));
-            Assert.That(progress.Stage, Is.EqualTo(LearningStage.VictoryReview));
+            Assert.That(progress.CanContinueAfterVictory, Is.True);
+            Assert.That(progress.ContinueAfterVictory(), Is.True);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("method"));
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.Editing));
         }
 
         [Test]
@@ -504,6 +504,36 @@ namespace PrograMago.Tests.Domain
             });
         }
 
+        [Test]
+        public void SnapshotV4_ExistingEnemyVictoryPreservesCodeAndOpensNewMethodBattle()
+        {
+            var path = new LearningPath(new[]
+            {
+                CreateBattle("mago", 1, ValidationCriterion.DeclareMagoClass),
+                CreateBattle("enemy", 2, ValidationCriterion.ConstructAndInstantiateEnemy, 2),
+                CreateBattle("method", 3, ValidationCriterion.DefineAndCallSpellMethod, 2)
+            });
+            var snapshot = new PhaseOneSaveData
+            {
+                battleIds = new[] { "mago", "enemy" },
+                attemptCounts = new[] { 1, 2 }, failedCounts = new[] { 0, 1 },
+                completed = new[] { true, true }, currentBattleIndex = 1,
+                stage = LearningStage.VictoryReview,
+                sourceCode = "draft", approvedCode = "approved",
+                sourceBlocks = new[] { "wizard", "enemy", "" }, activeBlock = 1,
+                preparationCode = "heroi.setAlcance(5);"
+            };
+            var progress = new LearningProgress(path);
+            progress.RestorePhaseOne(snapshot);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("enemy"));
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.VictoryReview));
+            Assert.That(progress.GetAttemptCount("enemy"), Is.EqualTo(2));
+            Assert.That(progress.GetAttemptCount("method"), Is.Zero);
+            Assert.That(progress.ContinueAfterVictory(), Is.True);
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("method"));
+            Assert.That(snapshot.sourceBlocks[0], Is.EqualTo("wizard"));
+            Assert.That(snapshot.preparationCode, Is.EqualTo("heroi.setAlcance(5);"));
+        }
         private static BattleDefinition CreateBattle(
             string id,
             int order,

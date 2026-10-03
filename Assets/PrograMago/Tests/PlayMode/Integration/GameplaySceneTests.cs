@@ -951,11 +951,18 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneObject("CombatActionPanel").activeSelf, Is.True);
             for (int tick = 0; tick < 200 && !victoryOverlay.activeSelf; tick++)
                 bootstrapper.AdvanceCombatTick();
-            yield return new WaitForSecondsRealtime(0.85f);
+            var combatEngine = (CombatEngine)typeof(GameplayBootstrapper).GetField(
+                "combat", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            Assert.That(combatEngine, Is.Not.Null);
+            Assert.That(combatEngine.Outcome, Is.EqualTo(CombatOutcome.Victory),
+                "O motor deve derrotar o Boneco antes de esperar os efeitos visuais.");
+            float presentationDeadline = Time.realtimeSinceStartup + 5f;
+            while (!victoryOverlay.activeSelf && Time.realtimeSinceStartup < presentationDeadline)
+                yield return null;
             Assert.That(victoryOverlay.activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
                 Is.EqualTo("Adversário derrotado!"));
-            Assert.That(nextBattleButton.interactable, Is.False);
+            Assert.That(nextBattleButton.interactable, Is.True);
 
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
@@ -971,6 +978,51 @@ namespace PrograMago.Tests.Integration
             Assert.That(saved.sourceBlocks[1], Is.EqualTo(enemyCode));
         }
 
+        [UnityTest]
+        public IEnumerator FirstMagic_AfterBonecoVictoryCanBeLearnedAndRestored()
+        {
+            yield return FirstEnemyBattle_BonecoCanBeDefeatedAndReviewSurvivesReload();
+            bootstrapper = Object.FindFirstObjectByType<GameplayBootstrapper>();
+            codeInput = FindSceneComponent<TMP_InputField>("CodeInput");
+            titleText = FindSceneComponent<TMP_Text>("Title");
+            battleProgressText = FindSceneComponent<TMP_Text>("BattleProgressText");
+            feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
+            victoryOverlay = FindSceneObject("VictoryOverlay");
+            nextBattleButton = FindSceneComponent<Button>("NextBattleButton");
+            battleButton = FindSceneComponent<Button>("BattleButton");
+            nextBattleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(titleText.text, Is.EqualTo("Primeira magia"));
+            Assert.That(battleProgressText.text, Does.Contain("Batalha 6/9"));
+            Assert.That(codeInput.interactable, Is.True);
+            Assert.That(codeInput.text, Does.Contain("public class Mago"));
+            string previousCode = codeInput.text;
+            string spellCode = previousCode.Replace("} Mago heroi",
+                " public void lancarMagia(Inimigo alvo) {} } Mago heroi");
+            codeInput.text = spellCode;
+            battleButton.onClick.Invoke();
+            yield return null;
+            Assert.That(victoryOverlay.activeSelf, Is.False);
+            Assert.That(feedbackText.text, Does.Contain("chame heroi.lancarMagia(boneco)"));
+            codeInput.text = spellCode + " heroi.lancarMagia(boneco);";
+            battleButton.onClick.Invoke();
+            yield return null;
+            for (int tick = 0; tick < 200 && !victoryOverlay.activeSelf; tick++)
+                bootstrapper.AdvanceCombatTick();
+            float deadline = Time.realtimeSinceStartup + 5f;
+            while (!victoryOverlay.activeSelf && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("VictoryTitleText").text,
+                Is.EqualTo("A primeira magia funcionou!"));
+            Assert.That(nextBattleButton.interactable, Is.False);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Primeira magia"));
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo(spellCode + " heroi.lancarMagia(boneco);"));
+        }
         [UnityTest]
         public IEnumerator PhaseOne_ReloadAfterFirstVictory_PreservesReviewAndCanAdvance()
         {

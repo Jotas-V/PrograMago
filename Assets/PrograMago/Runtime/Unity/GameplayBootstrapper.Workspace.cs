@@ -186,7 +186,12 @@ namespace PrograMago.UnityIntegration
                 RenderWizard();
                 return true;
             }
-            TokenizationResult setterTokens = new CodeTokenizer().Tokenize(codeBlocks.Snapshot()[0]);
+            ValidationCriterion preparationCriterion = learningFlowPresenter.Progress.CurrentBattle.Criterion ==
+                ValidationCriterion.DefineAndCallSpellMethod
+                ? ValidationCriterion.DefineAndCallSpellMethod : ValidationCriterion.AddMagoSetters;
+            string setterSource = preparationCriterion == ValidationCriterion.AddMagoSetters
+                ? codeBlocks.Snapshot()[0] : SourceCode;
+            TokenizationResult setterTokens = new CodeTokenizer().Tokenize(setterSource);
             if (!setterTokens.IsSuccess)
             {
                 feedbackText.color = new Color32(156, 39, 49, 255);
@@ -195,7 +200,7 @@ namespace PrograMago.UnityIntegration
             }
             var setterExercise = new ExerciseDefinition("mago-setters", "Mago", "Valide os setters do Mago.");
             ExerciseValidationResult setters = new ExerciseCodeValidator().Validate(
-                setterTokens.Tokens, setterExercise, ValidationCriterion.AddMagoSetters);
+                setterTokens.Tokens, setterExercise, preparationCriterion);
             if (!setters.IsSuccess)
             {
                 feedbackText.color = new Color32(156, 39, 49, 255);

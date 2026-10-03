@@ -28,6 +28,10 @@ namespace PrograMago.Domain
                 playableBattleCount++;
             }
 
+            if (playableBattleCount < path.Battles.Count &&
+                path.Battles[playableBattleCount].Criterion == ValidationCriterion.DefineAndCallSpellMethod)
+                playableBattleCount++;
+
             attemptCounts = new int[playableBattleCount];
             failedCounts = new int[playableBattleCount];
             completed = new bool[playableBattleCount];
@@ -210,7 +214,9 @@ namespace PrograMago.Domain
         public void RestorePhaseOne(PhaseOneSaveData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
-            if (data.version < 4) data = UpgradeLegacySnapshot(data);
+            if (data.version < 4 ||
+                (data.version == 4 && data.battleIds != null && data.battleIds.Length < playableBattleCount))
+                data = UpgradeLegacySnapshot(data);
 
             int expectedCount = playableBattleCount;
             if (data.version != 4 ||
@@ -277,7 +283,7 @@ namespace PrograMago.Domain
 
         private PhaseOneSaveData UpgradeLegacySnapshot(PhaseOneSaveData legacy)
         {
-            if (legacy.version < 1 || legacy.version > 3 ||
+            if (legacy.version < 1 || legacy.version > 4 ||
                 legacy.battleIds == null || legacy.attemptCounts?.Length != legacy.battleIds.Length ||
                 legacy.failedCounts?.Length != legacy.battleIds.Length ||
                 legacy.completed?.Length != legacy.battleIds.Length ||
@@ -285,6 +291,13 @@ namespace PrograMago.Domain
                     (legacy.sourceBlocks?.Length != 3 || legacy.activeBlock < 0 || legacy.activeBlock >= 3)))
                 throw new ArgumentException("Registro antigo da fase 1 inválido.", nameof(legacy));
 
+            if (legacy.version == 4)
+            {
+                if (legacy.battleIds.Length == 0) throw new ArgumentException("Registro vazio.", nameof(legacy));
+                for (int index = 0; index < legacy.battleIds.Length; index++)
+                    if (legacy.battleIds[index] != Path.Battles[index].Id)
+                        throw new ArgumentException("Registro antigo incompatível.", nameof(legacy));
+            }
             var ids = new string[playableBattleCount];
             var attempts = new int[playableBattleCount];
             var failed = new int[playableBattleCount];
@@ -307,7 +320,7 @@ namespace PrograMago.Domain
                 attempts[target] = legacy.attemptCounts[index];
                 failed[target] = legacy.failedCounts[index];
                 done[target] = legacy.completed[index];
-                if (legacy.version == 3 && index == legacy.currentBattleIndex)
+                if (legacy.version >= 3 && index == legacy.currentBattleIndex)
                     legacyCurrentTarget = target;
             }
 
@@ -315,7 +328,7 @@ namespace PrograMago.Domain
             bool reachedLegacyEnemy = oldEnemy >= 0 &&
                 (legacy.version == 3 && legacy.currentBattleIndex == oldEnemy ||
                  legacy.attemptCounts[oldEnemy] > 0 || legacy.completed[oldEnemy]);
-            if (reachedLegacyEnemy)
+            if (legacy.version < 4 && reachedLegacyEnemy)
             {
                 int setterIndex = FindPathBattleIndexByCriterion(ValidationCriterion.AddMagoSetters);
                 if (setterIndex >= 0 && setterIndex < playableBattleCount)
@@ -327,7 +340,7 @@ namespace PrograMago.Domain
 
             int currentBattleIndex;
             LearningStage stage;
-            if (legacy.version == 3)
+            if (legacy.version >= 3)
             {
                 if (legacy.currentBattleIndex < 0 ||
                     legacy.currentBattleIndex >= legacy.battleIds.Length ||

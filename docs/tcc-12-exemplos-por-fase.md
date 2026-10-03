@@ -1,6 +1,6 @@
 # PrograMago — exemplos das nove fases
 
-O caminho pedagógico tem nove etapas. No TCC-12 ficam jogáveis as fases 1 a 5, incluindo a primeira batalha com o Boneco. As fases 6 a 9 documentam a continuação de métodos, subclasses e estratégia elemental, mas continuam bloqueadas até a progressão correspondente.
+O caminho pedagógico tem nove etapas. A TCC-12 prepara as fases 1 a 5, incluindo a primeira batalha com o Boneco. A integração da TCC-13 libera a fase 6 (método de magia). As fases 7 a 9 documentam a continuação de subclasses e estratégia elemental e permanecem bloqueadas até as próximas integrações. O código permanece livremente editável.
 
 Os exemplos abaixo são cumulativos quando indicado. As três primeiras fases preenchem o bloco **Mago**; a fase 4 acrescenta os setters à mesma classe. Na fase 5, o jogador mantém esse bloco e escreve a classe/instância do inimigo no bloco **Inimigo**. **Ajustes** é um espaço separado para chamadas de setter antes da batalha. **Estratégia** só será liberado depois que classes elementais e inimigos elementais estiverem disponíveis.
 
