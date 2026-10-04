@@ -179,7 +179,7 @@ namespace PrograMago.UnityIntegration
             StoreSelectedBlock();
             workspaceArea = WorkspaceArea.Classes;
             selectedCombatBlock = index;
-            codeInput.SetTextWithoutNotify(combatCodeBlocks[index]);
+            ShowCodeDocument(combatCodeBlocks[index]);
             UpdateWorkspaceUi();
             RefreshCodeBlockButtons();
             RefreshCombatActionButtons();

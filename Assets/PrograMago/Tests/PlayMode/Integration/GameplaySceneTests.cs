@@ -290,6 +290,54 @@ namespace PrograMago.Tests.Integration
             Assert.That(arenaCamera.WorldToViewportPoint(dummy.bounds.center).x, Is.GreaterThan(0.92f));
         }
         [UnityTest]
+        public IEnumerator EditorSelection_ButtonColorTracksOpenDocumentAfterInputGetsFocus()
+        {
+            var wizard = FindSceneComponent<Button>("CodeBlockButton1");
+            var enemy = FindSceneComponent<Button>("CodeBlockButton2");
+            var strategy = FindSceneComponent<Button>("CodeBlockButton3");
+            foreach (var selected in new[] { wizard, enemy, strategy })
+            {
+                selected.onClick.Invoke();
+                EventSystem.current.SetSelectedGameObject(codeInput.gameObject);
+                yield return null;
+                foreach (var other in new[] { wizard, enemy, strategy })
+                    if (other != selected)
+                        Assert.That(selected.colors.normalColor, Is.Not.EqualTo(other.colors.normalColor),
+                            "O destaque deve indicar o documento aberto, sem depender do foco do botão.");
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator EditorNavigation_LongToShortDocumentKeepsTextVisibleAndPersistentButtonColor()
+        {
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var document = typeof(GameplayBootstrapper)
+                .GetField("codeBlocks", flags).GetValue(bootstrapper);
+            string longCode = string.Join("\n", new string[120]).Replace("\n", "public class Mago {}\n");
+            const string enemyCode = "public class Inimigo {}";
+            document.GetType().GetMethod("Restore").Invoke(document, new object[] { new[] { longCode, enemyCode, "Mago ativo = mago;" }, 0 });
+            codeInput.SetTextWithoutNotify(longCode);
+            codeInput.stringPosition = 0;
+            codeInput.textComponent.rectTransform.anchoredPosition = new Vector2(0, 1002);
+            FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
+            yield return null;
+            Assert.That(codeInput.text, Is.EqualTo(enemyCode));
+            Assert.That(codeInput.textComponent.rectTransform.anchoredPosition.y, Is.EqualTo(0).Within(1));
+            Assert.That(codeInput.textComponent.canvasRenderer.cull, Is.False, "O código não pode ficar fora da máscara.");
+            var enemyButton = FindSceneComponent<Button>("CodeBlockButton2");
+            var wizardButton = FindSceneComponent<Button>("CodeBlockButton1");
+            Assert.That(enemyButton.colors.normalColor, Is.Not.EqualTo(wizardButton.colors.normalColor));
+            EventSystem.current.SetSelectedGameObject(codeInput.gameObject);
+            yield return null;
+            Assert.That(enemyButton.colors.normalColor, Is.Not.EqualTo(wizardButton.colors.normalColor),
+                "O destaque deve persistir enquanto o jogador edita o bloco.");
+            FindSceneComponent<Button>("CodeBlockButton1").onClick.Invoke();
+            yield return null;
+            Assert.That(((string[])document.GetType().GetMethod("Snapshot").Invoke(document, null))[1], Is.EqualTo(enemyCode));
+            Assert.That(wizardButton.colors.normalColor, Is.Not.EqualTo(enemyButton.colors.normalColor));
+        }
+
+        [UnityTest]
         public IEnumerator PolymorphicFinalStage_SubmitsStrategyRunsCombatAndReloadsVictory()
         {
             var flags = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -325,13 +373,18 @@ namespace PrograMago.Tests.Integration
             select.Invoke(bootstrapper, new object[] { 1 }); codeInput.text = enemy;
             select.Invoke(bootstrapper, new object[] { 2 }); codeInput.text = strategy;
             Assert.That(bootstrapper.SourceCode, Does.Contain("Mago ativo"));
+            codeInput.textComponent.rectTransform.anchoredPosition = new Vector2(0, 1002);
             codeInput.text = strategy.Replace("else { ativo = mago; }", "");
             battleButton.onClick.Invoke();
+            Assert.That(codeInput.text, Is.EqualTo(strategy.Replace("else { ativo = mago; }", "")));
+            Assert.That(codeInput.textComponent.rectTransform.anchoredPosition.y, Is.EqualTo(0).Within(1),
+                "Batalhar não deve deixar o código fora da área visível.");
             Assert.That(progress.Stage, Is.EqualTo(LearningStage.Editing));
             Assert.That(progress.CurrentHint, Is.Not.Null, "Uma estratégia inválida deve mostrar uma dica da fase final.");
             Assert.That(progress.GetAttemptCount(progress.CurrentBattle.Id), Is.EqualTo(1));
             codeInput.text = strategy;
             battleButton.onClick.Invoke();
+            Assert.That(codeInput.text, Is.EqualTo(strategy), "O bloco aberto deve permanecer visível ao iniciar o combate.");
             Assert.That(progress.Stage, Is.EqualTo(LearningStage.BattleInProgress), feedbackText.text);
             Assert.That(bootstrapper.CurrentEnemies.Count, Is.EqualTo(4));
             var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat", flags).GetValue(bootstrapper);

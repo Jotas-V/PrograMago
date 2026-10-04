@@ -119,11 +119,11 @@ namespace PrograMago.UnityIntegration
             if (area == WorkspaceArea.Classes)
             {
                 codeBlocks.Select(codeBlocks.ActiveIndex);
-                codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+                ShowCodeDocument(codeBlocks.ActiveText);
             }
             else if (area == WorkspaceArea.Preparation)
             {
-                codeInput.SetTextWithoutNotify(preparationCode);
+                ShowCodeDocument(preparationCode);
                 feedbackText.text = "Ajustes · redistribua atributos antes da batalha usando os setters da classe Mago.\n" +
                     $"Exemplo: {(declaredMago == null ? "mago" : declaredMago.InstanceName)}.setAlcance(5);";
             }
@@ -248,9 +248,33 @@ namespace PrograMago.UnityIntegration
                 approveMethodButton.interactable = false;
             }
             if (preparationWorkspaceButton != null)
-                preparationWorkspaceButton.targetGraphic.color = workspaceArea == WorkspaceArea.Preparation
-                    ? new Color32(91, 74, 190, 255)
-                    : new Color32(39, 77, 92, 255);
+                SetWorkspaceButtonSelection(preparationWorkspaceButton, workspaceArea == WorkspaceArea.Preparation);
+        }
+
+        private void ShowCodeDocument(string source)
+        {
+            if (codeInput == null) return;
+            codeInput.DeactivateInputField();
+            codeInput.SetTextWithoutNotify(source ?? string.Empty);
+            codeInput.stringPosition = 0;
+            codeInput.caretPosition = 0;
+            if (codeInput.textComponent != null)
+                codeInput.textComponent.rectTransform.anchoredPosition = Vector2.zero;
+            if (codeInput.verticalScrollbar != null) codeInput.verticalScrollbar.value = 0;
+            codeInput.ForceLabelUpdate();
+        }
+
+        private static void SetWorkspaceButtonSelection(UnityEngine.UI.Button button, bool selected)
+        {
+            if (button == null || button.targetGraphic == null) return;
+            Color normal = selected ? new Color32(48, 143, 149, 255) : new Color32(105, 77, 47, 255);
+            var colors = button.colors;
+            colors.normalColor = colors.selectedColor = normal;
+            colors.highlightedColor = Color.Lerp(normal, Color.white, .15f);
+            colors.pressedColor = Color.Lerp(normal, Color.black, .2f);
+            colors.disabledColor = selected ? new Color32(48, 112, 118, 255) : new Color32(102, 97, 79, 255);
+            button.targetGraphic.color = Color.white;
+            button.colors = colors;
         }
 
         private void FocusEditableDefinitionBlock(int index)
@@ -262,7 +286,7 @@ namespace PrograMago.UnityIntegration
             workspaceArea = WorkspaceArea.Classes;
             selectedCombatBlock = -1;
             codeBlocks.Select(index);
-            codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+            ShowCodeDocument(codeBlocks.ActiveText);
             RefreshCodeBlockButtons();
         }
 
