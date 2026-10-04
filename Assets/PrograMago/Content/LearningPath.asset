@@ -248,27 +248,12 @@ MonoBehaviour:
       escolhe a forma a cada turno: fogo contra gelo, \xE1gua contra fogo e eletricidade
       contra \xE1gua; a forma base ataca o Boneco neutro. Vida, posi\xE7\xE3o e atributos
       s\xE3o preservados durante a troca."
-    task: "No bloco Mago, mantenha a magia base e declare as tr\xEAs subclasses com
-      construtor que encaminha os cinco par\xE2metros a super e sobrescrita com @Override.
-      No bloco Inimigo, instancie Boneco (10, neutro), Golem (12, gelo), Elemental
-      de Fogo (12, fogo) e Slime (12, \xE1gua). Na Estrat\xE9gia, declare Mago ativo
-      = mago; use if/else if para gelo, fogo e \xE1gua (qualquer ordem), atribuindo
-      new Piromante(...), new Hidromante(...) ou new Eletromante(...), com os mesmos
-      cinco valores da inst\xE2ncia base. No else use ativo = mago; termine com ativo.lancarMagia(alvo);.
-      O motor fornece alvo; n\xE3o escreva listas ou la\xE7os. Build de exemplo:
-      (1, 6, 15, 2, 1)."
+    task: "Escolha a subclasse com if/else e chame a magia pela refer\xEAncia Mago."
     hints:
-    - "Declare as tr\xEAs especializa\xE7\xF5es com extends Mago, construtor de cinco
-      par\xE2metros int e @Override public void lancarMagia(Inimigo alvo) { super.lancarMagia(alvo);
-      }. No construtor encaminhe os cinco par\xE2metros a super(...), na mesma ordem."
-    - "A refer\xEAncia deve usar o tipo base: Mago ativo = mago; Use um nome diferente
-      da inst\xE2ncia base e de alvo. O motor fornece o Inimigo alvo a cada turno."
-    - "Use if (alvo.getElemento().equals(\"gelo\")) { ativo = new Piromante(1, 6,
-      15, 2, 1); }. Fa\xE7a else if para fogo/Hidromante e \xE1gua/Eletromante, em
-      qualquer ordem. Os valores devem repetir sua inst\xE2ncia base."
-    - "Finalize com else { ativo = mago; } e uma \xFAnica chamada ativo.lancarMagia(alvo);.
-      N\xE3o use operadores adicionais nem if aninhado. O Boneco usa a forma base;
-      os inimigos elementais exigem a especializa\xE7\xE3o correta."
+    - Use extends Mago, construtor com super(...) e magia com @Override.
+    - "Declare Mago ativo = mago;. O motor fornece alvo; sem listas ou la\xE7os."
+    - "Gelo: Piromante. Fogo: Hidromante. \xC1gua: Eletromante. Repita a build."
+    - Use else { ativo = mago; } e termine com ativo.lancarMagia(alvo);
     criterion: 7
     completionMode: 0
     victoryTitle: "Jornada conclu\xEDda!"

@@ -95,7 +95,7 @@ namespace PrograMago.UnityIntegration
                 workspaceArea = WorkspaceArea.Classes;
                 selectedCombatBlock = -1;
                 codeBlocks.SetActiveText(value);
-                codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+                ShowCodeDocument(codeBlocks.ActiveText);
             }
         }
 
@@ -212,7 +212,7 @@ namespace PrograMago.UnityIntegration
                 if (saved.version >= 2)
                 {
                     codeBlocks.Restore(saved.sourceBlocks, saved.activeBlock);
-                    codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+                    ShowCodeDocument(codeBlocks.ActiveText);
                     RefreshCodeBlockButtons();
                 }
                 else
@@ -247,7 +247,7 @@ namespace PrograMago.UnityIntegration
             {
                 // Rendering the lesson may focus Mago; reload must preserve the saved selection.
                 codeBlocks.Select(saved.activeBlock);
-                codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+                ShowCodeDocument(codeBlocks.ActiveText);
                 RefreshCodeBlockButtons();
                 UpdateWorkspaceUi();
             }
@@ -657,6 +657,8 @@ namespace PrograMago.UnityIntegration
 
         private void HandleBattle()
         {
+            StoreWorkspaceText();
+            ShowCodeDocument(codeInput.text);
             if (learningFlowPresenter.Progress.CurrentBattle.CompletionMode == BattleCompletionMode.OnCombatVictory)
             {
                 if (!CompileTimeline() || !TryApplyPreparation()) return;
@@ -725,7 +727,7 @@ namespace PrograMago.UnityIntegration
             workspaceArea = index == 2 ? WorkspaceArea.Strategy : WorkspaceArea.Classes;
             selectedCombatBlock = -1;
             codeBlocks.Select(index);
-            codeInput.SetTextWithoutNotify(codeBlocks.ActiveText);
+            ShowCodeDocument(codeBlocks.ActiveText);
             RefreshCodeBlockButtons();
             UpdateWorkspaceUi();
             if (combat == null) presenter?.Preview();
@@ -738,11 +740,9 @@ namespace PrograMago.UnityIntegration
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
                 if (codeBlockButtons[index] == null) continue;
-                var background = codeBlockButtons[index].targetGraphic;
-                background.color = (workspaceArea == WorkspaceArea.Classes || workspaceArea == WorkspaceArea.Strategy) &&
-                    selectedCombatBlock < 0 && index == codeBlocks.ActiveIndex
-                    ? new Color32(91, 74, 190, 255)
-                    : new Color32(69, 70, 90, 255);
+                SetWorkspaceButtonSelection(codeBlockButtons[index],
+                    (workspaceArea == WorkspaceArea.Classes || workspaceArea == WorkspaceArea.Strategy) &&
+                    selectedCombatBlock < 0 && index == codeBlocks.ActiveIndex);
                 codeBlockButtons[index].GetComponentInChildren<TMP_Text>().text =
                     $"{index + 1} · {titles[index]}";
             }
@@ -943,8 +943,8 @@ namespace PrograMago.UnityIntegration
             {
                 string label = $"{index + 1} · {CombatBlockLabel(combatCodeBlocks[index])}";
                 combatActionButtons[index].GetComponentInChildren<TMP_Text>().text = label;
-                combatActionButtons[index].targetGraphic.color = selectedCombatBlock == index
-                    ? new Color32(97, 79, 192, 255) : new Color32(39, 77, 92, 255);
+                SetWorkspaceButtonSelection(combatActionButtons[index],
+                    workspaceArea == WorkspaceArea.Classes && selectedCombatBlock == index);
             }
         }
 
