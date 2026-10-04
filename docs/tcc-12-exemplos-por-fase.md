@@ -1,21 +1,25 @@
-# PrograMago — exemplos das nove fases
+# PrograMago — códigos completos por fase
 
-O caminho pedagógico tem nove etapas. A TCC-12 prepara as fases 1 a 5, incluindo a primeira batalha com o Boneco. A integração da TCC-13 libera a fase 6 (método de magia). A integração da TCC-14/TCC-15 libera as fases 7 e 8 com Piromante e Golem de Gelo. A fase 9 permanece bloqueada até a integração de polimorfismo e estratégia. O código permanece livremente editável.
+As fases 1–8 estão disponíveis. A fase 9 ainda aguarda a integração de estratégia e polimorfismo.
 
-Os exemplos abaixo são cumulativos quando indicado. As três primeiras fases preenchem o bloco **Mago**; a fase 4 acrescenta os setters à mesma classe. Na fase 5, o jogador mantém esse bloco e escreve a classe/instância do inimigo no bloco **Inimigo**. **Ajustes** é um espaço separado para chamadas de setter antes da batalha. **Estratégia** só será liberado depois que classes elementais e inimigos elementais estiverem disponíveis.
+Em cada fase, substitua o conteúdo inteiro do bloco indicado pelo exemplo correspondente. Os exemplos já incluem o código aprendido nas fases anteriores. Clique em **Validar código** nas fases 1–4 e em **Batalhar** nas fases 5–8; depois avance pela tela de vitória.
 
-## Fase 1 — declarar a classe
+Os blocos Mago, Inimigo e Estratégia ficam livremente editáveis durante a preparação. Nas fases 1–4 deixe **Inimigo** vazio. Deixe **Estratégia** vazio em todas as fases 1–8: sua lógica só será ensinada na fase 9, e conteúdo antecipado pode impedir a validação da fase atual. Os botões ficam desativados durante o combate e a tela de vitória.
 
-No bloco Mago:
+A build usada abaixo é `(5, 5, 5, 5, 5)`, totalizando 25 pontos. **Ajustes** pode ficar vazio; se você já colocou chamadas de setter nesse bloco, elas também precisam manter cada atributo entre 1 e 15 e o total em até 25.
+
+## Fase 1 — Declarar a classe
+
+Bloco **Mago**:
 
 ```java
 public class Mago {
 }
 ```
 
-## Fase 2 — declarar atributos privados
+## Fase 2 — Declarar atributos privados
 
-Acrescente dentro das chaves de Mago:
+Bloco **Mago**:
 
 ```java
 public class Mago {
@@ -27,9 +31,9 @@ public class Mago {
 }
 ```
 
-## Fase 3 — construtor e instância
+## Fase 3 — Construtor e instância
 
-Complete o bloco Mago. Use valores cuja soma não passe de 25; a ordem de argumentos deve seguir a ordem dos parâmetros do construtor.
+Bloco **Mago**:
 
 ```java
 public class Mago {
@@ -39,8 +43,7 @@ public class Mago {
     private int iniciativa;
     private int velocidadeAtaque;
 
-    public Mago(int vida, int dano, int alcance,
-                int iniciativa, int velocidadeAtaque) {
+    public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
         this.vida = vida;
         this.dano = dano;
         this.alcance = alcance;
@@ -52,47 +55,67 @@ public class Mago {
 Mago mago = new Mago(5, 5, 5, 5, 5);
 ```
 
-## Fase 4 — criar setters na classe
+## Fase 4 — Criar setters
 
-Acrescente os cinco métodos depois do construtor, ainda dentro das chaves da classe Mago:
-
-```java
-    public void setVida(int valor) {
-        this.vida = valor;
-    }
-
-    public void setDano(int valor) {
-        this.dano = valor;
-    }
-
-    public void setAlcance(int valor) {
-        this.alcance = valor;
-    }
-
-    public void setIniciativa(int valor) {
-        this.iniciativa = valor;
-    }
-
-    public void setVelocidadeAtaque(int valor) {
-        this.velocidadeAtaque = valor;
-    }
-```
-
-Depois da validação desta fase, o bloco Mago fica protegido. Em **Ajustes**, uma build válida para o Boneco é:
+Bloco **Mago**:
 
 ```java
-mago.setVida(5);
-mago.setDano(5);
-mago.setAlcance(5);
-mago.setIniciativa(5);
-mago.setVelocidadeAtaque(5);
+public class Mago {
+    private int vida;
+    private int dano;
+    private int alcance;
+    private int iniciativa;
+    private int velocidadeAtaque;
+
+    public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
+        this.vida = vida;
+        this.dano = dano;
+        this.alcance = alcance;
+        this.iniciativa = iniciativa;
+        this.velocidadeAtaque = velocidadeAtaque;
+    }
+
+    public void setVida(int valor) { this.vida = valor; }
+    public void setDano(int valor) { this.dano = valor; }
+    public void setAlcance(int valor) { this.alcance = valor; }
+    public void setIniciativa(int valor) { this.iniciativa = valor; }
+    public void setVelocidadeAtaque(int valor) { this.velocidadeAtaque = valor; }
+}
+
+Mago mago = new Mago(5, 5, 5, 5, 5);
 ```
 
-As chamadas podem alterar só os atributos que precisam mudar. O resultado final deve manter cada valor entre 1 e 15 e o total em até 25. Se um setter ultrapassar o orçamento, redistribua também os demais antes de iniciar a batalha.
+## Fase 5 — Criar o Boneco e batalhar
 
-## Fase 5 — criar o Boneco e batalhar
+Bloco **Mago**:
 
-No bloco Inimigo:
+```java
+public class Mago {
+    private int vida;
+    private int dano;
+    private int alcance;
+    private int iniciativa;
+    private int velocidadeAtaque;
+
+    public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
+        this.vida = vida;
+        this.dano = dano;
+        this.alcance = alcance;
+        this.iniciativa = iniciativa;
+        this.velocidadeAtaque = velocidadeAtaque;
+    }
+
+    public void setVida(int valor) { this.vida = valor; }
+    public void setDano(int valor) { this.dano = valor; }
+    public void setAlcance(int valor) { this.alcance = valor; }
+    public void setIniciativa(int valor) { this.iniciativa = valor; }
+    public void setVelocidadeAtaque(int valor) { this.velocidadeAtaque = valor; }
+}
+
+Mago mago = new Mago(5, 5, 5, 5, 5);
+```
+
+Bloco **Inimigo**:
 
 ```java
 public class Inimigo {
@@ -114,51 +137,196 @@ public class Inimigo {
 Inimigo boneco = new Inimigo("Boneco de Treinamento", 10, "neutro");
 ```
 
-O Mago começa na casa 1 e o Boneco na casa 16. Fora do alcance, o Mago avança uma casa por turno. O Boneco neutro não se move nem ataca. O comando **Atacar** é executado automaticamente até vitória ou derrota.
+## Fase 6 — Declarar e chamar magia
 
-## Fase 6 — declarar uma magia
-
-Etapa disponível após vencer o Boneco. Declare o método dentro de Mago e, fora da classe, chame mago.lancarMagia(boneco); usando o nome da sua instância.
+Bloco **Mago**:
 
 ```java
-public void lancarMagia(Inimigo alvo) {
-    // O motor resolve alcance, movimento, dano e turno.
+public class Mago {
+    private int vida;
+    private int dano;
+    private int alcance;
+    private int iniciativa;
+    private int velocidadeAtaque;
+
+    public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
+        this.vida = vida;
+        this.dano = dano;
+        this.alcance = alcance;
+        this.iniciativa = iniciativa;
+        this.velocidadeAtaque = velocidadeAtaque;
+    }
+
+    public void setVida(int valor) { this.vida = valor; }
+    public void setDano(int valor) { this.dano = valor; }
+    public void setAlcance(int valor) { this.alcance = valor; }
+    public void setIniciativa(int valor) { this.iniciativa = valor; }
+    public void setVelocidadeAtaque(int valor) { this.velocidadeAtaque = valor; }
+
+    public void lancarMagia(Inimigo alvo) {
+    }
 }
+
+Mago mago = new Mago(5, 5, 5, 5, 5);
+mago.lancarMagia(boneco);
 ```
 
-## Fase 7 — criar subclasses elementais
-
-Acrescente a subclasse ao documento Mago, depois das classes existentes. Nesta atividade Piromante é a forma de fogo do único Mago; mantenha o Boneco e a chamada de magia. A estratégia condicional será ensinada na fase 9:
+Bloco **Inimigo**:
 
 ```java
+public class Inimigo {
+    private String nome;
+    private int vida;
+    private String elemento;
+
+    public Inimigo(String nome, int vida, String elemento) {
+        this.nome = nome;
+        this.vida = vida;
+        this.elemento = elemento;
+    }
+
+    public String getElemento() {
+        return elemento;
+    }
+}
+
+Inimigo boneco = new Inimigo("Boneco de Treinamento", 10, "neutro");
+```
+
+## Fase 7 — Herança: Piromante
+
+Bloco **Mago**:
+
+```java
+public class Mago {
+    private int vida;
+    private int dano;
+    private int alcance;
+    private int iniciativa;
+    private int velocidadeAtaque;
+
+    public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
+        this.vida = vida;
+        this.dano = dano;
+        this.alcance = alcance;
+        this.iniciativa = iniciativa;
+        this.velocidadeAtaque = velocidadeAtaque;
+    }
+
+    public void setVida(int valor) { this.vida = valor; }
+    public void setDano(int valor) { this.dano = valor; }
+    public void setAlcance(int valor) { this.alcance = valor; }
+    public void setIniciativa(int valor) { this.iniciativa = valor; }
+    public void setVelocidadeAtaque(int valor) { this.velocidadeAtaque = valor; }
+
+    public void lancarMagia(Inimigo alvo) {
+    }
+}
+
+Mago mago = new Mago(5, 5, 5, 5, 5);
+mago.lancarMagia(boneco);
+
 public class Piromante extends Mago {
 }
 ```
 
-## Fase 8 — sobrescrever comportamento
-
-Acrescente o método abaixo dentro de Piromante. No bloco Inimigo, substitua a instância do Boneco por `Inimigo golem = new Inimigo("Golem de Gelo", 12, "gelo");`. Atualize a chamada no documento Mago para `mago.lancarMagia(golem);`, usando o nome do seu Mago. A forma Piromante permanece fixa nesta atividade; fogo é eficaz contra gelo. Os Ajustes continuam disponíveis e a instância única mantém sua build.
+Bloco **Inimigo**:
 
 ```java
-@Override
-public void lancarMagia(Inimigo alvo) {
-    super.lancarMagia(alvo);
+public class Inimigo {
+    private String nome;
+    private int vida;
+    private String elemento;
+
+    public Inimigo(String nome, int vida, String elemento) {
+        this.nome = nome;
+        this.vida = vida;
+        this.elemento = elemento;
+    }
+
+    public String getElemento() {
+        return elemento;
+    }
+}
+
+Inimigo boneco = new Inimigo("Boneco de Treinamento", 10, "neutro");
+```
+
+## Fase 8 — Sobrescrita contra Golem de Gelo
+
+Bloco **Mago**:
+
+```java
+public class Mago {
+    private int vida;
+    private int dano;
+    private int alcance;
+    private int iniciativa;
+    private int velocidadeAtaque;
+
+    public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
+        this.vida = vida;
+        this.dano = dano;
+        this.alcance = alcance;
+        this.iniciativa = iniciativa;
+        this.velocidadeAtaque = velocidadeAtaque;
+    }
+
+    public void setVida(int valor) { this.vida = valor; }
+    public void setDano(int valor) { this.dano = valor; }
+    public void setAlcance(int valor) { this.alcance = valor; }
+    public void setIniciativa(int valor) { this.iniciativa = valor; }
+    public void setVelocidadeAtaque(int valor) { this.velocidadeAtaque = valor; }
+
+    public void lancarMagia(Inimigo alvo) {
+    }
+}
+
+Mago mago = new Mago(5, 5, 5, 5, 5);
+mago.lancarMagia(golem);
+
+public class Piromante extends Mago {
+    @Override
+    public void lancarMagia(Inimigo alvo) {
+        super.lancarMagia(alvo);
+    }
 }
 ```
 
-## Fase 9 — escolher a forma por elemento
-
-No bloco **Estratégia**, o código do jogador seleciona a forma. O motor continua responsável pelos turnos, movimento, alcance e dano.
+Bloco **Inimigo**:
 
 ```java
-if (alvo.getElemento().equals("gelo")) {
-    mago.selecionarForma("piromante");
-} else if (alvo.getElemento().equals("fogo")) {
-    mago.selecionarForma("hidromante");
-} else if (alvo.getElemento().equals("água")) {
-    mago.selecionarForma("eletromante");
-} else {
-    mago.selecionarForma("neutro");
+public class Inimigo {
+    private String nome;
+    private int vida;
+    private String elemento;
+
+    public Inimigo(String nome, int vida, String elemento) {
+        this.nome = nome;
+        this.vida = vida;
+        this.elemento = elemento;
+    }
+
+    public String getElemento() {
+        return elemento;
+    }
 }
-mago.lancarMagia(alvo);
+
+Inimigo golem = new Inimigo("Golem de Gelo", 12, "gelo");
 ```
+
+## Ajustes opcionais — fases 5–8
+
+Não é necessário preencher este bloco com a build dos exemplos. Para restaurá-la, use:
+
+```java
+mago.setVida(5);
+mago.setDano(5);
+mago.setAlcance(5);
+mago.setIniciativa(5);
+mago.setVelocidadeAtaque(5);
+```
+
+## Fase 9 — ainda bloqueada
+
+Esta etapa deverá ensinar seleção de forma com `if/else` pelo elemento do alvo. Ainda não existe uma solução jogável para ela na integração atual. O botão **Estratégia** abre o documento, mas não libera a fase 9. Deixe esse bloco vazio para jogar as fases anteriores.

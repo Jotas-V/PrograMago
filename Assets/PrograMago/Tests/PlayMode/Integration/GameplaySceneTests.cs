@@ -435,8 +435,7 @@ namespace PrograMago.Tests.Integration
             Button first = FindSceneComponent<Button>("CodeBlockButton1");
             Button second = FindSceneComponent<Button>("CodeBlockButton2");
             Button third = FindSceneComponent<Button>("CodeBlockButton3");
-            Assert.That(third.interactable, Is.False,
-                "Estratégia só abre depois que as formas e os inimigos elementais forem ensinados.");
+            Assert.That(third.interactable, Is.True);
 
             codeInput.text = "public class Mago {}";
             second.onClick.Invoke();
@@ -444,6 +443,15 @@ namespace PrograMago.Tests.Integration
             Assert.That(codeInput.text, Is.Empty);
 
             codeInput.text = "public class Inimigo {}";
+            third.onClick.Invoke();
+            yield return null;
+            Assert.That(codeInput.text, Is.Empty);
+            Assert.That(codeInput.interactable, Is.True);
+            codeInput.text = "mago.lancarMagia(alvo);";
+            second.onClick.Invoke();
+            Assert.That(codeInput.text, Is.EqualTo("public class Inimigo {}"));
+            third.onClick.Invoke();
+            Assert.That(codeInput.text, Is.EqualTo("mago.lancarMagia(alvo);"));
             first.onClick.Invoke();
             yield return null;
             Assert.That(codeInput.text, Is.EqualTo("public class Mago {}"));
@@ -453,7 +461,7 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator CodeBlocks_ReloadRestoresTextsAndKeepsStrategyLocked()
+        public IEnumerator CodeBlocks_ReloadRestoresTextsAndAllowsStrategySelection()
         {
             object codeBlocks = typeof(GameplayBootstrapper).GetField(
                 "codeBlocks", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
@@ -477,7 +485,10 @@ namespace PrograMago.Tests.Integration
             FindSceneComponent<Button>("CodeBlockButton2").onClick.Invoke();
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
                 Is.EqualTo("public class Inimigo {}"));
-            Assert.That(FindSceneComponent<Button>("CodeBlockButton3").interactable, Is.False);
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton3").interactable, Is.True);
+            FindSceneComponent<Button>("CodeBlockButton3").onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text,
+                Is.EqualTo(saved.sourceBlocks[2]));
         }
 
         [UnityTest]
@@ -894,8 +905,8 @@ namespace PrograMago.Tests.Integration
                 "public void setVelocidadeAtaque(int velocidadeAtaque) { this.velocidadeAtaque = velocidadeAtaque; } ";
             string setterCode = magoCode.Replace("} Mago heroi", setters + "} Mago heroi");
             Assert.That(FindSceneComponent<Button>("CodeBlockButton1").interactable, Is.True);
-            Assert.That(FindSceneComponent<Button>("CodeBlockButton2").interactable, Is.False,
-                "O bloco do Inimigo só deve ser liberado na etapa de criação do Inimigo.");
+            Assert.That(FindSceneComponent<Button>("CodeBlockButton2").interactable, Is.True,
+                "Os blocos permanecem editáveis também na etapa de setters.");
             Assert.That(codeInput.interactable, Is.True,
                 "A etapa de setters deve abrir no Mago e aceitar a implementação dos métodos.");
             Assert.That(codeInput.readOnly, Is.False,

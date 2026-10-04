@@ -267,16 +267,7 @@ namespace PrograMago.UnityIntegration
 
         private bool IsCodeBlockEditable(int index)
         {
-            if (learningFlowPresenter == null) return index < 2;
-            if (index == 0) return true;
-            if (index == 2)
-                return learningFlowPresenter.Progress.CurrentBattle.Criterion ==
-                    ValidationCriterion.UsePolymorphicMagoReference;
-            return index == 1 &&
-                (learningFlowPresenter.Progress.CurrentBattleIndex < 3 ||
-                 learningFlowPresenter.Progress.CurrentBattle.Criterion ==
-                    ValidationCriterion.ConstructAndInstantiateEnemy ||
-                 learningFlowPresenter.Progress.CurrentBattle.Criterion == ValidationCriterion.OverrideSpellWithSuper);
+            return index >= 0 && index < CodeBlockDocument.BlockCount;
         }
 
         private void ResetWorkspace()
