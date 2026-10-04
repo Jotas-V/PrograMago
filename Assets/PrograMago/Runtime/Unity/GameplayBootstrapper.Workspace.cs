@@ -188,7 +188,8 @@ namespace PrograMago.UnityIntegration
             }
             ValidationCriterion currentCriterion = learningFlowPresenter.Progress.CurrentBattle.Criterion;
             ValidationCriterion preparationCriterion = currentCriterion == ValidationCriterion.DefineAndCallSpellMethod ||
-                currentCriterion == ValidationCriterion.ExtendMago || currentCriterion == ValidationCriterion.OverrideSpellWithSuper
+                currentCriterion == ValidationCriterion.ExtendMago || currentCriterion == ValidationCriterion.OverrideSpellWithSuper ||
+                currentCriterion == ValidationCriterion.UsePolymorphicMagoReference
                 ? currentCriterion : ValidationCriterion.AddMagoSetters;
             string setterSource = preparationCriterion == ValidationCriterion.AddMagoSetters
                 ? codeBlocks.Snapshot()[0] : SourceCode;

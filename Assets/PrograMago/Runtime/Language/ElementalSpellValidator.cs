@@ -57,11 +57,21 @@ namespace PrograMago.Language
                             cursor.Expect("Mago", "INHERIT001", "A classe base da especialização deve ser Mago.");
                             cursor.Expect("{", "INHERIT001", "Abra o corpo da especialização com {.");
                             bool declaredSpell = false;
+                            bool declaredConstructor = false;
                             while (!cursor.Check("}"))
                             {
+                                if (criterion == ValidationCriterion.UsePolymorphicMagoReference &&
+                                    cursor.Check("public") && cursor.Check(name.Lexeme, 1))
+                                {
+                                    if (declaredConstructor) throw cursor.Fail("POLY002", "Declare um único construtor na especialização.");
+                                    ReadSpecializationConstructor(cursor, name.Lexeme);
+                                    declaredConstructor = true;
+                                    continue;
+                                }
                                 if (declaredSpell)
                                     throw cursor.Fail("SPELL003", "Declare lancarMagia uma única vez em cada especialização.");
-                                if (criterion != ValidationCriterion.OverrideSpellWithSuper)
+                                if (criterion != ValidationCriterion.OverrideSpellWithSuper &&
+                                    criterion != ValidationCriterion.UsePolymorphicMagoReference)
                                     throw cursor.Fail("SPELL004", "Nesta etapa, declare a especialização com corpo vazio; a sobrescrita vem depois.");
                                 if (!cursor.Check("@") && !cursor.Check("public") && !cursor.Check("private"))
                                     throw cursor.Fail("SPELL004", "Na especialização, use apenas a sobrescrita de lancarMagia prevista nesta atividade.");
@@ -69,6 +79,9 @@ namespace PrograMago.Language
                                 declaredSpell = true;
                                 hasOverride = true;
                             }
+                            if (criterion == ValidationCriterion.UsePolymorphicMagoReference &&
+                                (!declaredSpell || !declaredConstructor))
+                                throw cursor.Fail("POLY002", "Cada especialização precisa do construtor com super e da sobrescrita de lancarMagia.");
                             cursor.Expect("}", "SPELL004", "Feche a especialização com }.");
                         }
                     }
@@ -93,13 +106,16 @@ namespace PrograMago.Language
                     throw cursor.Fail("INHERIT001", "Declare ao menos uma especialização pública com extends Mago.");
                 if (criterion == ValidationCriterion.OverrideSpellWithSuper && !hasOverride)
                     throw cursor.Fail("OVERRIDE001", "Sobrescreva lancarMagia em uma especialização usando @Override.");
+                if (criterion == ValidationCriterion.UsePolymorphicMagoReference && forms.Count != 3)
+                    throw cursor.Fail("POLY002", "Declare Piromante, Hidromante e Eletromante com suas sobrescritas.");
                 if (criterion == ValidationCriterion.DefineAndCallSpellMethod && forms.Count != 0)
                     throw cursor.Fail("INHERIT002", "As especializações serão declaradas na etapa de herança.");
 
                 // Only verified additions are removed. All remaining tokens still go through
                 // the existing class, constructor, setter, instance and attribute validation.
                 ExerciseValidationResult basis = new EnemyConstructionValidator(rules,
-                    criterion != ValidationCriterion.OverrideSpellWithSuper).Validate(originalProgram, exercise);
+                    criterion != ValidationCriterion.OverrideSpellWithSuper &&
+                    criterion != ValidationCriterion.UsePolymorphicMagoReference).Validate(originalProgram, exercise);
                 if (!basis.IsSuccess) return basis;
                 foreach (List<Token> call in calls)
                 {
@@ -127,6 +143,36 @@ namespace PrograMago.Language
             {
                 return ExerciseValidationResult.Failure(failure.Diagnostic);
             }
+        }
+
+        private static void ReadSpecializationConstructor(Cursor cursor, string name)
+        {
+            const string detail = "O construtor deve encaminhar os cinco parâmetros int para super, na mesma ordem.";
+            cursor.Expect("public", "POLY002", detail);
+            cursor.Expect(name, "POLY002", detail);
+            cursor.Expect("(", "POLY002", detail);
+            var parameters = new HashSet<string>(StringComparer.Ordinal);
+            var ordered = new List<string>();
+            for (int index = 0; index < 5; index++)
+            {
+                if (index > 0) cursor.Expect(",", "POLY002", detail);
+                cursor.Expect("int", "POLY002", detail);
+                Token parameter = cursor.ExpectKind(TokenKind.Identifier, "POLY002", detail);
+                if (!parameters.Add(parameter.Lexeme)) throw cursor.Fail("POLY002", detail);
+                ordered.Add(parameter.Lexeme);
+            }
+            cursor.Expect(")", "POLY002", detail);
+            cursor.Expect("{", "POLY002", detail);
+            cursor.Expect("super", "POLY002", detail);
+            cursor.Expect("(", "POLY002", detail);
+            for (int index = 0; index < 5; index++)
+            {
+                if (index > 0) cursor.Expect(",", "POLY002", detail);
+                cursor.Expect(ordered[index], "POLY002", detail);
+            }
+            cursor.Expect(")", "POLY002", detail);
+            cursor.Expect(";", "POLY002", detail);
+            cursor.Expect("}", "POLY002", detail);
         }
 
         private static List<Token> ReadBaseSpell(List<Token> declaration, out bool found)

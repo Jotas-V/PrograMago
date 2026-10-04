@@ -38,6 +38,9 @@ namespace PrograMago.Domain
             if (playableBattleCount < path.Battles.Count &&
                 path.Battles[playableBattleCount].Criterion == ValidationCriterion.OverrideSpellWithSuper)
                 playableBattleCount++;
+            if (playableBattleCount < path.Battles.Count &&
+                path.Battles[playableBattleCount].Criterion == ValidationCriterion.UsePolymorphicMagoReference)
+                playableBattleCount++;
 
             attemptCounts = new int[playableBattleCount];
             failedCounts = new int[playableBattleCount];
