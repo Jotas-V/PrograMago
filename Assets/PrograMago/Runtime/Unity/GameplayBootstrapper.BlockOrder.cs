@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using PrograMago.Application;
+using PrograMago.Domain;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
@@ -18,9 +19,11 @@ namespace PrograMago.UnityIntegration
             {
                 var source = new StringBuilder();
                 string[] definitions = codeBlocks.Snapshot();
+                bool polymorphic = learningFlowPresenter != null &&
+                    learningFlowPresenter.Progress.CurrentBattle.Criterion == ValidationCriterion.UsePolymorphicMagoReference;
                 foreach (int id in timelineOrder)
                 {
-                    if (id >= 2 || string.IsNullOrEmpty(definitions[id])) continue;
+                    if (id >= (polymorphic ? 3 : 2) || string.IsNullOrEmpty(definitions[id])) continue;
                     if (source.Length > 0) source.Append('\n');
                     source.Append(definitions[id]);
                 }

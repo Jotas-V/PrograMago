@@ -290,6 +290,71 @@ namespace PrograMago.Tests.Integration
             Assert.That(arenaCamera.WorldToViewportPoint(dummy.bounds.center).x, Is.GreaterThan(0.92f));
         }
         [UnityTest]
+        public IEnumerator PolymorphicFinalStage_SubmitsStrategyRunsCombatAndReloadsVictory()
+        {
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            object flow = typeof(GameplayBootstrapper).GetField("learningFlowPresenter", flags).GetValue(bootstrapper);
+            var progress = (LearningProgress)flow.GetType().GetProperty("Progress").GetValue(flow);
+            for (int index = 0; index < 8; index++)
+            {
+                progress.RegisterSubmission();
+                Assert.That(progress.TryStartBattle(progress.CurrentBattle.Criterion), Is.True);
+                progress.ReportVictory();
+                Assert.That(progress.ContinueAfterVictory(), Is.True, "A fase 9 deve estar liberada após a oitava.");
+            }
+            bootstrapper.ShowBattle(progress.CurrentBattle, 9, 9);
+            Assert.That(codeInput.interactable, Is.True);
+            string wizard = "public class Mago { private int vida; private int dano; private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { this.vida = vida; this.dano = dano; this.alcance = alcance; this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } " +
+                "public void lancarMagia(Inimigo alvo) {} } Mago mago = new Mago(1,6,15,2,1);";
+            foreach (string name in new[] { "Piromante", "Hidromante", "Eletromante" })
+                wizard += "public class " + name + " extends Mago { public " + name +
+                    "(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { super(vida,dano,alcance,iniciativa,velocidadeAtaque); } " +
+                    "@Override public void lancarMagia(Inimigo alvo) { super.lancarMagia(alvo); } }";
+            string enemy = "public class Inimigo { private String nome; private int vida; private String elemento; " +
+                "public Inimigo(String nome, int vida, String elemento) { this.nome = nome; this.vida = vida; this.elemento = elemento; } public String getElemento() { return elemento; } } " +
+                "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\",10,\"neutro\"); " +
+                "Inimigo golem = new Inimigo(\"Golem de Gelo\",12,\"gelo\"); " +
+                "Inimigo elemental = new Inimigo(\"Elemental de Fogo\",12,\"fogo\"); " +
+                "Inimigo slime = new Inimigo(\"Slime Aquático\",12,\"água\");";
+            string strategy = "Mago ativo = mago; if (alvo.getElemento().equals(\"gelo\")) { ativo = new Piromante(1,6,15,2,1); } " +
+                "else if (alvo.getElemento().equals(\"fogo\")) { ativo = new Hidromante(1,6,15,2,1); } " +
+                "else if (alvo.getElemento().equals(\"água\")) { ativo = new Eletromante(1,6,15,2,1); } else { ativo = mago; } ativo.lancarMagia(alvo);";
+            var select = typeof(GameplayBootstrapper).GetMethod("SelectCodeBlock", flags);
+            select.Invoke(bootstrapper, new object[] { 0 }); codeInput.text = wizard;
+            select.Invoke(bootstrapper, new object[] { 1 }); codeInput.text = enemy;
+            select.Invoke(bootstrapper, new object[] { 2 }); codeInput.text = strategy;
+            Assert.That(bootstrapper.SourceCode, Does.Contain("Mago ativo"));
+            codeInput.text = strategy.Replace("else { ativo = mago; }", "");
+            battleButton.onClick.Invoke();
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.Editing));
+            Assert.That(progress.CurrentHint, Is.Not.Null, "Uma estratégia inválida deve mostrar uma dica da fase final.");
+            Assert.That(progress.GetAttemptCount(progress.CurrentBattle.Id), Is.EqualTo(1));
+            codeInput.text = strategy;
+            battleButton.onClick.Invoke();
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.BattleInProgress), feedbackText.text);
+            Assert.That(bootstrapper.CurrentEnemies.Count, Is.EqualTo(4));
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat", flags).GetValue(bootstrapper);
+            Assert.That(engine, Is.Not.Null, feedbackText.text);
+            for (int tick = 0; tick < 300 && engine.Outcome == CombatOutcome.InProgress; tick++) engine.Tick();
+            Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Victory));
+            Assert.That(bootstrapper.ReportBattleVictory(), Is.True);
+            yield return null;
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+            yield return null;
+            var restored = Object.FindFirstObjectByType<GameplayBootstrapper>();
+            Assert.That(restored.SourceCode, Does.Contain("Mago ativo"));
+            Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("BattleProgressText").text, Does.Contain("9/9"));
+            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
+            yield return null;
+            object restoredFlow = typeof(GameplayBootstrapper).GetField("learningFlowPresenter", flags).GetValue(restored);
+            var restoredProgress = (LearningProgress)restoredFlow.GetType().GetProperty("Progress").GetValue(restoredFlow);
+            Assert.That(restoredProgress.Stage, Is.EqualTo(LearningStage.JourneyCompleted));
+        }
+
+        [UnityTest]
         public IEnumerator MultiEnemyArena_FourVisualsAndFormChangesPreserveEnemyObjects()
         {
             PrepareCombatMago(5, 3, 15, 1, 1);
@@ -1260,12 +1325,17 @@ namespace PrograMago.Tests.Integration
             deadline = Time.realtimeSinceStartup + 5f;
             while (!victoryOverlay.activeSelf && Time.realtimeSinceStartup < deadline) yield return null;
             Assert.That(victoryOverlay.activeSelf, Is.True);
-            Assert.That(FindSceneComponent<Button>("NextBattleButton").interactable, Is.False);
+            Assert.That(FindSceneComponent<Button>("NextBattleButton").interactable, Is.True);
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
             yield return null;
             Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Cada Mago, uma magia"));
             Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo(golemCode));
+            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
+            yield return null;
+            Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Batalha final"));
+            Assert.That(FindSceneComponent<TMP_Text>("BattleProgressText").text, Does.Contain("9/9"));
+            Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").interactable, Is.True);
         }
         [UnityTest]
         public IEnumerator PhaseOne_ReloadAfterFirstVictory_PreservesReviewAndCanAdvance()

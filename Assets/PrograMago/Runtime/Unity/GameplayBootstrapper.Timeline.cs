@@ -202,7 +202,18 @@ namespace PrograMago.UnityIntegration
             }
             string strategySource = codeBlocks.Snapshot()[2];
             ValidationCriterion criterion = learningFlowPresenter.Progress.CurrentBattle.Criterion;
-            if (criterion == ValidationCriterion.ExtendMago || criterion == ValidationCriterion.OverrideSpellWithSuper)
+            if (criterion == ValidationCriterion.UsePolymorphicMagoReference)
+            {
+                if (!CombatCodeCompiler.TryCompilePolymorphicLesson(SourceCode,
+                    out compiledStrategy, out PrograMago.Language.Diagnostic diagnostic, out ValidatedMagoProgram program))
+                {
+                    ShowError(diagnostic);
+                    learningFlowPresenter.HandleSubmission(SubmitCodeResult.Failure(CurrentMago != null, diagnostic));
+                    return false;
+                }
+                if (combat == null) ShowMago(MagoState.FromValidatedProgram(program));
+            }
+            else if (criterion == ValidationCriterion.ExtendMago || criterion == ValidationCriterion.OverrideSpellWithSuper)
             {
                 if (!CombatCodeCompiler.TryCompileElementalLesson(SourceCode, criterion,
                     out compiledStrategy, out PrograMago.Language.Diagnostic diagnostic))

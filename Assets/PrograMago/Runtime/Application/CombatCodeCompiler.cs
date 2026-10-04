@@ -9,6 +9,25 @@ namespace PrograMago.Application
     // The timeline exposes a deliberately small command language, not arbitrary C# execution.
     public static class CombatCodeCompiler
     {
+        public static bool TryCompilePolymorphicLesson(string source,
+            out CombatStrategy strategy, out Diagnostic diagnostic)
+            => TryCompilePolymorphicLesson(source, out strategy, out diagnostic, out _);
+
+        public static bool TryCompilePolymorphicLesson(string source,
+            out CombatStrategy strategy, out Diagnostic diagnostic, out ValidatedMagoProgram program)
+        {
+            program = null;
+            strategy = null;
+            TokenizationResult tokens = new CodeTokenizer().Tokenize(source);
+            diagnostic = tokens.Diagnostic;
+            if (!tokens.IsSuccess) return false;
+            var exercise = new ExerciseDefinition("polymorphism", "Mago", "Escolha a especialização pelo elemento do alvo.");
+            ExerciseValidationResult result = new PolymorphicSpellValidator(new MagoValidationRules(1, 15, 25))
+                .Validate(tokens.Tokens, exercise, out strategy);
+            diagnostic = result.Diagnostic;
+            if (result.IsSuccess) program = result.Program;
+            return result.IsSuccess;
+        }
         // These guided activities use an explicitly declared Piromante, not target-driven selection.
         public static bool TryCompileElementalLesson(string source, ValidationCriterion criterion,
             out CombatStrategy strategy, out Diagnostic diagnostic)

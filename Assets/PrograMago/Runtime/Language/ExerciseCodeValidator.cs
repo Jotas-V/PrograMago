@@ -53,6 +53,9 @@ namespace PrograMago.Language
                 return new EnemyConstructionValidator(rules).Validate(tokens, exercise);
             }
 
+            if (criterion == ValidationCriterion.UsePolymorphicMagoReference)
+                return new PolymorphicSpellValidator(rules).Validate(tokens, exercise, out _);
+
             if (criterion == ValidationCriterion.DefineAndCallSpellMethod ||
                 criterion == ValidationCriterion.ExtendMago ||
                 criterion == ValidationCriterion.OverrideSpellWithSuper)

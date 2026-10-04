@@ -535,7 +535,7 @@ namespace PrograMago.Tests.Domain
             Assert.That(snapshot.preparationCode, Is.EqualTo("heroi.setAlcance(5);"));
         }
         [Test]
-        public void ElementalProgression_OpensInheritanceAndOverrideButKeepsPolymorphismLocked()
+        public void ElementalProgression_OpensPolymorphismAndCompletesTheJourney()
         {
             var path = new LearningPath(new[]
             {
@@ -547,15 +547,16 @@ namespace PrograMago.Tests.Domain
                 CreateBattle("final", 6, ValidationCriterion.UsePolymorphicMagoReference, 4)
             });
             var progress = new LearningProgress(path);
-            for (int index = 0; index < 5; index++)
+            for (int index = 0; index < 6; index++)
             {
                 Assert.That(progress.CurrentBattleIndex, Is.EqualTo(index));
                 progress.RegisterSubmission();
                 Assert.That(progress.TryStartBattle(path.Battles[index].Criterion), Is.True);
                 progress.ReportVictory();
-                Assert.That(progress.ContinueAfterVictory(), Is.EqualTo(index < 4));
+                Assert.That(progress.ContinueAfterVictory(), Is.EqualTo(index < 5));
             }
-            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("override"));
+            Assert.That(progress.CurrentBattle.Id, Is.EqualTo("final"));
+            Assert.That(progress.Stage, Is.EqualTo(LearningStage.JourneyCompleted));
             Assert.That(progress.CanContinueAfterVictory, Is.False);
         }
         [Test]

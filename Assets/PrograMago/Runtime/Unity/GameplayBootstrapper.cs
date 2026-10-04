@@ -568,6 +568,10 @@ namespace PrograMago.UnityIntegration
             {
                 FocusEditableDefinitionBlock(1);
             }
+            else if (battle.Criterion == ValidationCriterion.UsePolymorphicMagoReference)
+            {
+                FocusEditableDefinitionBlock(2);
+            }
             SetTimelineAvailable(battle.CompletionMode == BattleCompletionMode.OnCombatVictory);
             UpdateWorkspaceUi();
             ShowEnemyGuide(battle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy);
