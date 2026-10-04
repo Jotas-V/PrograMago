@@ -388,7 +388,7 @@ namespace PrograMago.UnityIntegration
             if (animator != null)
             {
                 animator.enabled = true;
-                animator.speed = CharacterAnimationSpeed;
+                animator.speed = WizardAnimationPlaybackSpeed;
                 RuntimeAnimatorController controller = form switch
                 {
                     "piromante" => visualCatalog == null ? null : visualCatalog.pyromancerController,
@@ -484,7 +484,10 @@ namespace PrograMago.UnityIntegration
             Animator animator = wizardInstance.GetComponent<Animator>();
             if (animator == null || !animator.enabled) return;
             animator.ResetTrigger("Attack");
-            animator.SetTrigger("Attack");
+            animator.SetBool("Walking", false);
+            animator.speed = WizardAnimationPlaybackSpeed;
+            animator.Play("Attack", 0, 0f);
+            animator.Update(0f);
         }
 
         private void FlashCombatTarget(GameObject actor, CombatElement element)

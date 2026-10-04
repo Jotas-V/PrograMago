@@ -411,13 +411,67 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
-        public IEnumerator CombatProjectile_HitProducesVisibleTravelAndPauseFreezesIt()
+        public IEnumerator CombatCast_ReleaseFollowsPoseAndAttackFinishesWithinHalfSecond()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.AdvanceCombatTick();
+            var animator = wizardSpawnPoint.GetComponentInChildren<Animator>();
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Is.Empty,
+                "O projétil deve aguardar a pose do cajado apontando para o alvo.");
+            yield return new WaitForSecondsRealtime(0.38f);
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Has.Length.EqualTo(1));
+            Assert.That(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"), Is.True);
+            Assert.That(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, Is.GreaterThanOrEqualTo(0.64f));
+            yield return new WaitForSecondsRealtime(0.2f);
+            Assert.That(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"), Is.False,
+                "O ataque não deve continuar por 1,67 segundos.");
+            Assert.That(animator.speed, Is.EqualTo(0.30f).Within(0.001f));
+        }
+
+        [UnityTest]
+        public IEnumerator CombatCast_PauseFreezesWindupBeforeRelease()
         {
             PrepareCombatMago(1, 3, 15, 5, 1);
             bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
             bootstrapper.StartCombat();
             bootstrapper.AdvanceCombatTick();
             yield return new WaitForSecondsRealtime(0.1f);
+            bootstrapper.ToggleCombatPause();
+            yield return null;
+            var animator = wizardSpawnPoint.GetComponentInChildren<Animator>();
+            float pausedPose = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            yield return new WaitForSecondsRealtime(0.4f);
+            Assert.That(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, Is.EqualTo(pausedPose).Within(0.01f));
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Is.Empty);
+            bootstrapper.ToggleCombatPause();
+            yield return new WaitForSecondsRealtime(0.3f);
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Has.Length.EqualTo(1));
+        }
+
+        [UnityTest]
+        public IEnumerator CombatCast_ConsecutiveAttacksEachReleaseAProjectile()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.AdvanceCombatTick();
+            for (int tick = 0; tick < 15; tick++) bootstrapper.AdvanceCombatTick();
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Is.Empty);
+            yield return new WaitForSecondsRealtime(0.4f);
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Has.Length.EqualTo(1));
+            yield return new WaitForSecondsRealtime(0.53f);
+            Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Has.Length.EqualTo(2));
+        }
+        [UnityTest]
+        public IEnumerator CombatProjectile_HitProducesVisibleTravelAndPauseFreezesIt()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            bootstrapper.AdvanceCombatTick();
+            yield return new WaitForSecondsRealtime(0.4f);
             GameObject projectile = GameObject.Find("NeutralProjectile(Clone)");
             Assert.That(projectile, Is.Not.Null);
             bootstrapper.ToggleCombatPause();
