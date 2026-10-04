@@ -15,6 +15,7 @@ namespace PrograMago.UnityIntegration
         private readonly Queue<CombatEvent> pendingWizardCasts = new Queue<CombatEvent>();
         private Coroutine wizardCastRoutine;
         private bool wizardCastActive;
+        private string wizardPresentedCastForm;
         private AnimatorUpdateMode wizardCastPreviousUpdateMode;
         private float WizardAnimationPlaybackSpeed => wizardCastActive
             ? combat != null && combat.IsPaused ? 0f : 1f
@@ -61,7 +62,15 @@ namespace PrograMago.UnityIntegration
                     continue;
                 }
                 wizardCastPreviousUpdateMode = animator.updateMode;
+                wizardPresentedCastForm = step.Element switch
+                {
+                    CombatElement.Fire => "piromante",
+                    CombatElement.Water => "hidromante",
+                    CombatElement.Electric => "eletromante",
+                    _ => "neutro"
+                };
                 wizardCastActive = true;
+                ApplyWizardAppearance(wizardPresentedCastForm);
                 animator.updateMode = AnimatorUpdateMode.UnscaledTime;
                 PlayWizardAttack();
                 bool released = false;
@@ -89,10 +98,12 @@ namespace PrograMago.UnityIntegration
         {
             if (!wizardCastActive) return;
             wizardCastActive = false;
+            wizardPresentedCastForm = null;
             Animator animator = wizardInstance == null ? null : wizardInstance.GetComponent<Animator>();
             if (animator == null || !animator.isActiveAndEnabled) return;
             animator.updateMode = wizardCastPreviousUpdateMode;
             animator.speed = CharacterAnimationSpeed;
+            ApplyWizardAppearance(combat == null ? "neutro" : combat.WizardForm);
             animator.Play("Idle", 0, 0f);
             animator.Update(0f);
         }

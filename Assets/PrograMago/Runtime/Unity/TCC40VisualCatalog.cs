@@ -11,6 +11,30 @@ namespace PrograMago.UnityIntegration
         public RuntimeAnimatorController electromancerController;
         public Sprite trainingDummyIdleSprite;
         public RuntimeAnimatorController trainingDummyController;
+        public Sprite iceGolemIdleSprite;
+        public RuntimeAnimatorController iceGolemController;
+        public Sprite fireElementalIdleSprite;
+        public RuntimeAnimatorController fireElementalController;
+        public Sprite aquaticSlimeIdleSprite;
+        public RuntimeAnimatorController aquaticSlimeController;
+
+        public Sprite GetEnemyIdleSprite(string name) => name switch
+        {
+            "Boneco de Treinamento" => trainingDummyIdleSprite,
+            "Golem de Gelo" => iceGolemIdleSprite,
+            "Elemental de Fogo" => fireElementalIdleSprite,
+            "Slime Aquático" => aquaticSlimeIdleSprite,
+            _ => null
+        };
+
+        public RuntimeAnimatorController GetEnemyController(string name) => name switch
+        {
+            "Boneco de Treinamento" => trainingDummyController,
+            "Golem de Gelo" => iceGolemController,
+            "Elemental de Fogo" => fireElementalController,
+            "Slime Aquático" => aquaticSlimeController,
+            _ => null
+        };
 
         public Sprite workspacePanel;
         public Sprite codePanel;

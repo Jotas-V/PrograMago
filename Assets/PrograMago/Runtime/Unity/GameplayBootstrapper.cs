@@ -478,19 +478,17 @@ namespace PrograMago.UnityIntegration
                 EnemyState enemy = CurrentEnemies[index];
                 var marker = new GameObject($"EnemyMarker-{enemy.VariableName}", typeof(SpriteRenderer));
                 SpriteRenderer renderer = marker.GetComponent<SpriteRenderer>();
-                bool isTrainingDummy = enemy.Name == "Boneco de Treinamento";
-                renderer.sprite = isTrainingDummy && visualCatalog != null &&
-                    visualCatalog.trainingDummyIdleSprite != null
-                    ? visualCatalog.trainingDummyIdleSprite
-                    : GetEnemyPlaceholderSprite();
-                renderer.color = isTrainingDummy ? Color.white : EnemyColor(enemy.Elemento);
+                Sprite idleSprite = visualCatalog == null ? null : visualCatalog.GetEnemyIdleSprite(enemy.Name);
+                RuntimeAnimatorController controller = visualCatalog == null
+                    ? null : visualCatalog.GetEnemyController(enemy.Name);
+                renderer.sprite = idleSprite != null ? idleSprite : GetEnemyPlaceholderSprite();
+                renderer.color = idleSprite != null ? Color.white : EnemyColor(enemy.Elemento);
                 renderer.sortingOrder = 10;
                 marker.transform.localScale = new Vector3(0.65f, 0.85f, 1f);
-                if (isTrainingDummy && visualCatalog != null &&
-                    visualCatalog.trainingDummyController != null)
+                if (controller != null)
                 {
                     Animator animator = marker.AddComponent<Animator>();
-                    animator.runtimeAnimatorController = visualCatalog.trainingDummyController;
+                    animator.runtimeAnimatorController = controller;
                     animator.speed = CharacterAnimationSpeed;
                     animator.Play("Idle", 0, 0f);
                 }

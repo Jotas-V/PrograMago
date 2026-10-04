@@ -357,6 +357,7 @@ namespace PrograMago.UnityIntegration
 
         private void ApplyWizardAppearance(string form)
         {
+            if (wizardCastActive) form = wizardPresentedCastForm;
             if (wizardInstance == null) return;
             SpriteRenderer sprite = wizardInstance.GetComponent<SpriteRenderer>();
             Animator animator = wizardInstance.GetComponent<Animator>();

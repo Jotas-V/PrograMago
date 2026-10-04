@@ -18,6 +18,12 @@ MonoBehaviour:
   electromancerController: {fileID: 22100000, guid: 129c68bf894e0a7408eb267956e9afc5, type: 2}
   trainingDummyIdleSprite: {fileID: 337358917, guid: 37d2f1838b0eb2d4aa2b83c1f510a7fa, type: 3}
   trainingDummyController: {fileID: 22100000, guid: 96c6fefb6501b8a438fa34656e75373a, type: 2}
+  iceGolemIdleSprite: {fileID: 651475874, guid: 594bbe5190ecbd840ba7880ee4acbe70, type: 3}
+  iceGolemController: {fileID: 22100000, guid: 0719b2772b1581c4982a34fefa02a5b6, type: 2}
+  fireElementalIdleSprite: {fileID: -1731882688, guid: 3ba3e93394fb7d343913ba12818b6f40, type: 3}
+  fireElementalController: {fileID: 22100000, guid: 873293c365440324fa610a84d9ca186d, type: 2}
+  aquaticSlimeIdleSprite: {fileID: -328475135, guid: 11b792679c0ed1f4f813bdba6514722e, type: 3}
+  aquaticSlimeController: {fileID: 22100000, guid: 1fd7bf53bff123645aef5b05a815c6cb, type: 2}
   workspacePanel: {fileID: 1344505198, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
   codePanel: {fileID: -332417872, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}
   codeTray: {fileID: 1693572663, guid: 25dfc2d5bdcdf4046b5dc5ec2976097a, type: 3}

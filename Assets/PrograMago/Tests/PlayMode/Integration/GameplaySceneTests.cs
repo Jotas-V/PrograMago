@@ -290,6 +290,83 @@ namespace PrograMago.Tests.Integration
             Assert.That(arenaCamera.WorldToViewportPoint(dummy.bounds.center).x, Is.GreaterThan(0.92f));
         }
         [UnityTest]
+        public IEnumerator MultiEnemyArena_FourVisualsAndFormChangesPreserveEnemyObjects()
+        {
+            PrepareCombatMago(5, 3, 15, 1, 1);
+            var mago = bootstrapper.CurrentMago;
+            bootstrapper.ShowEnemies(new[]
+            {
+                new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro"),
+                new EnemyState("golem", "Golem de Gelo", 12, "gelo"),
+                new EnemyState("elemental", "Elemental de Fogo", 12, "fogo"),
+                new EnemyState("slime", "Slime Aquático", 12, "água")
+            });
+            bootstrapper.StartCombat();
+            bootstrapper.ToggleCombatPause();
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField(
+                "combat", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            var enemyStates = new List<CombatEnemy>(engine.Enemies);
+            string[] variables = { "boneco", "golem", "elemental", "slime" };
+            string[] controllers = { "Enemy-BonecoTreinamento", "Enemy-GolemGelo", "Enemy-ElementalFogo", "Enemy-SlimeAquatico" };
+            var markers = new List<GameObject>();
+            for (int index = 0; index < variables.Length; index++)
+            {
+                var marker = FindSceneObject("EnemyMarker-" + variables[index]);
+                markers.Add(marker);
+                var animator = marker.GetComponent<Animator>();
+                Assert.That(animator, Is.Not.Null, variables[index] + " precisa da animação própria.");
+                Assert.That(animator.runtimeAnimatorController.name, Is.EqualTo(controllers[index]));
+                Assert.That(marker.GetComponent<SpriteRenderer>().color, Is.EqualTo(Color.white));
+                Assert.That(engine.Enemies[index].Position, Is.EqualTo(15 - index));
+            }
+            var wizard = wizardSpawnPoint.GetChild(0).gameObject;
+            var appearance = typeof(GameplayBootstrapper).GetMethod(
+                "ApplyWizardAppearance", BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach (string form in new[] { "piromante", "hidromante", "eletromante", "neutro" })
+            {
+                appearance.Invoke(bootstrapper, new object[] { form });
+                yield return null;
+                Assert.That(wizardSpawnPoint.childCount, Is.EqualTo(1));
+                Assert.That(wizardSpawnPoint.GetChild(0).gameObject, Is.SameAs(wizard));
+                Assert.That(bootstrapper.CurrentMago, Is.SameAs(mago));
+                for (int index = 0; index < variables.Length; index++)
+                {
+                    Assert.That(FindSceneObject("EnemyMarker-" + variables[index]), Is.SameAs(markers[index]));
+                    Assert.That(engine.Enemies[index], Is.SameAs(enemyStates[index]));
+                    Assert.That(engine.Enemies[index].Life, Is.EqualTo(index == 0 ? 10 : 12));
+                    Assert.That(engine.Enemies[index].Position, Is.EqualTo(15 - index));
+                }
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator MultiEnemyArena_QueuedSpellsKeepTheirOwnWizardForm()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            var wizard = wizardSpawnPoint.GetChild(0).gameObject;
+            var marker = FindSceneObject("EnemyMarker-boneco");
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var present = typeof(GameplayBootstrapper).GetMethod("PresentCombatStep", flags);
+            present.Invoke(bootstrapper, new object[] { System.Activator.CreateInstance(typeof(CombatEvent), flags, null, new object[] { 0, "Mago", CombatEventKind.Hit, "boneco", CombatElement.Fire, 3, 0, -1 }, null) });
+            present.Invoke(bootstrapper, new object[] { System.Activator.CreateInstance(typeof(CombatEvent), flags, null, new object[] { 1, "Mago", CombatEventKind.Hit, "boneco", CombatElement.Water, 3, 0, -1 }, null) });
+            yield return new WaitForSecondsRealtime(0.1f);
+            var animator = wizard.GetComponent<Animator>();
+            Assert.That(animator.runtimeAnimatorController.name.ToLowerInvariant(), Does.Contain("piromante"));
+            typeof(GameplayBootstrapper).GetMethod("RenderCombatState", flags).Invoke(bootstrapper, null);
+            Assert.That(animator.runtimeAnimatorController.name.ToLowerInvariant(), Does.Contain("piromante"),
+                "Atualizar o estado do motor não deve interromper a forma do lançamento em curso.");
+            yield return new WaitForSecondsRealtime(0.5f);
+            Assert.That(animator.runtimeAnimatorController.name.ToLowerInvariant(), Does.Contain("hidromante"));
+            yield return new WaitForSecondsRealtime(0.3f);
+            Assert.That(GameObject.Find("FireProjectile(Clone)"), Is.Not.Null);
+            Assert.That(GameObject.Find("WaterProjectile(Clone)"), Is.Not.Null);
+            Assert.That(FindSceneObject("EnemyMarker-boneco"), Is.SameAs(marker));
+            Assert.That(wizardSpawnPoint.childCount, Is.EqualTo(1));
+            Assert.That(wizardSpawnPoint.GetChild(0).gameObject, Is.SameAs(wizard));
+        }
+        [UnityTest]
         public IEnumerator Arena_PreviewEnemyRemainsInLastCellAfterCameraResize()
         {
             PrepareCombatMago(4, 3, 15, 1, 2);

@@ -36,6 +36,18 @@ namespace PrograMago.Editor
             catalog.trainingDummyIdleSprite = FindSpriteAtPath(TrainingDummySheetPath,
                 "BonecoTreinamento_Idle_0");
             catalog.trainingDummyController = Load<RuntimeAnimatorController>(TrainingDummyControllerPath);
+            catalog.iceGolemIdleSprite = FindSpriteAtPath(
+                "Assets/PrograMago/Art/Characters/Inimigo-GolemGelo-AnimSheet.png", "GolemGelo_Idle_0");
+            catalog.iceGolemController = Load<RuntimeAnimatorController>(
+                "Assets/PrograMago/Art/Characters/Animations/Enemies/Enemy-GolemGelo.overrideController");
+            catalog.fireElementalIdleSprite = FindSpriteAtPath(
+                "Assets/PrograMago/Art/Characters/Inimigo-ElementalFogo-AnimSheet.png", "ElementalFogo_Idle_0");
+            catalog.fireElementalController = Load<RuntimeAnimatorController>(
+                "Assets/PrograMago/Art/Characters/Animations/Enemies/Enemy-ElementalFogo.overrideController");
+            catalog.aquaticSlimeIdleSprite = FindSpriteAtPath(
+                "Assets/PrograMago/Art/Characters/Inimigo-SlimeAquatico-AnimSheet.png", "SlimeAquatico_Idle_0");
+            catalog.aquaticSlimeController = Load<RuntimeAnimatorController>(
+                "Assets/PrograMago/Art/Characters/Animations/Enemies/Enemy-SlimeAquatico.overrideController");
 
             catalog.workspacePanel = FindSprite("UI_WorkspacePanel");
             catalog.codePanel = FindSprite("UI_CodePanel");
@@ -57,7 +69,7 @@ namespace PrograMago.Editor
 
             Validate(catalog);
             EditorUtility.SetDirty(catalog);
-            AssetDatabase.SaveAssets();
+            AssetDatabase.SaveAssetIfDirty(catalog);
             AssetDatabase.Refresh();
             Debug.Log("TCC-40: catálogo de sprites e animações atualizado em " + CatalogPath);
         }
@@ -100,6 +112,9 @@ namespace PrograMago.Editor
             if (catalog.spectralWizard == null || catalog.pyromancerController == null ||
                 catalog.hydromancerController == null || catalog.electromancerController == null ||
                 catalog.trainingDummyIdleSprite == null || catalog.trainingDummyController == null ||
+                catalog.iceGolemIdleSprite == null || catalog.iceGolemController == null ||
+                catalog.fireElementalIdleSprite == null || catalog.fireElementalController == null ||
+                catalog.aquaticSlimeIdleSprite == null || catalog.aquaticSlimeController == null ||
                 catalog.workspacePanel == null || catalog.codePanel == null || catalog.codeTray == null ||
                 catalog.victoryPanel == null || catalog.battleButtonStates.Any(sprite => sprite == null) ||
                 catalog.actionButtonStates.Any(sprite => sprite == null) ||
