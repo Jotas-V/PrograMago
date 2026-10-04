@@ -111,9 +111,16 @@ namespace PrograMago.UnityIntegration
             if (step.Kind == CombatEventKind.Hit)
                 FlashCombatTarget(target.gameObject, step.Element);
             var projectile = Instantiate(prefab).GetComponent<CombatProjectileView>();
-            projectile.Launch(source.position, target.position, () => combat != null && combat.IsPaused);
+            projectile.Launch(CombatActorVisualCenter(source), CombatActorVisualCenter(target),
+                () => combat != null && combat.IsPaused);
             projectiles.Add(projectile);
         }
+        private static Vector3 CombatActorVisualCenter(Transform actor)
+        {
+            SpriteRenderer sprite = actor.GetComponentInChildren<SpriteRenderer>();
+            return sprite != null ? sprite.bounds.center : actor.position;
+        }
+
         private Transform FindCombatActor(string actor)
         {
             if (actor == "Mago") return wizardInstance == null ? null : wizardInstance.transform;

@@ -465,6 +465,38 @@ namespace PrograMago.Tests.Integration
             Assert.That(Object.FindObjectsByType<CombatProjectileView>(FindObjectsSortMode.None), Has.Length.EqualTo(2));
         }
         [UnityTest]
+        public IEnumerator CombatProjectile_TravelsBetweenCharacterCentersUnderScale()
+        {
+            PrepareCombatMago(1, 3, 15, 5, 1);
+            bootstrapper.ShowEnemies(new[] { new EnemyState("boneco", "Boneco de Treinamento", 10, "neutro") });
+            bootstrapper.StartCombat();
+            var wizard = wizardSpawnPoint.GetComponentInChildren<SpriteRenderer>();
+            var enemy = FindSceneComponent<SpriteRenderer>("EnemyMarker-boneco");
+            wizard.transform.localScale *= 1.2f;
+            enemy.transform.localScale *= 0.8f;
+            bootstrapper.AdvanceCombatTick();
+            CombatProjectileView projectile = null;
+            float deadline = Time.realtimeSinceStartup + 1f;
+            while (projectile == null && Time.realtimeSinceStartup < deadline)
+            {
+                yield return null;
+                projectile = Object.FindFirstObjectByType<CombatProjectileView>();
+            }
+            Assert.That(projectile, Is.Not.Null);
+            bootstrapper.ToggleCombatPause();
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            Vector3 origin = (Vector3)typeof(CombatProjectileView).GetField("origin", flags).GetValue(projectile);
+            Vector3 destination = (Vector3)typeof(CombatProjectileView).GetField("destination", flags).GetValue(projectile);
+            Assert.That(Vector3.Distance(origin, wizard.bounds.center), Is.LessThan(0.01f),
+                "A magia deve sair do meio do sprite do Mago, respeitando sua escala.");
+            Assert.That(Vector3.Distance(destination, enemy.bounds.center), Is.LessThan(0.01f),
+                "O destino deve ser o meio do sprite do inimigo.");
+            bootstrapper.ToggleCombatPause();
+            yield return new WaitForSecondsRealtime(0.48f);
+            Assert.That(projectile, Is.Not.Null);
+            Assert.That(Vector3.Distance(projectile.transform.position, destination), Is.LessThan(0.01f));
+        }
+        [UnityTest]
         public IEnumerator CombatProjectile_HitProducesVisibleTravelAndPauseFreezesIt()
         {
             PrepareCombatMago(1, 3, 15, 5, 1);
