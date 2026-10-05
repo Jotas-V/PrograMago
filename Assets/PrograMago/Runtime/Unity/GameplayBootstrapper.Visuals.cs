@@ -13,6 +13,8 @@ namespace PrograMago.UnityIntegration
         private const float WizardCastDuration = 0.5f;
         private const float WizardCastReleaseProgress = 2f / 3f;
         private readonly Queue<CombatEvent> pendingWizardCasts = new Queue<CombatEvent>();
+        private readonly Dictionary<string, int> pendingEnemyImpacts = new Dictionary<string, int>();
+        private int presentationGeneration;
         private Coroutine wizardCastRoutine;
         private bool wizardCastActive;
         private string wizardPresentedCastForm;
@@ -41,6 +43,11 @@ namespace PrograMago.UnityIntegration
             if (step.Kind != CombatEventKind.Hit && step.Kind != CombatEventKind.Ineffective) return;
             if (step.Actor == "Mago")
             {
+                if (step.Target != null)
+                {
+                    pendingEnemyImpacts.TryGetValue(step.Target, out int pending);
+                    pendingEnemyImpacts[step.Target] = pending + 1;
+                }
                 pendingWizardCasts.Enqueue(step);
                 if (wizardCastRoutine == null) wizardCastRoutine = StartCoroutine(PresentWizardCasts());
                 return;
@@ -115,16 +122,30 @@ namespace PrograMago.UnityIntegration
                 prefab = Resources.Load<GameObject>("Combat/" + step.Element + "Projectile");
                 projectilePrefabs[step.Element] = prefab;
             }
-            if (prefab == null) { Debug.LogError("Prefab de magia ausente: " + step.Element); return; }
+            if (prefab == null) { FinishEnemyImpact(step); Debug.LogError("Prefab de magia ausente: " + step.Element); return; }
             Transform source = FindCombatActor(step.Actor);
             Transform target = FindCombatActor(step.Target);
-            if (source == null || target == null) return;
+            if (source == null || target == null) { FinishEnemyImpact(step); return; }
             if (step.Kind == CombatEventKind.Hit)
                 FlashCombatTarget(target.gameObject, step.Element);
             var projectile = Instantiate(prefab).GetComponent<CombatProjectileView>();
+            int generation = presentationGeneration;
             projectile.Launch(CombatActorVisualCenter(source), CombatActorVisualCenter(target),
-                () => combat != null && combat.IsPaused);
+                () => combat != null && combat.IsPaused, () =>
+                {
+                    if (generation == presentationGeneration) FinishEnemyImpact(step);
+                });
             projectiles.Add(projectile);
+        }
+
+        private void FinishEnemyImpact(CombatEvent step)
+        {
+            if (step.Actor != "Mago" || step.Target == null) return;
+            if (pendingEnemyImpacts.TryGetValue(step.Target, out int pending))
+            {
+                if (pending <= 1) pendingEnemyImpacts.Remove(step.Target);
+                else pendingEnemyImpacts[step.Target] = pending - 1;
+            }
         }
         private static Vector3 CombatActorVisualCenter(Transform actor)
         {
@@ -165,6 +186,7 @@ namespace PrograMago.UnityIntegration
         private void CompleteCombatWhenVisualsFinish()
         {
             if (combat == null || combat.Outcome != CombatOutcome.Victory || HasCombatVisuals) return;
+            PositionCombatActors();
             HideCombatControls();
             if (!ReportBattleVictory()) SetInteractionEnabled(true);
             combat = null;
@@ -173,6 +195,7 @@ namespace PrograMago.UnityIntegration
 
         private void ClearCombatPresentation()
         {
+            presentationGeneration++;
             if (wizardCastRoutine != null) StopCoroutine(wizardCastRoutine);
             wizardCastRoutine = null;
             pendingWizardCasts.Clear();
@@ -180,6 +203,7 @@ namespace PrograMago.UnityIntegration
             StopWizardMove();
             foreach (var projectile in projectiles) if (projectile != null) Destroy(projectile.gameObject);
             projectiles.Clear();
+            pendingEnemyImpacts.Clear();
             trace.Clear();
             nextTraceTime = 0;
         }

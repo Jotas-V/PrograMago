@@ -340,39 +340,11 @@ namespace PrograMago.Tests.Integration
         [UnityTest]
         public IEnumerator PolymorphicFinalStage_SubmitsStrategyRunsCombatAndReloadsVictory()
         {
+            PrepareFinalBalanceLesson();
             var flags = BindingFlags.Instance | BindingFlags.NonPublic;
             object flow = typeof(GameplayBootstrapper).GetField("learningFlowPresenter", flags).GetValue(bootstrapper);
             var progress = (LearningProgress)flow.GetType().GetProperty("Progress").GetValue(flow);
-            for (int index = 0; index < 8; index++)
-            {
-                progress.RegisterSubmission();
-                Assert.That(progress.TryStartBattle(progress.CurrentBattle.Criterion), Is.True);
-                progress.ReportVictory();
-                Assert.That(progress.ContinueAfterVictory(), Is.True, "A fase 9 deve estar liberada após a oitava.");
-            }
-            bootstrapper.ShowBattle(progress.CurrentBattle, 9, 9);
-            Assert.That(codeInput.interactable, Is.True);
-            string wizard = "public class Mago { private int vida; private int dano; private int alcance; private int iniciativa; private int velocidadeAtaque; " +
-                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { this.vida = vida; this.dano = dano; this.alcance = alcance; this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } " +
-                "public void lancarMagia(Inimigo alvo) {} } Mago mago = new Mago(1,6,15,2,1);";
-            foreach (string name in new[] { "Piromante", "Hidromante", "Eletromante" })
-                wizard += "public class " + name + " extends Mago { public " + name +
-                    "(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { super(vida,dano,alcance,iniciativa,velocidadeAtaque); } " +
-                    "@Override public void lancarMagia(Inimigo alvo) { super.lancarMagia(alvo); } }";
-            string enemy = "public class Inimigo { private String nome; private int vida; private String elemento; " +
-                "public Inimigo(String nome, int vida, String elemento) { this.nome = nome; this.vida = vida; this.elemento = elemento; } public String getElemento() { return elemento; } } " +
-                "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\",10,\"neutro\"); " +
-                "Inimigo golem = new Inimigo(\"Golem de Gelo\",12,\"gelo\"); " +
-                "Inimigo elemental = new Inimigo(\"Elemental de Fogo\",12,\"fogo\"); " +
-                "Inimigo slime = new Inimigo(\"Slime Aquático\",12,\"água\");";
-            string strategy = "Mago ativo = mago; if (alvo.getElemento().equals(\"gelo\")) { ativo = new Piromante(1,6,15,2,1); } " +
-                "else if (alvo.getElemento().equals(\"fogo\")) { ativo = new Hidromante(1,6,15,2,1); } " +
-                "else if (alvo.getElemento().equals(\"água\")) { ativo = new Eletromante(1,6,15,2,1); } else { ativo = mago; } ativo.lancarMagia(alvo);";
-            var select = typeof(GameplayBootstrapper).GetMethod("SelectCodeBlock", flags);
-            select.Invoke(bootstrapper, new object[] { 0 }); codeInput.text = wizard;
-            select.Invoke(bootstrapper, new object[] { 1 }); codeInput.text = enemy;
-            select.Invoke(bootstrapper, new object[] { 2 }); codeInput.text = strategy;
-            Assert.That(bootstrapper.SourceCode, Does.Contain("Mago ativo"));
+            string strategy = codeInput.text;
             codeInput.textComponent.rectTransform.anchoredPosition = new Vector2(0, 1002);
             codeInput.text = strategy.Replace("else { ativo = mago; }", "");
             battleButton.onClick.Invoke();
@@ -407,6 +379,171 @@ namespace PrograMago.Tests.Integration
             Assert.That(restoredProgress.Stage, Is.EqualTo(LearningStage.JourneyCompleted));
         }
 
+        private void PrepareFinalBalanceLesson(string build = "10,4,9,1,1")
+        {
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            object flow = typeof(GameplayBootstrapper).GetField("learningFlowPresenter", flags).GetValue(bootstrapper);
+            var progress = (LearningProgress)flow.GetType().GetProperty("Progress").GetValue(flow);
+            for (int index = 0; index < 8; index++)
+            {
+                progress.RegisterSubmission();
+                Assert.That(progress.TryStartBattle(progress.CurrentBattle.Criterion), Is.True);
+                progress.ReportVictory();
+                Assert.That(progress.ContinueAfterVictory(), Is.True, "A fase 9 deve estar liberada após a oitava.");
+            }
+            bootstrapper.ShowBattle(progress.CurrentBattle, 9, 9);
+            Assert.That(codeInput.interactable, Is.True);
+            string wizard = "public class Mago { private int vida; private int dano; private int alcance; private int iniciativa; private int velocidadeAtaque; " +
+                "public Mago(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { this.vida = vida; this.dano = dano; this.alcance = alcance; this.iniciativa = iniciativa; this.velocidadeAtaque = velocidadeAtaque; } " +
+                "public void lancarMagia(Inimigo alvo) {} } Mago mago = new Mago(10,4,9,1,1);";
+            foreach (string name in new[] { "Piromante", "Hidromante", "Eletromante" })
+                wizard += "public class " + name + " extends Mago { public " + name +
+                    "(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) { super(vida,dano,alcance,iniciativa,velocidadeAtaque); } " +
+                    "@Override public void lancarMagia(Inimigo alvo) { super.lancarMagia(alvo); } }";
+            string enemy = "public class Inimigo { private String nome; private int vida; private String elemento; " +
+                "public Inimigo(String nome, int vida, String elemento) { this.nome = nome; this.vida = vida; this.elemento = elemento; } public String getElemento() { return elemento; } } " +
+                "Inimigo boneco = new Inimigo(\"Boneco de Treinamento\",10,\"neutro\"); " +
+                "Inimigo golem = new Inimigo(\"Golem de Gelo\",12,\"gelo\"); " +
+                "Inimigo elemental = new Inimigo(\"Elemental de Fogo\",12,\"fogo\"); " +
+                "Inimigo slime = new Inimigo(\"Slime Aquático\",12,\"água\");";
+            string strategy = "Mago ativo = mago; if (alvo.getElemento().equals(\"gelo\")) { ativo = new Piromante(10,4,9,1,1); } " +
+                "else if (alvo.getElemento().equals(\"fogo\")) { ativo = new Hidromante(10,4,9,1,1); } " +
+                "else if (alvo.getElemento().equals(\"água\")) { ativo = new Eletromante(10,4,9,1,1); } else { ativo = mago; } ativo.lancarMagia(alvo);";
+            var select = typeof(GameplayBootstrapper).GetMethod("SelectCodeBlock", flags);
+            select.Invoke(bootstrapper, new object[] { 0 }); codeInput.text = wizard.Replace("10,4,9,1,1", build);
+            select.Invoke(bootstrapper, new object[] { 1 }); codeInput.text = enemy;
+            select.Invoke(bootstrapper, new object[] { 2 }); codeInput.text = strategy.Replace("10,4,9,1,1", build);
+            Assert.That(bootstrapper.SourceCode, Does.Contain("Mago ativo"));
+            Assert.That((bool)typeof(GameplayBootstrapper).GetMethod("CompileTimeline", flags).Invoke(bootstrapper, null), Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_InvalidSubmissionsAccumulateDamageAndRetryRestoresLife()
+        {
+            PrepareFinalBalanceLesson();
+            string original = codeInput.text;
+            codeInput.text = original.Replace("else { ativo = mago; }", "");
+            string invalid = codeInput.text;
+            for (int attempt = 1; attempt <= 5; attempt++)
+            {
+                battleButton.onClick.Invoke();
+                Assert.That(codeInput.text, Is.EqualTo(invalid));
+                Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text,
+                    Does.Contain("Vida: " + (10 - attempt * 2) + "/10"));
+                Assert.That(feedbackText.text, Does.Contain("2").And.Contain("vida"));
+            }
+            Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.True);
+            FindSceneComponent<Button>("RetryCombatButton").onClick.Invoke();
+            Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.False);
+            Assert.That(codeInput.text, Is.EqualTo(invalid));
+            Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text, Does.Contain("Vida: 10/10"));
+            codeInput.text = original;
+            battleButton.onClick.Invoke();
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            Assert.That(engine.WizardLife, Is.EqualTo(10));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_PenaltyRoundsUpForElevenLife()
+        {
+            PrepareFinalBalanceLesson("11,4,8,1,1");
+            codeInput.text = codeInput.text.Replace("else { ativo = mago; }", "");
+            battleButton.onClick.Invoke();
+            Assert.That(FindSceneComponent<TMP_Text>("MagoStatsText").text, Does.Contain("Vida: 8/11"));
+            Assert.That(feedbackText.text, Does.Contain("perdeu 3 de vida"));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_OneLifePenaltyCausesDefeatAndCannotBeResubmitted()
+        {
+            PrepareFinalBalanceLesson("1,6,15,2,1");
+            codeInput.text = codeInput.text.Replace("else { ativo = mago; }", "");
+            battleButton.onClick.Invoke();
+            Assert.That(feedbackText.text, Does.Contain("perdeu 1 de vida"));
+            Assert.That(FindSceneObject("CombatDefeatOverlay").activeSelf, Is.True);
+            string feedback = feedbackText.text;
+            battleButton.onClick.Invoke();
+            Assert.That(feedbackText.text, Is.EqualTo(feedback));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_CorrectingCodeDoesNotHealSubmissionDamage()
+        {
+            PrepareFinalBalanceLesson();
+            string original = codeInput.text;
+            codeInput.text = original.Replace("else { ativo = mago; }", "");
+            battleButton.onClick.Invoke();
+            codeInput.text = original;
+            battleButton.onClick.Invoke();
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(bootstrapper);
+            Assert.That(engine.WizardLife, Is.EqualTo(8));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_ChangingBuildDoesNotHealSubmissionDamage()
+        {
+            PrepareFinalBalanceLesson();
+            string original = codeInput.text;
+            codeInput.text = original.Replace("else { ativo = mago; }", "");
+            battleButton.onClick.Invoke();
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var select = typeof(GameplayBootstrapper).GetMethod("SelectCodeBlock", flags);
+            select.Invoke(bootstrapper, new object[] { 0 });
+            codeInput.text = codeInput.text.Replace("10,4,9,1,1", "12,4,7,1,1");
+            select.Invoke(bootstrapper, new object[] { 2 });
+            codeInput.text = original.Replace("10,4,9,1,1", "12,4,7,1,1");
+            battleButton.onClick.Invoke();
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat", flags).GetValue(bootstrapper);
+            Assert.That(engine, Is.Not.Null, feedbackText.text);
+            Assert.That(engine.WizardLife, Is.EqualTo(8));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_DeadEnemyDisappearsWhileOtherEnemiesAreAlive()
+        {
+            PrepareFinalBalanceLesson();
+            battleButton.onClick.Invoke();
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat", flags).GetValue(bootstrapper);
+            var markers = (List<GameObject>)typeof(GameplayBootstrapper).GetField("enemyMarkers", flags).GetValue(bootstrapper);
+            for (int tick = 0; tick < 300 && engine.Enemies[3].Life > 0; tick++) bootstrapper.AdvanceCombatTick();
+            Assert.That(engine.Enemies[3].Life, Is.Zero);
+            Assert.That(engine.Enemies[2].Life, Is.GreaterThan(0));
+            bootstrapper.enabled = false;
+            yield return new WaitForSecondsRealtime(2f);
+            var aliveAnimator = markers[2].GetComponent<Animator>();
+            aliveAnimator.Play("Attack", 0, 0f);
+            aliveAnimator.Update(0f);
+            typeof(GameplayBootstrapper).GetMethod("PositionCombatActors", flags).Invoke(bootstrapper, null);
+            Assert.That(markers[3].activeSelf, Is.False, "A animação de outro ator não pode manter o morto na tela.");
+            Assert.That(markers[2].activeSelf, Is.True);
+            bootstrapper.enabled = true;
+        }
+
+        [UnityTest]
+        public IEnumerator FinalEncounterBalance_DefeatedSpritesRemainHiddenAfterVictory()
+        {
+            PrepareFinalBalanceLesson();
+            battleButton.onClick.Invoke();
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var engine = (CombatEngine)typeof(GameplayBootstrapper).GetField("combat", flags).GetValue(bootstrapper);
+            var markers = new List<GameObject>((List<GameObject>)typeof(GameplayBootstrapper).GetField("enemyMarkers", flags).GetValue(bootstrapper));
+            for (int tick = 0; tick < 1000 && engine.Outcome == CombatOutcome.InProgress; tick++)
+                bootstrapper.AdvanceCombatTick();
+            Assert.That(engine.Outcome, Is.EqualTo(CombatOutcome.Victory));
+            yield return new WaitForSecondsRealtime(9f);
+            Assert.That(victoryOverlay.activeSelf, Is.True);
+            foreach (var marker in markers) Assert.That(marker.activeSelf, Is.False, marker.name);
+            yield return null;
+            foreach (var marker in markers) Assert.That(marker.activeSelf, Is.False, "LateUpdate não deve ressuscitar " + marker.name);
+        }
         [UnityTest]
         public IEnumerator MultiEnemyArena_FourVisualsAndFormChangesPreserveEnemyObjects()
         {

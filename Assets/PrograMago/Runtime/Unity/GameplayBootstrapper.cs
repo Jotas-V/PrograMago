@@ -374,6 +374,7 @@ namespace PrograMago.UnityIntegration
 
         public void Reset()
         {
+            ResetFinalAttempt();
             ClearCombatPresentation();
             HideCombatControls();
             combat = null;
@@ -418,6 +419,7 @@ namespace PrograMago.UnityIntegration
                       $"Dano: {CurrentMago.Dano} · Alcance: {CurrentMago.Alcance} casas\n" +
                       $"Iniciativa: {CurrentMago.Iniciativa} · Velocidade: {CurrentMago.VelocidadeAtaque}";
             }
+            ShowAttemptLife();
         }
 
         private void ApplyWizardFormTint(string form)
@@ -543,6 +545,7 @@ namespace PrograMago.UnityIntegration
 
         public void ShowBattle(BattleDefinition battle, int battleNumber, int battleCount)
         {
+            if (battle.Criterion != ValidationCriterion.UsePolymorphicMagoReference) ResetFinalAttempt();
             battleProgressText.text = $"Batalha {battleNumber}/{battleCount}  •  Arco {battle.Chapter}";
             TMP_Text battleLabel = battleButton.GetComponentInChildren<TMP_Text>();
             if (battleLabel != null)
@@ -657,11 +660,16 @@ namespace PrograMago.UnityIntegration
 
         private void HandleBattle()
         {
+            if (IsFinalEncounter && attemptLife == 0) return;
             StoreWorkspaceText();
             ShowCodeDocument(codeInput.text);
             if (learningFlowPresenter.Progress.CurrentBattle.CompletionMode == BattleCompletionMode.OnCombatVictory)
             {
-                if (!CompileTimeline() || !TryApplyPreparation()) return;
+                if (!CompileTimeline() || !TryApplyPreparation())
+                {
+                    PenalizeInvalidSubmission();
+                    return;
+                }
             }
             presenter.Battle();
             if (learningFlowPresenter.Progress.Stage == LearningStage.BattleInProgress &&
@@ -766,8 +774,14 @@ namespace PrograMago.UnityIntegration
                 : (CombatElement[])extraSpells.Clone();
             MagoState combatMago = preparedMago ?? declaredMago ?? CurrentMago;
             combat = new CombatEngine(CombatWizard.FromMago(combatMago,
-                activeExtraSpells), CurrentEnemies, compiledStrategy);
+                activeExtraSpells), CurrentEnemies, compiledStrategy, IsFinalEncounter);
             if (!CompileTimeline()) { combat = null; return; }
+            BeginFinalAttempt();
+            if (IsFinalEncounter)
+            {
+                combat.ApplyDamage(Mathf.Max(0, combat.WizardLife - attemptLife));
+                attemptLife = combat.WizardLife;
+            }
             ClearCombatPresentation();
             combatAccumulator = 0f;
             SetTimelineAvailable(true);
@@ -786,6 +800,7 @@ namespace PrograMago.UnityIntegration
         {
             if (combat == null) return null;
             CombatEvent action = combat.Tick();
+            if (IsFinalEncounter) attemptLife = combat.WizardLife;
             if (combat.EventsThisTick.Count > 0 && combat.EventsThisTick[0].BlockIndex >= 0) trace.Clear();
             foreach (CombatEvent step in combat.EventsThisTick) PresentCombatStep(step);
             if (action != null) RenderCombatEvent(action);
@@ -827,8 +842,19 @@ namespace PrograMago.UnityIntegration
         }
         private void RetryCombat()
         {
+            if (IsFinalEncounter && combat == null && attemptLife == 0)
+            {
+                ResetFinalAttempt();
+                BeginFinalAttempt();
+                combatDefeatOverlay.SetActive(false);
+                SetInteractionEnabled(true);
+                RenderWizard();
+                feedbackText.text = "Nova tentativa — corrija o código e clique em Batalhar.";
+                return;
+            }
             if (combat == null || combat.Outcome != CombatOutcome.Defeat) return;
             combat.Restart();
+            if (IsFinalEncounter) attemptLife = combat.WizardLife;
             ClearCombatPresentation();
             combatAccumulator = 0f;
             combatDefeatOverlay.SetActive(false);
@@ -842,6 +868,7 @@ namespace PrograMago.UnityIntegration
 
         private void EditAfterDefeat()
         {
+            ResetFinalAttempt();
             ClearCombatPresentation();
             if (!ReportBattleDefeat())
             {
@@ -1017,7 +1044,8 @@ namespace PrograMago.UnityIntegration
             for (int index = 0; index < enemyMarkers.Count && index < combat.Enemies.Count; index++)
             {
                 if (enemyMarkers[index] == null) continue;
-                enemyMarkers[index].SetActive(combat.Enemies[index].Life > 0 || HasCombatVisuals);
+                enemyMarkers[index].SetActive(combat.Enemies[index].Life > 0 ||
+                    pendingEnemyImpacts.ContainsKey(combat.Enemies[index].Source.VariableName));
                 StandInCell(enemyMarkers[index], combat.Enemies[index].Position);
             }
             UpdateReachIndicators();

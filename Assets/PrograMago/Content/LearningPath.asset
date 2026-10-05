@@ -243,11 +243,11 @@ MonoBehaviour:
     purpose: "O mesmo c\xF3digo pode trabalhar com v\xE1rios tipos concretos e deixar
       cada objeto executar sua pr\xF3pria vers\xE3o do comportamento."
     usageExample: Mago ativo = mago; if (alvo.getElemento().equals("gelo")) { ativo
-      = new Piromante(1, 6, 15, 2, 1); } ... else { ativo = mago; } ativo.lancarMagia(alvo);
-    gameEffect: "A arena mant\xE9m os quatro inimigos e um \xFAnico Mago. Sua estrat\xE9gia
-      escolhe a forma a cada turno: fogo contra gelo, \xE1gua contra fogo e eletricidade
-      contra \xE1gua; a forma base ataca o Boneco neutro. Vida, posi\xE7\xE3o e atributos
-      s\xE3o preservados durante a troca."
+      = new Piromante(10, 4, 9, 1, 1); } ... else { ativo = mago; } ativo.lancarMagia(alvo);
+    gameEffect: "O if/else escolhe a magia para cada alvo. O elemental ataca de longe;
+      preserve vida na build. Batalhar com c\xF3digo inv\xE1lido custa 20% da vida
+      m\xE1xima da tentativa e mant\xE9m a explica\xE7\xE3o do erro. Corrigir n\xE3o
+      cura; ap\xF3s derrota, tentar novamente restaura a vida."
     task: "Escolha a subclasse com if/else e chame a magia pela refer\xEAncia Mago."
     hints:
     - Use extends Mago, construtor com super(...) e magia com @Override.
