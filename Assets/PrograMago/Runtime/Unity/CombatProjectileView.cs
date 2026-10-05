@@ -16,17 +16,25 @@ namespace PrograMago.UnityIntegration
         private SpriteRenderer sprite;
         private Color initialColor;
         private bool launched;
+        private Action finished;
 
-        public void Launch(Vector3 start, Vector3 end, Func<bool> isPaused)
+        public void Launch(Vector3 start, Vector3 end, Func<bool> isPaused, Action onFinished = null)
         {
             origin = start;
             destination = end;
             paused = isPaused;
+            finished = onFinished;
             originalScale = transform.localScale;
             sprite = GetComponentInChildren<SpriteRenderer>();
             initialColor = sprite.color;
             transform.position = start;
             launched = true;
+        }
+
+        private void OnDestroy()
+        {
+            finished?.Invoke();
+            finished = null;
         }
 
         private void Update()

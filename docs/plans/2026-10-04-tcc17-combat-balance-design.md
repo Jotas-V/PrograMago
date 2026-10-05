@@ -16,3 +16,11 @@ Design aprovado pelo jogador em 04/10/2026. Escopo: fase 9; fases anteriores man
 3. Vida da tentativa e penalidade no fluxo Batalhar; integrar derrota, correção e reinício sem perder documentos.
 4. Sincronizar visibilidade de cada morto com os próprios eventos visuais pendentes, sem depender das animações dos outros atores.
 5. Executar testes EditMode/PlayMode, rever exemplos e documentar atributos e limites da validação.
+
+## Calibração e evidências
+
+A formação inicial do encontro final fica três casas mais próxima do Mago. O elemental usa dano 1, alcance 10, iniciativa 7 e velocidade 4; golem: 2/2/3/4; slime: 1/2/6/6 (dano/alcance/iniciativa/velocidade). O boneco mantém dano zero. A vida declarada continua validada pelo catálogo: 10 para o boneco, 12 para os elementais.
+
+A build de referência é `(10, 4, 9, 1, 1)`, somando 25 pontos. Testes verificam vitória recebendo dano e perda de vida acumulada após código inválido. A antiga `(1, 6, 15, 2, 1)` agora perde com a formação final. As escolhas de especialização e valores dos construtores precisam continuar consistentes com a build.
+
+Editar código após derrota também começa uma nova tentativa. Edição durante a tentativa sem derrota não recupera vida. A tentativa é local à sessão; o salvamento existente mantém código e progressão, sem implementar combate em andamento entre recargas.

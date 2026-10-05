@@ -108,21 +108,32 @@ namespace PrograMago.Domain
 
     public sealed class CombatEnemy
     {
-        internal CombatEnemy(EnemyState source, int position)
+        internal CombatEnemy(EnemyState source, int position, bool finalEncounter = false)
         {
             Source = source;
             Life = source.Vida;
             Position = position;
+            InitialPosition = position;
             bool dummy = source.Elemento == "neutro";
             Damage = dummy ? 0 : 2;
             Range = 1;
             Initiative = dummy ? 1 : 5;
             AttackSpeed = dummy ? 3 : 5;
+            if (finalEncounter && !dummy)
+            {
+                switch (source.Elemento)
+                {
+                    case "gelo": Damage = 2; Range = 2; Initiative = 3; AttackSpeed = 4; break;
+                    case "fogo": Damage = 1; Range = 10; Initiative = 7; AttackSpeed = 4; break;
+                    case "água": Damage = 1; Range = 2; Initiative = 6; AttackSpeed = 6; break;
+                }
+            }
         }
 
         public EnemyState Source { get; }
         public int Life { get; internal set; }
         public int Position { get; internal set; }
+        internal int InitialPosition { get; }
         public int Damage { get; }
         public int Range { get; }
         public int Initiative { get; }
@@ -173,7 +184,7 @@ namespace PrograMago.Domain
         private int executingBlock = -1;
 
         public CombatEngine(CombatWizard wizard, IReadOnlyList<EnemyState> enemies,
-            CombatStrategy strategy = null)
+            CombatStrategy strategy = null, bool finalEncounter = false)
         {
             this.wizard = wizard ?? throw new ArgumentNullException(nameof(wizard));
             this.strategy = strategy ?? new CombatStrategy(null, "neutro");
@@ -183,7 +194,8 @@ namespace PrograMago.Domain
             {
                 if (enemies[index] == null)
                     throw new ArgumentException("Inimigo ausente.", nameof(enemies));
-                this.enemies.Add(new CombatEnemy(enemies[index], CellCount - 1 - index));
+                this.enemies.Add(new CombatEnemy(enemies[index], CellCount - 1 - index -
+                    (finalEncounter ? 3 : 0), finalEncounter));
             }
             WizardLife = wizard.Life;
         }
@@ -197,6 +209,14 @@ namespace PrograMago.Domain
         public IReadOnlyList<CombatEnemy> Enemies => enemies.AsReadOnly();
         public IReadOnlyList<CombatAction> ActionOrder => actionOrder.AsReadOnly();
         public IReadOnlyList<CombatEvent> EventsThisTick => eventsThisTick.AsReadOnly();
+
+        public void ApplyDamage(int amount)
+        {
+            if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount));
+            if (Outcome != CombatOutcome.InProgress) return;
+            WizardLife = Math.Max(0, WizardLife - amount);
+            if (WizardLife == 0) Outcome = CombatOutcome.Defeat;
+        }
 
         public void ConfigureActions(IReadOnlyList<CombatAction> actions, IReadOnlyList<int> origins)
         {
@@ -280,7 +300,7 @@ namespace PrograMago.Domain
             for (int index = 0; index < enemies.Count; index++)
             {
                 enemies[index].Life = enemies[index].Source.Vida;
-                enemies[index].Position = CellCount - 1 - index;
+                enemies[index].Position = enemies[index].InitialPosition;
                 enemies[index].NextDueTick = 0;
             }
         }

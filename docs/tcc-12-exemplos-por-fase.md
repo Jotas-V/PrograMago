@@ -6,7 +6,7 @@ Em cada fase, substitua o conteúdo inteiro do bloco indicado pelo exemplo corre
 
 Os blocos Mago, Inimigo e Estratégia ficam livremente editáveis durante a preparação. Nas fases 1–4 deixe **Inimigo** vazio. Deixe **Estratégia** vazio em todas as fases 1–8: sua lógica só será ensinada na fase 9, e conteúdo antecipado pode impedir a validação da fase atual. Os botões ficam desativados durante o combate e a tela de vitória.
 
-Nas fases 1–8, a build usada abaixo é `(5, 5, 5, 5, 5)`. A fase 9 usa `(1, 6, 15, 2, 1)` para alcançar os quatro inimigos. Ambas totalizam 25 pontos. **Ajustes** pode ficar vazio; se você já colocou chamadas de setter nesse bloco, elas também precisam manter cada atributo entre 1 e 15 e o total em até 25.
+Nas fases 1–8, a build usada abaixo é `(5, 5, 5, 5, 5)`. A fase 9 usa `(10, 4, 9, 1, 1)` para enfrentar os quatro inimigos com uma reserva de vida. Ambas totalizam 25 pontos. **Ajustes** pode ficar vazio; se você já colocou chamadas de setter nesse bloco, elas também precisam manter cada atributo entre 1 e 15 e o total em até 25.
 
 ## Fase 1 — Declarar a classe
 
@@ -352,7 +352,7 @@ public class Mago {
     public void lancarMagia(Inimigo alvo) {}
 }
 
-Mago mago = new Mago(1, 6, 15, 2, 1);
+Mago mago = new Mago(10, 4, 9, 1, 1);
 
 public class Piromante extends Mago {
     public Piromante(int vida, int dano, int alcance, int iniciativa, int velocidadeAtaque) {
@@ -407,11 +407,11 @@ Bloco **Estratégia**:
 ```java
 Mago ativo = mago;
 if (alvo.getElemento().equals("gelo")) {
-    ativo = new Piromante(1, 6, 15, 2, 1);
+    ativo = new Piromante(10, 4, 9, 1, 1);
 } else if (alvo.getElemento().equals("fogo")) {
-    ativo = new Hidromante(1, 6, 15, 2, 1);
+    ativo = new Hidromante(10, 4, 9, 1, 1);
 } else if (alvo.getElemento().equals("água")) {
-    ativo = new Eletromante(1, 6, 15, 2, 1);
+    ativo = new Eletromante(10, 4, 9, 1, 1);
 } else {
     ativo = mago;
 }
