@@ -103,6 +103,12 @@ Erros e sucesso devem usar o mesmo vocabulário das tarefas. Na falha: explicar 
 
 ## Sequência de implementação proposta
 
+### Decisão aprovada após o diagnóstico
+
+O usuário aprovou substituir a apresentação detalhada à direita por um **Grimório do Mago**. O painel do jogo mantém título e tarefa curta e oferece um botão com livro em pixel art. `GrimoireScene` é uma quarta cena, carregada de forma aditiva sobre a partida. Animação curta abre o livro; cada fase corresponde a uma página lógica exibida em duas folhas: conceito à esquerda, exemplo/tarefa/dicas à direita. As nove páginas podem ser folheadas; páginas futuras exibem símbolos mágicos e uma mensagem de bloqueio, sem expor a explicação real. Concluir a fase anterior libera o conteúdo seguinte; páginas anteriores permanecem legíveis. O desbloqueio deriva do progresso salvo, não da fase selecionada. A partida permanece carregada, com código intacto e combate pausado; fechar restaura o estado de pausa anterior. O nome definitivo aprovado é “Grimório do Mago”.
+
+Plano concreto: testar desbloqueio e ajuda persistida sem falhas; implementar modelo e persistência; escrever os conteúdos e exemplos das nove fases; construir e salvar a cena e o botão no Editor; integrar navegação aditiva e pausa; verificar retorno, páginas bloqueadas, dicas e legibilidade no Unity. O fluxo exclusivo de copiar Inimigo será substituído pela consulta do grimório.
+
 1. Fechar o padrão de painel e de ajuda a partir deste diagnóstico.
 2. Montar uma matriz editorial com objetivo, requisitos reais, local, conceito, exemplo, quatro dicas e feedback das nove fases. Conferir cada item contra os validadores.
 3. Implementar o painel compartilhado e integrar a fase 5, preservando a edição livre dos blocos.
