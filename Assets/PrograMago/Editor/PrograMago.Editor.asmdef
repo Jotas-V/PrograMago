@@ -2,7 +2,11 @@
   "name": "PrograMago.Editor",
   "rootNamespace": "PrograMago.Editor",
   "references": [
-    "PrograMago.Unity"
+    "PrograMago.Unity",
+    "PrograMago.Domain",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [
     "Editor"
