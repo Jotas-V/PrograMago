@@ -11,6 +11,7 @@ namespace PrograMago.UnityIntegration
     public sealed partial class GameplayBootstrapper
     {
         private LevelMapView levelMap;
+        private int? mapWizardStartIndex;
         private bool mapTransition;
         private bool mapPausedCombat;
         private readonly List<Behaviour> mapHiddenBehaviours = new List<Behaviour>();
@@ -79,6 +80,8 @@ namespace PrograMago.UnityIntegration
 
         private IEnumerator OpenMapScene()
         {
+            int? startingBattleIndex = mapWizardStartIndex;
+            mapWizardStartIndex = null;
             var loading = SceneManager.LoadSceneAsync(LevelMapView.SceneName, LoadSceneMode.Additive);
             yield return loading;
             Scene scene = SceneManager.GetSceneByName(LevelMapView.SceneName);
@@ -99,7 +102,7 @@ namespace PrograMago.UnityIntegration
                 retryProgress.RestorePhaseOne(mapProgress.CapturePhaseOne("", ""));
                 mapProgress = retryProgress;
             }
-            levelMap.Configure(mapProgress, EnterPhaseFromMap, () => StartCoroutine(CloseMapScene()));
+            levelMap.Configure(mapProgress, EnterPhaseFromMap, () => StartCoroutine(CloseMapScene()), startingBattleIndex);
             mapTransition = false;
         }
 

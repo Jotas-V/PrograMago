@@ -71,6 +71,32 @@ namespace PrograMago.Tests.Integration
         }
 
         [UnityTest]
+        public IEnumerator LevelMap_ReturnFromVictoryKeepsWizardOnCompletedPhaseUntilWalkingToNext()
+        {
+            game.SourceCode = "public class Mago {}";
+            GameObject.Find("BattleButton").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+            yield return null;
+            GameObject.Find("NextBattleButton").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+            for (int i = 0; i < 120 && game.LevelMap == null; i++) yield return null;
+            var map = game.LevelMap;
+            Assert.That(map, Is.Not.Null);
+            Assert.That(map.WizardPosition.x, Is.EqualTo(LevelMapView.PhasePositions[0].x).Within(.01f),
+                "O retorno ao mapa começa sobre a fase concluída, sem antecipar a caminhada.");
+            Assert.That(Progress.IsCompleted(Progress.Path.Battles[0].Id), Is.True);
+            Assert.That(map.SelectPhase(1), Is.True);
+            map.AdvanceTravel(.05f);
+            Assert.That(map.IsTravelling, Is.True);
+            Assert.That(map.WizardPosition.x, Is.GreaterThan(LevelMapView.PhasePositions[0].x));
+            Assert.That(map.WizardPosition.x, Is.LessThan(LevelMapView.PhasePositions[1].x));
+            Assert.That(map.IsVisible, Is.True, "A próxima fase só entra depois da caminhada.");
+            map.AdvanceTravel(100f);
+            for (int i = 0; i < 120 && game.IsMapActive; i++) yield return null;
+            Assert.That(game.IsMapActive, Is.False);
+            Assert.That(Progress.CurrentBattleIndex, Is.EqualTo(1));
+            Assert.That(Progress.Stage, Is.EqualTo(LearningStage.Editing));
+        }
+
+        [UnityTest]
         public IEnumerator LevelMap_OpeningAndClosingPreservesDraftAndCurrentPhase()
         {
             var input = GameObject.Find("CodeInput").GetComponent<TMP_InputField>();

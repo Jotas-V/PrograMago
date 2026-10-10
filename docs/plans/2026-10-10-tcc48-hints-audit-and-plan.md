@@ -160,3 +160,9 @@ Refinamento de espaçamento aprovado: deslocar livro, efeitos e legenda 20 unida
 Revisão seguinte: livro, efeitos e legenda descem mais 10 unidades (deslocamento total de 30). A silhueta agora encosta os pés visíveis no solo: o cálculo desconta os 148 pixels transparentes abaixo dos pés na arte de 1254 pixels e remove o movimento de flutuação vertical. O teste de contato dos pés falhou antes da correção (3,119 contra solo 2,9) e verifica o alinhamento em vários frames.
 
 Conferência visual desta revisão em 16:9 e 4:3 e abertura/retorno pelo botão aprovados; oito testes de integração passaram, incluindo o contato dos pés corrigido. Save pessoal e configurações da revisão restaurados.
+
+### Retorno ao mapa a partir da fase concluída
+
+O jogador pediu que, ao continuar após a vitória, o mago fique sobre o quadrado da fase concluída para caminhar até a próxima somente depois do clique. O progresso e o desbloqueio continuam seguindo o fluxo atual, enquanto a abertura do mapa recebe explicitamente a fase de origem da caminhada. Aberturas pelo botão Mapa/tecla M mantêm a posição da fase em jogo; a indicação inicial antes da primeira fase só se aplica enquanto ela não foi concluída. Plano: reproduzir o retorno da vitória, verificar origem, movimento intermediário e entrada automática na chegada; conferir também os testes existentes de mapa e grimório.
+
+Validação: teste novo reproduziu a posição incorreta (-1170, fase 2, em vez de -1550, fase 1). Após a correção, os 10 testes do mapa e os 8 do grimório passaram, incluindo permanência no quadrado concluído, deslocamento após o clique e entrada automática somente ao chegar.

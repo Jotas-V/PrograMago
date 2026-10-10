@@ -764,6 +764,7 @@ namespace PrograMago.UnityIntegration
 
         private void HandleNextBattle()
         {
+            int completedBattleIndex = learningFlowPresenter.Progress.CurrentBattleIndex;
             if (learningFlowPresenter.Progress.HasCompletedJourney) {
                 if (learningFlowPresenter.Progress.CurrentBattleIndex == learningFlowPresenter.Progress.Path.Battles.Count - 1)
                     learningFlowPresenter.NextBattle();
@@ -771,7 +772,11 @@ namespace PrograMago.UnityIntegration
                 ToggleLevelMap();
                 return;
             }
-            if (learningFlowPresenter.NextBattle()) { SaveProgress(); ToggleLevelMap(); }
+            if (learningFlowPresenter.NextBattle()) {
+                SaveProgress();
+                mapWizardStartIndex = completedBattleIndex;
+                ToggleLevelMap();
+            }
         }
 
         public void StartCombat(params CombatElement[] extraSpells)
