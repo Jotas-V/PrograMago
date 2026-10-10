@@ -25,6 +25,7 @@ namespace PrograMago.UnityIntegration
         [SerializeField] private UnityEngine.UI.Button previousButton;
         [SerializeField] private UnityEngine.UI.Button nextButton;
         [SerializeField] private UnityEngine.UI.Button centerButton;
+        [SerializeField] private UnityEngine.UI.Button menuButton;
 
         public const string SceneName = "MapScene";
         public const float WorldWidth = 36f;
@@ -62,10 +63,11 @@ namespace PrograMago.UnityIntegration
             previousButton.onClick.AddListener(() => PanCamera(-1));
             nextButton.onClick.AddListener(() => PanCamera(1));
             centerButton.onClick.AddListener(() => { followWizard = true; });
+            if (menuButton != null) menuButton.onClick.AddListener(ReturnToMainMenu);
             var gameplay = FindFirstObjectByType<GameplayBootstrapper>();
             if (gameplay != null && gameplay.IsMapActive) return;
 
-            // MapScene can also be the entry scene while the main menu is being built.
+            // Opening the map directly restores the same local journey as the menu.
             try {
                 progress = new LearningProgress(learningPath.ToDomain());
                 standaloneStore = new PhaseOneSaveStore(Path.Combine(
@@ -77,6 +79,14 @@ namespace PrograMago.UnityIntegration
                 Debug.LogError("Não foi possível abrir o mapa: " + exception.Message);
                 message.text = "Não foi possível carregar seu progresso. Volte ao jogo para revisar o registro.";
             }
+        }
+
+        public void ReturnToMainMenu()
+        {
+            if (IsTravelling) return;
+            var gameplay = FindFirstObjectByType<GameplayBootstrapper>();
+            if (gameplay != null) gameplay.ReturnToMainMenu();
+            else SceneManager.LoadScene(MainMenuView.SceneName);
         }
 
         public void Configure(LearningProgress value, Func<int, bool> onEnter, Action onClose)
@@ -207,6 +217,7 @@ namespace PrograMago.UnityIntegration
 
         private void RefreshButtons()
         {
+            if (menuButton != null) menuButton.interactable = !IsTravelling;
             for (int i = 0; i < phaseButtons.Length; i++)
                 phaseButtons[i].interactable = !IsTravelling && progress.CanSelectBattle(i);
             closeButton.interactable = !IsTravelling && close != null;

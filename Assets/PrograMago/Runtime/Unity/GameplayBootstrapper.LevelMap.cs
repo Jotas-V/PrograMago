@@ -102,6 +102,13 @@ namespace PrograMago.UnityIntegration
             mapTransition = false;
         }
 
+        public void ReturnToMainMenu()
+        {
+            if (mapTransition || (levelMap != null && levelMap.IsTravelling)) return;
+            SaveProgress();
+            SceneManager.LoadScene(MainMenuView.SceneName);
+        }
+
         private bool EnterPhaseFromMap(int index)
         {
             LearningProgress progress = learningFlowPresenter.Progress;
