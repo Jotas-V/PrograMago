@@ -251,6 +251,7 @@ namespace PrograMago.UnityIntegration
                 RefreshCodeBlockButtons();
                 UpdateWorkspaceUi();
             }
+            InitializeLevelMapNavigation();
         }
 
         private void OnDestroy()
@@ -286,6 +287,9 @@ namespace PrograMago.UnityIntegration
             {
                 return;
             }
+
+            if (IsMapActive) return;
+            if (HandleMapShortcut(Keyboard.current?.mKey.wasPressedThisFrame == true)) return;
 
             bool isRestartPressed = Keyboard.current?.rKey.isPressed == true;
             if (learningFlowPresenter.UpdateRestartHold(isRestartPressed, Time.unscaledDeltaTime))
@@ -598,7 +602,7 @@ namespace PrograMago.UnityIntegration
                 buttonLabel.text = learningFlowPresenter != null &&
                                    !learningFlowPresenter.Progress.CanContinueAfterVictory
                     ? "Continuação em breve"
-                    : isFinalBattle ? "Concluir jornada" : "Próxima batalha";
+                    : isFinalBattle ? "Voltar ao mapa" : "Próxima batalha";
             }
 
             nextBattleButton.interactable = learningFlowPresenter == null ||
@@ -758,10 +762,14 @@ namespace PrograMago.UnityIntegration
 
         private void HandleNextBattle()
         {
-            if (learningFlowPresenter.NextBattle())
-            {
+            if (learningFlowPresenter.Progress.HasCompletedJourney) {
+                if (learningFlowPresenter.Progress.CurrentBattleIndex == learningFlowPresenter.Progress.Path.Battles.Count - 1)
+                    learningFlowPresenter.NextBattle();
                 SaveProgress();
+                ToggleLevelMap();
+                return;
             }
+            if (learningFlowPresenter.NextBattle()) SaveProgress();
         }
 
         public void StartCombat(params CombatElement[] extraSpells)

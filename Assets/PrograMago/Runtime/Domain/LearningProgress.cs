@@ -54,6 +54,30 @@ namespace PrograMago.Domain
 
         public BattleDefinition CurrentBattle => Path.Battles[CurrentBattleIndex];
 
+        public bool HasCompletedJourney => playableBattleCount == Path.Battles.Count &&
+            Array.TrueForAll(completed, value => value);
+
+        public bool CanSelectBattle(int index)
+        {
+            if (index < 0 || index >= playableBattleCount || Stage == LearningStage.BattleInProgress)
+                return false;
+            if (HasCompletedJourney) return true;
+            int next = CurrentBattleIndex + (Stage == LearningStage.VictoryReview ? 1 : 0);
+            return index == next && !completed[index];
+        }
+
+        public bool TrySelectBattle(int index)
+        {
+            if (!CanSelectBattle(index)) return false;
+            if (index == CurrentBattleIndex && Stage == LearningStage.Editing) return true;
+            CurrentBattleIndex = index;
+            FailedAttempts = failedCounts[index];
+            CurrentHint = FailedAttempts == 0 ? null :
+                CurrentBattle.Hints[Math.Min(FailedAttempts - 1, CurrentBattle.Hints.Count - 1)];
+            Stage = LearningStage.Editing;
+            return true;
+        }
+
         public LearningStage Stage { get; private set; }
 
         public int FailedAttempts { get; private set; }
@@ -261,14 +285,18 @@ namespace PrograMago.Domain
                 }
             }
 
+            bool savedJourneyCompleted = firstPendingBattle == playableBattleCount &&
+                playableBattleCount == Path.Battles.Count;
             if (data.version == 4 &&
                 (data.currentBattleIndex < 0 || data.currentBattleIndex >= playableBattleCount ||
                  !Enum.IsDefined(typeof(LearningStage), data.stage) ||
                  (data.stage == LearningStage.VictoryReview &&
                      (!data.completed[data.currentBattleIndex] ||
-                      data.currentBattleIndex != firstPendingBattle - 1)) ||
+                      (!savedJourneyCompleted &&
+                       data.currentBattleIndex != firstPendingBattle - 1))) ||
                  ((data.stage == LearningStage.Editing ||
                    data.stage == LearningStage.BattleInProgress) &&
+                     !savedJourneyCompleted &&
                      (data.currentBattleIndex != firstPendingBattle ||
                       data.currentBattleIndex >= playableBattleCount)) ||
                  (data.stage == LearningStage.JourneyCompleted &&
