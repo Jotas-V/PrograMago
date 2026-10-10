@@ -412,14 +412,15 @@ namespace PrograMago.UnityIntegration
         private void UpdateSpectralWizardIdle()
         {
             if (wizardInstance == null || !wizardInstance.activeInHierarchy || CurrentMago != null || combat != null) return;
-            if (!wizardSpectralAnchorReady)
-            {
-                wizardSpectralAnchor = wizardInstance.transform.localPosition;
-                wizardSpectralAnchorReady = true;
-            }
-            Vector3 bob = wizardSpectralAnchor + Vector3.up * (Mathf.Sin(Time.unscaledTime * 2.4f) * 0.035f);
-            wizardInstance.transform.localPosition = bob;
+            var sprite = wizardInstance.GetComponent<SpriteRenderer>();
+            Vector3 ground = CellGroundPosition(0);
+            wizardInstance.transform.position += new Vector3(ground.x - sprite.bounds.center.x,
+                ground.y - SpectralWizardFeetHeight(sprite), 0);
         }
+
+        // The spectral artwork has transparent padding below its soles (148 of 1254 pixels).
+        private static float SpectralWizardFeetHeight(SpriteRenderer sprite) =>
+            sprite.bounds.min.y + sprite.bounds.size.y * (148f / 1254f);
 
         private void AnimateWizardMove(int destinationCell)
         {

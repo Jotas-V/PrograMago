@@ -11,6 +11,7 @@ namespace PrograMago.UnityIntegration
     public sealed partial class GameplayBootstrapper
     {
         private LevelMapView levelMap;
+        private int? mapWizardStartIndex;
         private bool mapTransition;
         private bool mapPausedCombat;
         private readonly List<Behaviour> mapHiddenBehaviours = new List<Behaviour>();
@@ -19,15 +20,16 @@ namespace PrograMago.UnityIntegration
 
         private void InitializeLevelMapNavigation()
         {
+            var pauseRect = pauseCombatButton.GetComponent<RectTransform>();
+            pauseRect.anchorMin = new Vector2(.805f,.82f);
+            pauseRect.anchorMax = new Vector2(.885f,.98f);
+            pauseRect.offsetMin = pauseRect.offsetMax = Vector2.zero;
             var button = CreateButton("OpenLevelMapButton", arenaFrame, "Mapa [M]",
                 new Vector2(0.89f, 0.82f), new Vector2(0.995f, 0.98f));
             button.onClick.AddListener(() => ToggleLevelMap());
             var label = nextBattleButton.GetComponentInChildren<TMP_Text>();
             if (label != null && victoryOverlay.activeSelf && learningFlowPresenter.Progress.HasCompletedJourney)
                 label.text = "Voltar ao mapa";
-            CreateButton("VictoryMapButton", nextBattleButton.transform.parent, "Mapa [M]",
-                new Vector2(0.03f, 0.02f), new Vector2(0.24f, 0.10f))
-                .onClick.AddListener(() => ToggleLevelMap());
             CreateButton("DefeatMapButton", combatDefeatOverlay.transform, "Mapa [M]",
                 new Vector2(0.08f, 0.01f), new Vector2(0.92f, 0.13f))
                 .onClick.AddListener(() => ToggleLevelMap());
@@ -43,7 +45,7 @@ namespace PrograMago.UnityIntegration
 
         public bool ToggleLevelMap()
         {
-            if (learningFlowPresenter == null || mapTransition || (levelMap != null && levelMap.IsTravelling)) return false;
+            if (learningFlowPresenter == null || IsGrimoireActive || mapTransition || (levelMap != null && levelMap.IsTravelling)) return false;
             if (IsMapActive) {
                 levelMap?.RequestClose();
                 return true;
@@ -78,6 +80,8 @@ namespace PrograMago.UnityIntegration
 
         private IEnumerator OpenMapScene()
         {
+            int? startingBattleIndex = mapWizardStartIndex;
+            mapWizardStartIndex = null;
             var loading = SceneManager.LoadSceneAsync(LevelMapView.SceneName, LoadSceneMode.Additive);
             yield return loading;
             Scene scene = SceneManager.GetSceneByName(LevelMapView.SceneName);
@@ -98,7 +102,7 @@ namespace PrograMago.UnityIntegration
                 retryProgress.RestorePhaseOne(mapProgress.CapturePhaseOne("", ""));
                 mapProgress = retryProgress;
             }
-            levelMap.Configure(mapProgress, EnterPhaseFromMap, () => StartCoroutine(CloseMapScene()));
+            levelMap.Configure(mapProgress, EnterPhaseFromMap, () => StartCoroutine(CloseMapScene()), startingBattleIndex);
             mapTransition = false;
         }
 

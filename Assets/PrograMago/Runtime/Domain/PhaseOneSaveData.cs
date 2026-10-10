@@ -9,6 +9,7 @@ namespace PrograMago.Domain
         public string[] battleIds;
         public int[] attemptCounts;
         public int[] failedCounts;
+        public int[] revealedHintCounts;
         public bool[] completed;
         public string sourceCode;
         public string approvedCode;

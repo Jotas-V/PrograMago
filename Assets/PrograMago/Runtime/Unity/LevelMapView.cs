@@ -89,15 +89,16 @@ namespace PrograMago.UnityIntegration
             else SceneManager.LoadScene(MainMenuView.SceneName);
         }
 
-        public void Configure(LearningProgress value, Func<int, bool> onEnter, Action onClose)
+        public void Configure(LearningProgress value, Func<int, bool> onEnter, Action onClose,
+            int? startingBattleIndex = null)
         {
             progress = value ?? throw new ArgumentNullException(nameof(value));
             enterPhase = onEnter ?? throw new ArgumentNullException(nameof(onEnter));
             close = onClose;
             IsVisible = true;
-            currentNode = progress.CurrentBattleIndex;
+            currentNode = startingBattleIndex ?? progress.CurrentBattleIndex;
             wizard.anchoredPosition = PhasePositions[currentNode] + WizardOffset;
-            if (currentNode == 0 && !progress.IsCompleted(progress.CurrentBattle.Id))
+            if (currentNode == 0 && !progress.IsCompleted(progress.Path.Battles[currentNode].Id))
                 wizard.anchoredPosition += new Vector2(-140, 0);
             targetNode = -1;
             followWizard = true;

@@ -1,0 +1,447 @@
+fileFormatVersion: 2
+guid: 0ba1d5c76593032459765f580242b2d3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1851620269737832810
+    second: Eletromante-InbetweenFrames_0
+  - first:
+      213: -5288790038084404829
+    second: Eletromante-InbetweenFrames_1
+  - first:
+      213: -171961526189680176
+    second: Eletromante-InbetweenFrames_2
+  - first:
+      213: 3090660985911218741
+    second: Eletromante-InbetweenFrames_3
+  - first:
+      213: -240250950970715677
+    second: Eletromante-InbetweenFrames_4
+  - first:
+      213: 9128536639003144091
+    second: Eletromante-InbetweenFrames_5
+  - first:
+      213: -2445304159185979346
+    second: Eletromante-InbetweenFrames_6
+  - first:
+      213: 2445389091641202431
+    second: Eletromante-InbetweenFrames_7
+  - first:
+      213: -8912878098384410534
+    second: Eletromante-InbetweenFrames_8
+  - first:
+      213: -7692652945834651270
+    second: Eletromante-InbetweenFrames_9
+  - first:
+      213: -7071302130039298475
+    second: Eletromante-InbetweenFrames_10
+  - first:
+      213: 1862175776324458598
+    second: Eletromante-InbetweenFrames_11
+  - first:
+      213: -1195083605728154535
+    second: Eletromante-InbetweenFrames_12
+  - first:
+      213: 8899550596108294919
+    second: Eletromante-InbetweenFrames_13
+  - first:
+      213: 7792506419153476260
+    second: Eletromante-InbetweenFrames_14
+  - first:
+      213: 2929116431742189728
+    second: Eletromante-InbetweenFrames_15
+  - first:
+      213: -3181618512754786461
+    second: Eletromante-InbetweenFrames_16
+  - first:
+      213: -1938895825199148491
+    second: Eletromante-InbetweenFrames_17
+  - first:
+      213: -3471677010140107292
+    second: Eletromante-InbetweenFrames_18
+  - first:
+      213: 1425387249979022289
+    second: Eletromante-InbetweenFrames_19
+  - first:
+      213: -3971653020270960630
+    second: Eletromante-InbetweenFrames_20
+  - first:
+      213: -485011962794829
+    second: Eletromante-InbetweenFrames_21
+  - first:
+      213: -6491593197193816452
+    second: Eletromante-InbetweenFrames_22
+  - first:
+      213: -2535843668200228639
+    second: Eletromante-InbetweenFrames_23
+  - first:
+      213: 1568148095329705736
+    second: Eletromante-InbetweenFrames_24
+  - first:
+      213: 5839775127263298169
+    second: Eletromante-InbetweenFrames_25
+  - first:
+      213: -5236284884112549775
+    second: Eletromante-InbetweenFrames_26
+  - first:
+      213: -133112888838349317
+    second: Eletromante-InbetweenFrames_27
+  - first:
+      213: 4509951782015304568
+    second: Eletromante-InbetweenFrames_28
+  - first:
+      213: 8861304413093619535
+    second: Eletromante-InbetweenFrames_29
+  - first:
+      213: 1507473797480960518
+    second: Eletromante-InbetweenFrames_30
+  - first:
+      213: 2046714421922758302
+    second: Eletromante-InbetweenFrames_31
+  - first:
+      213: 8607274492295628194
+    second: Eletromante-InbetweenFrames_32
+  - first:
+      213: 7333278865145053170
+    second: Eletromante-InbetweenFrames_33
+  - first:
+      213: 1622931783393160995
+    second: Eletromante-InbetweenFrames_34
+  - first:
+      213: 4373727289509807490
+    second: Eletromante-InbetweenFrames_35
+  - first:
+      213: -7803404673432179402
+    second: Eletromante-InbetweenFrames_36
+  - first:
+      213: -6163062476082308783
+    second: Eletromante-InbetweenFrames_37
+  - first:
+      213: -1982352855791358649
+    second: Eletromante-InbetweenFrames_38
+  - first:
+      213: 2117692772538995436
+    second: Eletromante-InbetweenFrames_39
+  - first:
+      213: 6600910251616947347
+    second: Eletromante-InbetweenFrames_40
+  - first:
+      213: 2402166954357542494
+    second: Eletromante-InbetweenFrames_41
+  - first:
+      213: 7503393011702701126
+    second: Eletromante-InbetweenFrames_42
+  - first:
+      213: -6423320505282938233
+    second: Eletromante-InbetweenFrames_43
+  - first:
+      213: 5067339511426991958
+    second: Eletromante-InbetweenFrames_44
+  - first:
+      213: 8663266330816675609
+    second: Eletromante-InbetweenFrames_45
+  - first:
+      213: -3955667258568459331
+    second: Eletromante-InbetweenFrames_46
+  - first:
+      213: 6307069269603807506
+    second: Eletromante-InbetweenFrames_47
+  - first:
+      213: -7465089942640540829
+    second: Eletromante-InbetweenFrames_48
+  - first:
+      213: -9138029857100765027
+    second: Eletromante-InbetweenFrames_49
+  - first:
+      213: -309964762159137326
+    second: Eletromante-InbetweenFrames_50
+  - first:
+      213: 6724630109291900261
+    second: Eletromante-InbetweenFrames_51
+  - first:
+      213: -1687879734795324767
+    second: Eletromante-InbetweenFrames_52
+  - first:
+      213: 1124319809280230197
+    second: Eletromante-InbetweenFrames_53
+  - first:
+      213: -8643757517121607715
+    second: Eletromante-InbetweenFrames_54
+  - first:
+      213: -149084632145140409
+    second: Eletromante-InbetweenFrames_55
+  - first:
+      213: -1545940831826857675
+    second: Eletromante-InbetweenFrames_56
+  - first:
+      213: 3586664454022556133
+    second: Eletromante-InbetweenFrames_57
+  - first:
+      213: -4716744920774904863
+    second: Eletromante-InbetweenFrames_58
+  - first:
+      213: 8292497967355605723
+    second: Eletromante-InbetweenFrames_59
+  - first:
+      213: 915628793275050928
+    second: Eletromante-InbetweenFrames_60
+  - first:
+      213: -4071455833594472990
+    second: Eletromante-InbetweenFrames_61
+  - first:
+      213: -8818700303038829926
+    second: Eletromante-InbetweenFrames_62
+  - first:
+      213: -7585203786997179085
+    second: Eletromante-InbetweenFrames_63
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 424.3094
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Eletromante_Idle_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5, y: 0.073603675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f48a99af8f0b8d44b317829c298fbc5
+      internalID: -1874690855
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Idle_7
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5, y: 0.073603675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08bb1e4115040dc4b8a3a83663c35895
+      internalID: 800335784
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Walk_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 512
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5, y: 0.089228675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30892fadc7621a245a68066fdcb67956
+      internalID: -577352897
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Walk_7
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 512
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5, y: 0.089228675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89aaad8e274b22340a8cf30b0302f2c3
+      internalID: 890477642
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Attack_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5, y: 0.108759925}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a7b099e194a0eb49ace14e9f274651a
+      internalID: -1988020767
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eletromante_Attack_7
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 512
+        height: 512
+      alignment: 9
+      pivot: {x: 0.5, y: 0.108759925}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fdf209fb3e2801d458da46f64704cb39
+      internalID: -456002427
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID: 8fd86835f535f2143915bea291a67ead
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Eletromante_Attack_6: -1988020767
+      Eletromante_Attack_7: -456002427
+      Eletromante_Idle_6: -1874690855
+      Eletromante_Idle_7: 800335784
+      Eletromante_Walk_6: -577352897
+      Eletromante_Walk_7: 890477642
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

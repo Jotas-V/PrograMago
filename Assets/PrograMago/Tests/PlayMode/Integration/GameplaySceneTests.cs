@@ -33,6 +33,22 @@ namespace PrograMago.Tests.Integration
         private string progressSavePath;
         private byte[] previousProgressSave;
 
+        private IEnumerator ContinueThroughMap()
+        {
+            var game = Object.FindFirstObjectByType<GameplayBootstrapper>();
+            var field = typeof(GameplayBootstrapper).GetField("nextBattleButton",BindingFlags.NonPublic|BindingFlags.Instance);
+            ((Button)field.GetValue(game)).onClick.Invoke();
+            for (int i=0;i<120 && (game.LevelMap == null || !game.LevelMap.IsVisible);i++) yield return null;
+            Assert.That(game.LevelMap, Is.Not.Null, "A próxima fase deve passar pelo mapa.");
+            var flow = typeof(GameplayBootstrapper).GetField("learningFlowPresenter",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(game);
+            var progress = (LearningProgress)flow.GetType().GetProperty("Progress").GetValue(flow);
+            if (progress.Stage == LearningStage.JourneyCompleted) yield break;
+            Assert.That(game.LevelMap.SelectPhase(progress.CurrentBattleIndex), Is.True);
+            game.LevelMap.AdvanceTravel(30);
+            for (int i=0;i<120 && game.IsMapActive;i++) yield return null;
+            Assert.That(game.IsMapActive, Is.False);
+        }
+
         [UnitySetUp]
         public IEnumerator LoadGameplayScene()
         {
@@ -102,7 +118,10 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneComponent<TMP_Text>("BattleButtonLabel").text, Is.EqualTo("Validar código"));
             Assert.That(titleText.text, Is.EqualTo("O nascimento do Mago"));
             Assert.That(lessonText.text, Does.Contain("O QUE É"));
-            Assert.That(lessonText.text, Does.Contain("public class Mago"));
+            Assert.That(lessonText.gameObject.activeInHierarchy, Is.False);
+            Assert.That(lessonText.text, Does.Contain("objeto"));
+            Assert.That(lessonText.text, Does.Not.Contain("public class Mago"));
+            Assert.That(FindSceneComponent<Button>("OpenGrimoireButton").gameObject.activeInHierarchy, Is.True);
             Assert.That(objectiveText.text, Does.Contain("TAREFA"));
             Assert.That(victoryOverlay.activeSelf, Is.False);
             Assert.That(restartProgressPanel.activeSelf, Is.False);
@@ -372,8 +391,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(restored.SourceCode, Does.Contain("Mago ativo"));
             Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_Text>("BattleProgressText").text, Does.Contain("9/9"));
-            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
             object restoredFlow = typeof(GameplayBootstrapper).GetField("learningFlowPresenter", flags).GetValue(restored);
             var restoredProgress = (LearningProgress)restoredFlow.GetType().GetProperty("Progress").GetValue(restoredFlow);
             Assert.That(restoredProgress.Stage, Is.EqualTo(LearningStage.JourneyCompleted));
@@ -999,7 +1017,7 @@ namespace PrograMago.Tests.Integration
 
             Assert.That(feedbackText.text, Does.Contain("CLASS001"));
             Assert.That(hintText.text, Does.StartWith("DICA"));
-            Assert.That(hintText.text, Does.Contain("classe será pública"));
+            Assert.That(hintText.text, Does.Contain("modelo"));
             Assert.That(codeInput.interactable, Is.True);
             Assert.That(battleButton.interactable, Is.True);
         }
@@ -1022,7 +1040,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(
                 FindSceneComponent<TMP_Text>("VictoryReviewText").text,
                 Does.Contain("classe").IgnoreCase);
-            Assert.That(nextBattleButton.GetComponentInChildren<TMP_Text>().text, Is.EqualTo("Próxima batalha"));
+            Assert.That(nextBattleButton.GetComponentInChildren<TMP_Text>().text, Is.EqualTo("Próxima fase"));
         }
 
         [UnityTest]
@@ -1032,8 +1050,7 @@ namespace PrograMago.Tests.Integration
             battleButton.onClick.Invoke();
             yield return null;
 
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             Assert.That(battleProgressText.text, Does.Contain("Batalha 2/9"));
             Assert.That(titleText.text, Is.EqualTo("Estado protegido"));
@@ -1167,8 +1184,7 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             const string attributeCode =
                 "public class Mago { private int vida; private int dano; " +
@@ -1176,8 +1192,7 @@ namespace PrograMago.Tests.Integration
             codeInput.text = attributeCode;
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
             Assert.That(codeInput.text, Is.EqualTo(attributeCode));
 
             codeInput.text =
@@ -1207,16 +1222,14 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             codeInput.text =
                 "public class Mago { private int vida; private int dano; " +
                 "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             codeInput.text =
                 "public class Mago { private int vida; private int dano; " +
@@ -1243,16 +1256,14 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             codeInput.text =
                 "public class Mago { private int vida; private int dano; " +
                 "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             const string approvedCode =
                 "public class Mago { private int vida; private int dano; " +
@@ -1290,16 +1301,14 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             codeInput.text =
                 "public class Mago { private int vida; private int dano; " +
                 "private int alcance; private int iniciativa; private int velocidadeAtaque; }";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             const string magoCode =
                 "public class Mago { private int vida; private int dano; " +
@@ -1312,8 +1321,7 @@ namespace PrograMago.Tests.Integration
             battleButton.onClick.Invoke();
             yield return null;
             Assert.That(nextBattleButton.interactable, Is.True);
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             const string setters =
                 " public void setVida(int vida) { this.vida = vida; } " +
@@ -1335,13 +1343,13 @@ namespace PrograMago.Tests.Integration
             battleButton.onClick.Invoke();
             yield return null;
             Assert.That(nextBattleButton.interactable, Is.True);
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             Assert.That(titleText.text, Is.EqualTo("Surge um inimigo"));
-            Assert.That(FindSceneComponent<TMP_Text>("TutorialStepText").text, Does.Contain("1/6"));
-            FindSceneComponent<Button>("TutorialNextButton").onClick.Invoke();
-            Assert.That(FindSceneComponent<TMP_Text>("TutorialBodyText").text, Does.Contain("public class Inimigo"));
+            Assert.That(FindSceneComponent<Button>("OpenGrimoireButton").gameObject.activeInHierarchy, Is.True);
+            Assert.That(FindSceneComponent<TMP_Text>("ObjectiveText").text, Does.Contain("Boneco de Treinamento"));
+            Assert.That(FindSceneComponent<TMP_Text>("TutorialStepText").gameObject.activeInHierarchy, Is.False,
+                "A fase 5 deve consultar o grimório compartilhado, sem o tutorial com código pronto.");
             Assert.That(battleProgressText.text, Does.Contain("Batalha 5/9"));
             Assert.That(FindSceneComponent<Button>("CodeBlockButton2").interactable, Is.True);
             Assert.That(FindSceneComponent<Button>("CodeBlockButton1").interactable, Is.True,
@@ -1419,8 +1427,7 @@ namespace PrograMago.Tests.Integration
             victoryOverlay = FindSceneObject("VictoryOverlay");
             nextBattleButton = FindSceneComponent<Button>("NextBattleButton");
             battleButton = FindSceneComponent<Button>("BattleButton");
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
             Assert.That(titleText.text, Is.EqualTo("Primeira magia"));
             Assert.That(battleProgressText.text, Does.Contain("Batalha 6/9"));
             Assert.That(codeInput.interactable, Is.True);
@@ -1461,8 +1468,7 @@ namespace PrograMago.Tests.Integration
             battleButton = FindSceneComponent<Button>("BattleButton");
             feedbackText = FindSceneComponent<TMP_Text>("FeedbackText");
             victoryOverlay = FindSceneObject("VictoryOverlay");
-            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
             Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Especialização elemental"));
             string baseCode = codeInput.text;
             codeInput.text = baseCode + " public class Piromante extends Inimigo {}";
@@ -1485,8 +1491,7 @@ namespace PrograMago.Tests.Integration
             float deadline = Time.realtimeSinceStartup + 5f;
             while (!victoryOverlay.activeSelf && Time.realtimeSinceStartup < deadline) yield return null;
             Assert.That(victoryOverlay.activeSelf, Is.True);
-            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
             Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Cada Mago, uma magia"));
             string overrideCode = inherited.Replace("public class Piromante extends Mago {}",
                 "public class Piromante extends Mago { @Override public void lancarMagia(Inimigo alvo) { super.lancarMagia(alvo); } }")
@@ -1521,8 +1526,7 @@ namespace PrograMago.Tests.Integration
             Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Cada Mago, uma magia"));
             Assert.That(FindSceneObject("VictoryOverlay").activeSelf, Is.True);
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").text, Is.EqualTo(golemCode));
-            FindSceneComponent<Button>("NextBattleButton").onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
             Assert.That(FindSceneComponent<TMP_Text>("Title").text, Is.EqualTo("Batalha final"));
             Assert.That(FindSceneComponent<TMP_Text>("BattleProgressText").text, Does.Contain("9/9"));
             Assert.That(FindSceneComponent<TMP_InputField>("CodeInput").interactable, Is.True);
@@ -1555,8 +1559,7 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             var field = typeof(GameplayBootstrapper).GetField(
                 "learningFlowPresenter",
@@ -1583,8 +1586,7 @@ namespace PrograMago.Tests.Integration
             codeInput.text = "public class Mago {}";
             battleButton.onClick.Invoke();
             yield return null;
-            nextBattleButton.onClick.Invoke();
-            yield return null;
+            yield return ContinueThroughMap();
 
             codeInput.text = "public class Bruxo {}";
             yield return null;

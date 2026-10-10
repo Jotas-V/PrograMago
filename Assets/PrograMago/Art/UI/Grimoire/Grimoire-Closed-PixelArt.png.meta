@@ -1,0 +1,2301 @@
+fileFormatVersion: 2
+guid: 520940b9060092d469a8802d12a80c94
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 682174084701756338
+    second: Grimoire-Closed-PixelArt_0
+  - first:
+      213: 5962940888019418336
+    second: Grimoire-Closed-PixelArt_1
+  - first:
+      213: -3748666496864633740
+    second: Grimoire-Closed-PixelArt_2
+  - first:
+      213: -859781743802160975
+    second: Grimoire-Closed-PixelArt_3
+  - first:
+      213: -1141162338326002681
+    second: Grimoire-Closed-PixelArt_4
+  - first:
+      213: -2622701387697048112
+    second: Grimoire-Closed-PixelArt_5
+  - first:
+      213: 9198171930673268908
+    second: Grimoire-Closed-PixelArt_6
+  - first:
+      213: -8815254103311734990
+    second: Grimoire-Closed-PixelArt_7
+  - first:
+      213: -5818577945846437741
+    second: Grimoire-Closed-PixelArt_8
+  - first:
+      213: 2057992981010897577
+    second: Grimoire-Closed-PixelArt_9
+  - first:
+      213: -8316406534688559845
+    second: Grimoire-Closed-PixelArt_10
+  - first:
+      213: 2683762718758522542
+    second: Grimoire-Closed-PixelArt_11
+  - first:
+      213: -4990589613655272546
+    second: Grimoire-Closed-PixelArt_12
+  - first:
+      213: 249056158128757072
+    second: Grimoire-Closed-PixelArt_13
+  - first:
+      213: 3915765473355364487
+    second: Grimoire-Closed-PixelArt_14
+  - first:
+      213: -7516584773726407744
+    second: Grimoire-Closed-PixelArt_15
+  - first:
+      213: 5582737031154850405
+    second: Grimoire-Closed-PixelArt_16
+  - first:
+      213: 8553387363733054518
+    second: Grimoire-Closed-PixelArt_17
+  - first:
+      213: -605737147675562609
+    second: Grimoire-Closed-PixelArt_18
+  - first:
+      213: -1638613000362913250
+    second: Grimoire-Closed-PixelArt_19
+  - first:
+      213: 503901148668876666
+    second: Grimoire-Closed-PixelArt_20
+  - first:
+      213: 4606029794277415907
+    second: Grimoire-Closed-PixelArt_21
+  - first:
+      213: 7978235698670856394
+    second: Grimoire-Closed-PixelArt_22
+  - first:
+      213: -5108571791493401074
+    second: Grimoire-Closed-PixelArt_23
+  - first:
+      213: -7483388229612112462
+    second: Grimoire-Closed-PixelArt_24
+  - first:
+      213: 544545904407281789
+    second: Grimoire-Closed-PixelArt_25
+  - first:
+      213: -3817047238813187539
+    second: Grimoire-Closed-PixelArt_26
+  - first:
+      213: -2661724605209208424
+    second: Grimoire-Closed-PixelArt_27
+  - first:
+      213: -8893120400849771806
+    second: Grimoire-Closed-PixelArt_28
+  - first:
+      213: -79479624863864581
+    second: Grimoire-Closed-PixelArt_29
+  - first:
+      213: 8933450767060951639
+    second: Grimoire-Closed-PixelArt_30
+  - first:
+      213: -3157945163012717234
+    second: Grimoire-Closed-PixelArt_31
+  - first:
+      213: 5959957629300272619
+    second: Grimoire-Closed-PixelArt_32
+  - first:
+      213: 5529860345889352797
+    second: Grimoire-Closed-PixelArt_33
+  - first:
+      213: 7703300254360302191
+    second: Grimoire-Closed-PixelArt_34
+  - first:
+      213: -1539307380604525440
+    second: Grimoire-Closed-PixelArt_35
+  - first:
+      213: -5338553408637577387
+    second: Grimoire-Closed-PixelArt_36
+  - first:
+      213: 215329897858128555
+    second: Grimoire-Closed-PixelArt_37
+  - first:
+      213: -4569755123431231560
+    second: Grimoire-Closed-PixelArt_38
+  - first:
+      213: -8637133698245414583
+    second: Grimoire-Closed-PixelArt_39
+  - first:
+      213: 7039473526504894121
+    second: Grimoire-Closed-PixelArt_40
+  - first:
+      213: -7579216792360359384
+    second: Grimoire-Closed-PixelArt_41
+  - first:
+      213: -2466789712970841014
+    second: Grimoire-Closed-PixelArt_42
+  - first:
+      213: -8878333976815437131
+    second: Grimoire-Closed-PixelArt_43
+  - first:
+      213: -1669965972274204378
+    second: Grimoire-Closed-PixelArt_44
+  - first:
+      213: 2029449065500021747
+    second: Grimoire-Closed-PixelArt_45
+  - first:
+      213: 2633608252665934952
+    second: Grimoire-Closed-PixelArt_46
+  - first:
+      213: 4695103968232916306
+    second: Grimoire-Closed-PixelArt_47
+  - first:
+      213: -7198637283179258381
+    second: Grimoire-Closed-PixelArt_48
+  - first:
+      213: -3463009194669993538
+    second: Grimoire-Closed-PixelArt_49
+  - first:
+      213: -3958727511445821505
+    second: Grimoire-Closed-PixelArt_50
+  - first:
+      213: 4562990253215959473
+    second: Grimoire-Closed-PixelArt_51
+  - first:
+      213: 8161955447785016694
+    second: Grimoire-Closed-PixelArt_52
+  - first:
+      213: -6750507623503351021
+    second: Grimoire-Closed-PixelArt_53
+  - first:
+      213: 7022574361204506597
+    second: Grimoire-Closed-PixelArt_54
+  - first:
+      213: -7233160628939041080
+    second: Grimoire-Closed-PixelArt_55
+  - first:
+      213: -525159790467649040
+    second: Grimoire-Closed-PixelArt_56
+  - first:
+      213: 9042479787344644628
+    second: Grimoire-Closed-PixelArt_57
+  - first:
+      213: -7252375556554907388
+    second: Grimoire-Closed-PixelArt_58
+  - first:
+      213: 4828288036265241133
+    second: Grimoire-Closed-PixelArt_59
+  - first:
+      213: -6406934350313826398
+    second: Grimoire-Closed-PixelArt_60
+  - first:
+      213: 7297936054595068514
+    second: Grimoire-Closed-PixelArt_61
+  - first:
+      213: 5425151250237745901
+    second: Grimoire-Closed-PixelArt_62
+  - first:
+      213: -542232823396293253
+    second: Grimoire-Closed-PixelArt_63
+  - first:
+      213: -2114346786230971173
+    second: Grimoire-Closed-PixelArt_64
+  - first:
+      213: -1299812407474041703
+    second: Grimoire-Closed-PixelArt_65
+  - first:
+      213: 795465037411622463
+    second: Grimoire-Closed-PixelArt_66
+  - first:
+      213: 7563751800566271555
+    second: Grimoire-Closed-PixelArt_67
+  - first:
+      213: -3795080346714643528
+    second: Grimoire-Closed-PixelArt_68
+  - first:
+      213: -2939119268234930194
+    second: Grimoire-Closed-PixelArt_69
+  - first:
+      213: 2591281586008248387
+    second: Grimoire-Closed-PixelArt_70
+  - first:
+      213: 6380382010567147994
+    second: Grimoire-Closed-PixelArt_71
+  - first:
+      213: -6858908483569167482
+    second: Grimoire-Closed-PixelArt_72
+  - first:
+      213: -1350923028279765708
+    second: Grimoire-Closed-PixelArt_73
+  - first:
+      213: 8753393483708069131
+    second: Grimoire-Closed-PixelArt_74
+  - first:
+      213: -5661133675502343171
+    second: Grimoire-Closed-PixelArt_75
+  - first:
+      213: -3607154698653180004
+    second: Grimoire-Closed-PixelArt_76
+  - first:
+      213: -8966806223012615284
+    second: Grimoire-Closed-PixelArt_77
+  - first:
+      213: -6188870872636336734
+    second: Grimoire-Closed-PixelArt_78
+  - first:
+      213: -5866754324546938426
+    second: Grimoire-Closed-PixelArt_79
+  - first:
+      213: -7161489345336389084
+    second: Grimoire-Closed-PixelArt_80
+  - first:
+      213: 547722118493384463
+    second: Grimoire-Closed-PixelArt_81
+  - first:
+      213: -9010938468706062754
+    second: Grimoire-Closed-PixelArt_82
+  - first:
+      213: 2449440733526207291
+    second: Grimoire-Closed-PixelArt_83
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_0
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 1160
+        width: 30
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bb10a937b1977900800000000000000
+      internalID: 682174084701756338
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_1
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 1162
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ecbc07052f90c250800000000000000
+      internalID: 5962940888019418336
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_2
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 0
+        width: 1088
+        height: 1210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47cb9f0beaf0afbc0800000000000000
+      internalID: -3748666496864633740
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_3
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 1092
+        width: 74
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b86e403f017114f0800000000000000
+      internalID: -859781743802160975
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_4
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 1138
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 704460146e6c920f0800000000000000
+      internalID: -1141162338326002681
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1066
+        width: 5
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d5b46acbfa4a9bd0800000000000000
+      internalID: -2622701387697048112
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_6
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 1076
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca8cfbe03a876af70800000000000000
+      internalID: 9198171930673268908
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_7
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 1036
+        width: 31
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 237ac47291de9a580800000000000000
+      internalID: -8815254103311734990
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_8
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 1034
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 398a6e7bf22404fa0800000000000000
+      internalID: -5818577945846437741
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_9
+      rect:
+        serializedVersion: 2
+        x: 1141
+        y: 1034
+        width: 62
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aad66766b57f8c10800000000000000
+      internalID: 2057992981010897577
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_10
+      rect:
+        serializedVersion: 2
+        x: 1147
+        y: 1076
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1da624a150369c80800000000000000
+      internalID: -8316406534688559845
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_11
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 1002
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaec90939f3ae3520800000000000000
+      internalID: 2683762718758522542
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_12
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 1002
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e93d25a003dddbab0800000000000000
+      internalID: -4990589613655272546
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_13
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 1012
+        width: 44
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 059536a9143d47300800000000000000
+      internalID: 249056158128757072
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 970
+        width: 41
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 788f51f83f7975630800000000000000
+      internalID: 3915765473355364487
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_15
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 976
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c37ded09f9bfa790800000000000000
+      internalID: -7516584773726407744
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_16
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 982
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56a576050cdd97d40800000000000000
+      internalID: 5582737031154850405
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_17
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 939
+        width: 50
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 634af915d7cb3b670800000000000000
+      internalID: 8553387363733054518
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_18
+      rect:
+        serializedVersion: 2
+        x: 1167
+        y: 939
+        width: 34
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8d2a85064df797f0800000000000000
+      internalID: -605737147675562609
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_19
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 920
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e12180d682a7249e0800000000000000
+      internalID: -1638613000362913250
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_20
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 871
+        width: 51
+        height: 90
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a77d158cc673ef600800000000000000
+      internalID: 503901148668876666
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_21
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 889
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eb55c0b1b7ebef30800000000000000
+      internalID: 4606029794277415907
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_22
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 889
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac8ed91f81368be60800000000000000
+      internalID: 7978235698670856394
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_23
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 891
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e067472a505ba19b0800000000000000
+      internalID: -5108571791493401074
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_24
+      rect:
+        serializedVersion: 2
+        x: 1155
+        y: 835
+        width: 52
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b571a9cd0aa52890800000000000000
+      internalID: -7483388229612112462
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_25
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 791
+        width: 72
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d70071c6d9d9e8700800000000000000
+      internalID: 544545904407281789
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_26
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 777
+        width: 35
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2287a782cf170bc0800000000000000
+      internalID: -3817047238813187539
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_27
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 802
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8999690f297af0bd0800000000000000
+      internalID: -2661724605209208424
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_28
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 773
+        width: 20
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e2e19afc1a459480800000000000000
+      internalID: -8893120400849771806
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_29
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 696
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf8ab19c3b1a5eef0800000000000000
+      internalID: -79479624863864581
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_30
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 708
+        width: 62
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 752eb15242ef9fb70800000000000000
+      internalID: 8933450767060951639
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_31
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 722
+        width: 20
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e45c6721b99bc24d0800000000000000
+      internalID: -3157945163012717234
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_32
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 706
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bed62daf2e506b250800000000000000
+      internalID: 5959957629300272619
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_33
+      rect:
+        serializedVersion: 2
+        x: 1117
+        y: 692
+        width: 36
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5ce046afa20ebc40800000000000000
+      internalID: 5529860345889352797
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_34
+      rect:
+        serializedVersion: 2
+        x: 1149
+        y: 763
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f62725b74ce97ea60800000000000000
+      internalID: 7703300254360302191
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_35
+      rect:
+        serializedVersion: 2
+        x: 1165
+        y: 708
+        width: 62
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0842eeac71843aae0800000000000000
+      internalID: -1539307380604525440
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 457
+        width: 138
+        height: 244
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 557d4bfa5f5a9e5b0800000000000000
+      internalID: -5338553408637577387
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_37
+      rect:
+        serializedVersion: 2
+        x: 1129
+        y: 682
+        width: 22
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baada57b6610df200800000000000000
+      internalID: 215329897858128555
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_38
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 680
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bf2c554de7f490c0800000000000000
+      internalID: -4569755123431231560
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_39
+      rect:
+        serializedVersion: 2
+        x: 1190
+        y: 644
+        width: 41
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 941b686b9acb22880800000000000000
+      internalID: -8637133698245414583
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_40
+      rect:
+        serializedVersion: 2
+        x: 1190
+        y: 674
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ae271920eb31b160800000000000000
+      internalID: 7039473526504894121
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_41
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 648
+        width: 25
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82a6fa7db7631d690800000000000000
+      internalID: -7579216792360359384
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_42
+      rect:
+        serializedVersion: 2
+        x: 1125
+        y: 611
+        width: 30
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4409ce53d334cdd0800000000000000
+      internalID: -2466789712970841014
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_43
+      rect:
+        serializedVersion: 2
+        x: 1153
+        y: 586
+        width: 44
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ba72aa9942d9c480800000000000000
+      internalID: -8878333976815437131
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_44
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 568
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6213b9bcbc613d8e0800000000000000
+      internalID: -1669965972274204378
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_45
+      rect:
+        serializedVersion: 2
+        x: 1147
+        y: 570
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f390ee2c2d0a2c10800000000000000
+      internalID: 2029449065500021747
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_46
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 546
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 864b0b990c47c8420800000000000000
+      internalID: 2633608252665934952
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_47
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 529
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 255cc02fe2c582140800000000000000
+      internalID: 4695103968232916306
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_48
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 537
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fd973de78d491c90800000000000000
+      internalID: -7198637283179258381
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_49
+      rect:
+        serializedVersion: 2
+        x: 1161
+        y: 532
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb198c93c7be0ffc0800000000000000
+      internalID: -3463009194669993538
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_50
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 519
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb7a4b57d46cf09c0800000000000000
+      internalID: -3958727511445821505
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_51
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 521
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b9c184a57ff25f30800000000000000
+      internalID: 4562990253215959473
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_52
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 505
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67d4ac16c37154170800000000000000
+      internalID: 8161955447785016694
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_53
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 323
+        width: 128
+        height: 163
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 313348705116152a0800000000000000
+      internalID: -6750507623503351021
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_54
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 481
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ef3c50ac22357160800000000000000
+      internalID: 7022574361204506597
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_55
+      rect:
+        serializedVersion: 2
+        x: 1155
+        y: 483
+        width: 34
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c65fbc1bb6ae9b90800000000000000
+      internalID: -7233160628939041080
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 391
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f17bd6f3f146b8f0800000000000000
+      internalID: -525159790467649040
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_57
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 429
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41ac35d15775d7d70800000000000000
+      internalID: 9042479787344644628
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_58
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 403
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 401a1d52bd26a5b90800000000000000
+      internalID: -7252375556554907388
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_59
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 407
+        width: 30
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2aabda3366810340800000000000000
+      internalID: 4828288036265241133
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_60
+      rect:
+        serializedVersion: 2
+        x: 1124
+        y: 357
+        width: 93
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a7db4e572ff517a0800000000000000
+      internalID: -6406934350313826398
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_61
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 323
+        width: 13
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 262a7afec2a774560800000000000000
+      internalID: 7297936054595068514
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_62
+      rect:
+        serializedVersion: 2
+        x: 1117
+        y: 345
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deaef2381520a4b40800000000000000
+      internalID: 5425151250237745901
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_63
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 304
+        width: 37
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7528e7be1a9978f0800000000000000
+      internalID: -542232823396293253
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_64
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 324
+        width: 9
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd4d6badcc458a2e0800000000000000
+      internalID: -2114346786230971173
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_65
+      rect:
+        serializedVersion: 2
+        x: 1190
+        y: 312
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99c4dd9808326fde0800000000000000
+      internalID: -1299812407474041703
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_66
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 23
+        width: 130
+        height: 285
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3e992aac3f0a0b00800000000000000
+      internalID: 795465037411622463
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_67
+      rect:
+        serializedVersion: 2
+        x: 1204
+        y: 264
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34e49f92038d7f860800000000000000
+      internalID: 7563751800566271555
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_68
+      rect:
+        serializedVersion: 2
+        x: 1218
+        y: 264
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b3e108288a255bc0800000000000000
+      internalID: -3795080346714643528
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_69
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 168
+        width: 38
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7d95009962637d0800000000000000
+      internalID: -2939119268234930194
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_70
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 128
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 340580f8fd416f320800000000000000
+      internalID: 2591281586008248387
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_71
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 83
+        width: 25
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad1c52742abab8850800000000000000
+      internalID: 6380382010567147994
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_72
+      rect:
+        serializedVersion: 2
+        x: 675
+        y: 45
+        width: 68
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68352f1031340d0a0800000000000000
+      internalID: -6858908483569167482
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_73
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 47
+        width: 15
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4355d7cc9ae804de0800000000000000
+      internalID: -1350923028279765708
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_74
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 63
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0573a7fefc4a7970800000000000000
+      internalID: 8753393483708069131
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_75
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 57
+        width: 56
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfb6ea58aec9f61b0800000000000000
+      internalID: -5661133675502343171
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_76
+      rect:
+        serializedVersion: 2
+        x: 595
+        y: 25
+        width: 31
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9f55e0c9efc0fdc0800000000000000
+      internalID: -3607154698653180004
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_77
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 31
+        width: 10
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8b22939f318f8380800000000000000
+      internalID: -8966806223012615284
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_78
+      rect:
+        serializedVersion: 2
+        x: 858
+        y: 13
+        width: 47
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a5dfbb3bb6bc1aa0800000000000000
+      internalID: -6188870872636336734
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_79
+      rect:
+        serializedVersion: 2
+        x: 914
+        y: 33
+        width: 34
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c994e4760a159ea0800000000000000
+      internalID: -5866754324546938426
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_80
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 31
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 422da7432674d9c90800000000000000
+      internalID: -7161489345336389084
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_81
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 7
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0f2c646d56e99700800000000000000
+      internalID: 547722118493384463
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_82
+      rect:
+        serializedVersion: 2
+        x: 922
+        y: 16
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5e6fd76437b2f280800000000000000
+      internalID: -9010938468706062754
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grimoire-Closed-PixelArt_83
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 15
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3ba3349e592ef120800000000000000
+      internalID: 2449440733526207291
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Grimoire-Closed-PixelArt_0: 682174084701756338
+      Grimoire-Closed-PixelArt_1: 5962940888019418336
+      Grimoire-Closed-PixelArt_10: -8316406534688559845
+      Grimoire-Closed-PixelArt_11: 2683762718758522542
+      Grimoire-Closed-PixelArt_12: -4990589613655272546
+      Grimoire-Closed-PixelArt_13: 249056158128757072
+      Grimoire-Closed-PixelArt_14: 3915765473355364487
+      Grimoire-Closed-PixelArt_15: -7516584773726407744
+      Grimoire-Closed-PixelArt_16: 5582737031154850405
+      Grimoire-Closed-PixelArt_17: 8553387363733054518
+      Grimoire-Closed-PixelArt_18: -605737147675562609
+      Grimoire-Closed-PixelArt_19: -1638613000362913250
+      Grimoire-Closed-PixelArt_2: -3748666496864633740
+      Grimoire-Closed-PixelArt_20: 503901148668876666
+      Grimoire-Closed-PixelArt_21: 4606029794277415907
+      Grimoire-Closed-PixelArt_22: 7978235698670856394
+      Grimoire-Closed-PixelArt_23: -5108571791493401074
+      Grimoire-Closed-PixelArt_24: -7483388229612112462
+      Grimoire-Closed-PixelArt_25: 544545904407281789
+      Grimoire-Closed-PixelArt_26: -3817047238813187539
+      Grimoire-Closed-PixelArt_27: -2661724605209208424
+      Grimoire-Closed-PixelArt_28: -8893120400849771806
+      Grimoire-Closed-PixelArt_29: -79479624863864581
+      Grimoire-Closed-PixelArt_3: -859781743802160975
+      Grimoire-Closed-PixelArt_30: 8933450767060951639
+      Grimoire-Closed-PixelArt_31: -3157945163012717234
+      Grimoire-Closed-PixelArt_32: 5959957629300272619
+      Grimoire-Closed-PixelArt_33: 5529860345889352797
+      Grimoire-Closed-PixelArt_34: 7703300254360302191
+      Grimoire-Closed-PixelArt_35: -1539307380604525440
+      Grimoire-Closed-PixelArt_36: -5338553408637577387
+      Grimoire-Closed-PixelArt_37: 215329897858128555
+      Grimoire-Closed-PixelArt_38: -4569755123431231560
+      Grimoire-Closed-PixelArt_39: -8637133698245414583
+      Grimoire-Closed-PixelArt_4: -1141162338326002681
+      Grimoire-Closed-PixelArt_40: 7039473526504894121
+      Grimoire-Closed-PixelArt_41: -7579216792360359384
+      Grimoire-Closed-PixelArt_42: -2466789712970841014
+      Grimoire-Closed-PixelArt_43: -8878333976815437131
+      Grimoire-Closed-PixelArt_44: -1669965972274204378
+      Grimoire-Closed-PixelArt_45: 2029449065500021747
+      Grimoire-Closed-PixelArt_46: 2633608252665934952
+      Grimoire-Closed-PixelArt_47: 4695103968232916306
+      Grimoire-Closed-PixelArt_48: -7198637283179258381
+      Grimoire-Closed-PixelArt_49: -3463009194669993538
+      Grimoire-Closed-PixelArt_5: -2622701387697048112
+      Grimoire-Closed-PixelArt_50: -3958727511445821505
+      Grimoire-Closed-PixelArt_51: 4562990253215959473
+      Grimoire-Closed-PixelArt_52: 8161955447785016694
+      Grimoire-Closed-PixelArt_53: -6750507623503351021
+      Grimoire-Closed-PixelArt_54: 7022574361204506597
+      Grimoire-Closed-PixelArt_55: -7233160628939041080
+      Grimoire-Closed-PixelArt_56: -525159790467649040
+      Grimoire-Closed-PixelArt_57: 9042479787344644628
+      Grimoire-Closed-PixelArt_58: -7252375556554907388
+      Grimoire-Closed-PixelArt_59: 4828288036265241133
+      Grimoire-Closed-PixelArt_6: 9198171930673268908
+      Grimoire-Closed-PixelArt_60: -6406934350313826398
+      Grimoire-Closed-PixelArt_61: 7297936054595068514
+      Grimoire-Closed-PixelArt_62: 5425151250237745901
+      Grimoire-Closed-PixelArt_63: -542232823396293253
+      Grimoire-Closed-PixelArt_64: -2114346786230971173
+      Grimoire-Closed-PixelArt_65: -1299812407474041703
+      Grimoire-Closed-PixelArt_66: 795465037411622463
+      Grimoire-Closed-PixelArt_67: 7563751800566271555
+      Grimoire-Closed-PixelArt_68: -3795080346714643528
+      Grimoire-Closed-PixelArt_69: -2939119268234930194
+      Grimoire-Closed-PixelArt_7: -8815254103311734990
+      Grimoire-Closed-PixelArt_70: 2591281586008248387
+      Grimoire-Closed-PixelArt_71: 6380382010567147994
+      Grimoire-Closed-PixelArt_72: -6858908483569167482
+      Grimoire-Closed-PixelArt_73: -1350923028279765708
+      Grimoire-Closed-PixelArt_74: 8753393483708069131
+      Grimoire-Closed-PixelArt_75: -5661133675502343171
+      Grimoire-Closed-PixelArt_76: -3607154698653180004
+      Grimoire-Closed-PixelArt_77: -8966806223012615284
+      Grimoire-Closed-PixelArt_78: -6188870872636336734
+      Grimoire-Closed-PixelArt_79: -5866754324546938426
+      Grimoire-Closed-PixelArt_8: -5818577945846437741
+      Grimoire-Closed-PixelArt_80: -7161489345336389084
+      Grimoire-Closed-PixelArt_81: 547722118493384463
+      Grimoire-Closed-PixelArt_82: -9010938468706062754
+      Grimoire-Closed-PixelArt_83: 2449440733526207291
+      Grimoire-Closed-PixelArt_9: 2057992981010897577
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

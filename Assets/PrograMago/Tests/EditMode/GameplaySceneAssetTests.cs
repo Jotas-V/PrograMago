@@ -134,10 +134,10 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(title.transform.parent, Is.SameAs(panel.transform));
             Assert.That(objective.transform.parent, Is.SameAs(panel.transform));
             Assert.That(feedback.transform.parent, Is.SameAs(panel.transform));
-            Assert.That(ReadString(title, "m_text"), Is.EqualTo("Surge um inimigo"));
+            Assert.That(ReadString(title, "m_text"), Is.EqualTo("O nascimento do Mago"));
             Assert.That(
                 ReadString(objective, "m_text"),
-                Does.Contain("Inimigo"));
+                Does.Contain("Mago"));
             Assert.That(ReadString(feedback, "m_text"), Is.Empty);
             AssertContainedByPanel(title, panel);
             AssertContainedByPanel(objective, panel);
@@ -172,7 +172,7 @@ namespace PrograMago.Tests.UnityIntegration
             GameObject battleButton = FindSceneObject("BattleButton");
 
             Assert.That(battleButton.transform.parent, Is.SameAs(editorPanel.transform));
-            Assert.That(ReadString(FindSceneObject("BattleButtonLabel"), "m_text"), Is.EqualTo("Batalhar"));
+            Assert.That(ReadString(FindSceneObject("BattleButtonLabel"), "m_text"), Is.EqualTo("Validar código"));
         }
 
         [Test]
@@ -337,11 +337,14 @@ namespace PrograMago.Tests.UnityIntegration
             Assert.That(attributeBattle.Lesson.Task, Does.Contain("alcance"));
             Assert.That(attributeBattle.Lesson.Task, Does.Contain("iniciativa"));
             Assert.That(attributeBattle.Lesson.Task, Does.Contain("velocidadeAtaque"));
-            Assert.That(attributeGuidance, Does.Contain("private int iniciativa;"));
-            Assert.That(attributeGuidance, Does.Contain("private int velocidadeAtaque;"));
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("privado"));
+            Assert.That(attributeBattle.Lesson.Task, Does.Contain("int"));
+            Assert.That(attributeGuidance, Does.Not.Contain("private int iniciativa;"));
+            Assert.That(attributeGuidance, Does.Not.Contain("private int velocidadeAtaque;"));
             Assert.That(attributeGuidance, Does.Not.Contain("float"));
-            Assert.That(constructionGuidance, Does.Contain("25"));
-            Assert.That(constructionGuidance, Does.Contain("new Mago"));
+            Assert.That(constructionBattle.Lesson.GameEffect, Does.Contain("25"));
+            Assert.That(constructionBattle.Lesson.Task, Does.Contain("instância"));
+            Assert.That(constructionGuidance, Does.Contain("argumentos"));
         }
 
         [Test]
@@ -358,12 +361,12 @@ namespace PrograMago.Tests.UnityIntegration
 
             Assert.That(enemyBattle.Lesson.Task, Does.Contain("getElemento"));
             Assert.That(enemyBattle.Lesson.Task, Does.Contain("Boneco de Treinamento"));
-            Assert.That(enemyBattle.Lesson.UsageExample, Does.Contain("10"));
-            Assert.That(enemyBattle.Lesson.UsageExample, Does.Contain("neutro"));
-            Assert.That(guidance, Does.Contain("private String nome;"));
-            Assert.That(guidance, Does.Contain("private int vida;"));
-            Assert.That(guidance, Does.Contain("private String elemento;"));
-            Assert.That(guidance, Does.Contain("public String getElemento()"));
+            Assert.That(enemyBattle.Lesson.Task, Does.Contain("10"));
+            Assert.That(enemyBattle.Lesson.Task, Does.Contain("neutro"));
+            Assert.That(enemyBattle.Lesson.UsageExample, Does.Contain("getTitulo"));
+            Assert.That(guidance, Does.Contain("devolver"));
+            Assert.That(guidance, Does.Not.Contain("public String getElemento()"),
+                "A ajuda deve orientar a consulta sem entregar o getter da atividade.");
         }
 
         [Test]
