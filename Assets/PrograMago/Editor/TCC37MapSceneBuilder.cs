@@ -96,6 +96,7 @@ namespace PrograMago.Editor
             var counter = Text("Progress", Anchored("CounterArea", header, new Vector2(0.03f, 0.01f), new Vector2(0.50f, 0.27f)),
                 "0/9 fases concluídas", font, 20, new Color32(193, 211, 178, 255), TextAlignmentOptions.Left);
             var back = Button("CloseMapButton", header, "Voltar à fase [M]", font, new Vector2(0.76f, 0.20f), new Vector2(0.97f, 0.80f));
+            var menu = Button("ReturnToMenuButton", header, "Menu", font, new Vector2(0.61f, 0.20f), new Vector2(0.74f, 0.80f));
             var footer = Anchored("MapFooter", hud.transform, Vector2.zero, new Vector2(1, 0.13f));
             Image(footer, new Color32(24, 43, 39, 244), true);
             var message = Text("MapMessage", Anchored("MessageArea", footer, new Vector2(0.03f, 0.49f), new Vector2(0.97f, 0.98f)),
@@ -108,6 +109,7 @@ namespace PrograMago.Editor
             Set(serialized, "learningPath", path); Set(serialized, "mapCamera", camera); Set(serialized, "wizard", wizard);
             Set(serialized, "wizardImage", wizardImage); Set(serialized, "progressLabel", counter); Set(serialized, "message", message);
             Set(serialized, "closeButton", back); Set(serialized, "previousButton", left); Set(serialized, "nextButton", right); Set(serialized, "centerButton", center);
+            Set(serialized, "menuButton", menu);
             SetArray(serialized, "phaseButtons", buttons); SetArray(serialized, "phaseStatus", statuses);
             SetArray(serialized, "idleFrames", idle); SetArray(serialized, "walkFrames", walk);
             serialized.ApplyModifiedPropertiesWithoutUndo();
