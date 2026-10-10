@@ -20,7 +20,7 @@ namespace PrograMago.UnityIntegration
         private void InitializeLevelMapNavigation()
         {
             var button = CreateButton("OpenLevelMapButton", arenaFrame, "Mapa [M]",
-                new Vector2(0.01f, 0.02f), new Vector2(0.105f, 0.18f));
+                new Vector2(0.89f, 0.82f), new Vector2(0.995f, 0.98f));
             button.onClick.AddListener(() => ToggleLevelMap());
             var label = nextBattleButton.GetComponentInChildren<TMP_Text>();
             if (label != null && victoryOverlay.activeSelf && learningFlowPresenter.Progress.HasCompletedJourney)
