@@ -252,6 +252,7 @@ namespace PrograMago.UnityIntegration
                 UpdateWorkspaceUi();
             }
             InitializeLevelMapNavigation();
+            InitializeGrimoireNavigation();
         }
 
         private void OnDestroy()
@@ -288,7 +289,7 @@ namespace PrograMago.UnityIntegration
                 return;
             }
 
-            if (IsMapActive) return;
+            if (IsMapActive || IsGrimoireActive) return;
             if (HandleMapShortcut(Keyboard.current?.mKey.wasPressedThisFrame == true)) return;
 
             bool isRestartPressed = Keyboard.current?.rKey.isPressed == true;
@@ -582,6 +583,7 @@ namespace PrograMago.UnityIntegration
             SetTimelineAvailable(battle.CompletionMode == BattleCompletionMode.OnCombatVictory);
             UpdateWorkspaceUi();
             ShowEnemyGuide(battle.Criterion == ValidationCriterion.ConstructAndInstantiateEnemy);
+            ShowGrimoireTask(battleNumber - 1);
         }
 
         public void ShowHint(string hint)
@@ -602,7 +604,7 @@ namespace PrograMago.UnityIntegration
                 buttonLabel.text = learningFlowPresenter != null &&
                                    !learningFlowPresenter.Progress.CanContinueAfterVictory
                     ? "Continuação em breve"
-                    : isFinalBattle ? "Voltar ao mapa" : "Próxima batalha";
+                    : isFinalBattle ? "Voltar ao mapa" : "Próxima fase";
             }
 
             nextBattleButton.interactable = learningFlowPresenter == null ||
@@ -769,7 +771,7 @@ namespace PrograMago.UnityIntegration
                 ToggleLevelMap();
                 return;
             }
-            if (learningFlowPresenter.NextBattle()) SaveProgress();
+            if (learningFlowPresenter.NextBattle()) { SaveProgress(); ToggleLevelMap(); }
         }
 
         public void StartCombat(params CombatElement[] extraSpells)
@@ -896,7 +898,7 @@ namespace PrograMago.UnityIntegration
             combatActionPanel.SetActive(false);
 
             pauseCombatButton = CreateButton("PauseCombatButton", arenaFrame,
-                "Pausar", new Vector2(0.80f, 0.82f), new Vector2(0.98f, 0.98f));
+                "Pausar", new Vector2(0.81f, 0.60f), new Vector2(0.88f, 0.76f));
             pauseCombatButton.onClick.AddListener(ToggleCombatPause);
             pauseCombatButton.gameObject.SetActive(false);
 

@@ -17,247 +17,405 @@ MonoBehaviour:
     chapter: 1
     order: 1
     title: O nascimento do Mago
-    concept: Classes
-    whatItIs: "Uma classe \xE9 um molde que descreve as caracter\xEDsticas e os comportamentos
-      que seus objetos podem ter."
-    purpose: "Classes organizam o c\xF3digo e permitem criar v\xE1rios objetos do
-      mesmo tipo com responsabilidades bem definidas."
-    usageExample: public class Mago {}
-    gameEffect: "A declara\xE7\xE3o v\xE1lida apresenta o Mago na arena e prepara
-      sua participa\xE7\xE3o na batalha."
-    task: "Declare uma classe p\xFAblica chamada Mago com o corpo vazio."
+    concept: "Classe, objeto e primeira declara\xE7\xE3o."
+    whatItIs: "Imagine uma ficha em branco que define quais informa\xE7\xF5es um
+      personagem pode ter. Ela funciona como um modelo para criar personagens.\n\nUma
+      <b>classe</b> \xE9 esse modelo: define as caracter\xEDsticas e os comportamentos
+      que objetos daquele tipo poder\xE3o ter.\n\nUm <b>objeto</b> \xE9 uma cria\xE7\xE3o
+      concreta feita a partir do modelo. Cada objeto pode ter seus pr\xF3prios valores.
+      A classe Mago poder\xE1 definir que magos t\xEAm vida e lan\xE7am magia. Um
+      mago espec\xEDfico criado a partir dela ser\xE1 um objeto, com sua pr\xF3pria
+      vida.\n\nHoje vamos declarar apenas o modelo, com o corpo vazio. Nas pr\xF3ximas
+      fases, adicionaremos informa\xE7\xF5es, criaremos um objeto e ensinaremos esse
+      mago a agir."
+    purpose: "Classes organizam o c\xF3digo. Um mesmo modelo pode dar origem a v\xE1rios
+      objetos: dois magos podem compartilhar os mesmos tipos de caracter\xEDsticas,
+      mas ter quantidades diferentes de vida."
+    usageExample: "Uma classe em outro contexto:\n\n<noparse>public class Livro {\n}</noparse>\n\n<b>public</b>:
+      permite que outras partes do programa acessem a classe.\n<b>class</b>: declara
+      uma classe.\n<b>Livro</b>: nome do modelo.\n<b>Chaves</b>: delimitam o corpo
+      onde escreveremos suas caracter\xEDsticas e comportamentos.\n\nIsso declara
+      o modelo Livro; ainda n\xE3o cria um livro espec\xEDfico. Adapte a estrutura
+      ao nome pedido na tarefa."
+    gameEffect: "Validar a declara\xE7\xE3o apresenta o Mago na arena. Voc\xEA ainda
+      n\xE3o precisa escrever atributos nem criar uma inst\xE2ncia."
+    task: "1. No bloco Mago, declare uma classe p\xFAblica chamada <b>Mago</b>, com
+      M mai\xFAsculo.\n2. Abra e feche seu corpo com chaves; deixe-o vazio.\n3. Clique
+      em <b>Validar c\xF3digo</b>."
     hints:
-    - "Comece indicando que a classe ser\xE1 p\xFAblica."
-    - Use a palavra-chave class logo antes do nome.
-    - "O nome esperado diferencia mai\xFAsculas de min\xFAsculas e deve ser Mago."
-    - "Solu\xE7\xE3o: public class Mago {}"
+    - "Voc\xEA est\xE1 criando um modelo. Qual palavra do exemplo indica a declara\xE7\xE3o
+      de uma classe?"
+    - "Antes do nome, indique acesso p\xFAblico e declara\xE7\xE3o de classe."
+    - Confira o nome Mago e as chaves que delimitam o corpo.
+    - "Revise: acesso p\xFAblico, palavra de declara\xE7\xE3o, nome correto e corpo
+      vazio."
     criterion: 0
     completionMode: 1
     victoryTitle: "Primeira batalha conclu\xEDda!"
-    victoryAchievement: "Voc\xEA deu forma ao seu primeiro Mago."
-    victoryReview: "Classes s\xE3o moldes que re\xFAnem o que objetos de um mesmo
-      tipo t\xEAm e podem fazer."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Classe, objeto e primeira declara\xE7\xE3o."
+    victoryReview: "Voc\xEA declarou uma classe: o modelo existe, mas ainda n\xE3o
+      criou um objeto. Na pr\xF3xima fase, vamos definir os atributos desse modelo.\n\nEsta
+      p\xE1gina permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: mago-private-state
     chapter: 1
     order: 2
     title: Estado protegido
-    concept: Atributos e encapsulamento
-    whatItIs: "Atributos guardam o estado de um objeto. Com private, esse estado
-      s\xF3 pode ser manipulado de maneira controlada pela pr\xF3pria classe."
-    purpose: O encapsulamento protege dados internos e evita que outras partes do
-      programa alterem o Mago de forma indevida.
-    usageExample: private int vida;
-    gameEffect: Vida, dano, alcance, iniciativa e velocidade de ataque passam a representar
-      as capacidades do Mago na arena.
-    task: Adicione ao Mago os atributos privados int vida, dano, alcance, iniciativa
-      e velocidadeAtaque.
+    concept: Atributos, tipos de dados e encapsulamento.
+    whatItIs: "Um objeto precisa guardar informa\xE7\xF5es. Essas informa\xE7\xF5es
+      s\xE3o seus <b>atributos</b>: um livro tem uma quantidade de p\xE1ginas; um
+      mago tem vida e dano.\n\nO <b>tipo</b> diz qual esp\xE9cie de valor o atributo
+      aceita. Usaremos int para n\xFAmeros inteiros. O nome identifica a informa\xE7\xE3o.\n\n<b>private</b>
+      restringe o acesso direto ao atributo \xE0 pr\xF3pria classe. Essa prote\xE7\xE3o
+      \xE9 parte do encapsulamento. M\xE9todos da classe poder\xE3o oferecer formas
+      controladas de consultar e alterar esses dados; vamos aprender isso depois."
+    purpose: "Guardar o estado dentro da classe aproxima o c\xF3digo do personagem
+      representado. Proteger esse estado ajuda a concentrar sua manipula\xE7\xE3o
+      nos comportamentos do pr\xF3prio objeto."
+    usageExample: "Trecho dentro de uma classe Livro:\n\n<noparse>private int paginas;</noparse>\n\nprivate
+      \xE9 o acesso; int \xE9 o tipo; paginas \xE9 o nome. O ponto e v\xEDrgula encerra
+      a declara\xE7\xE3o.\n\nO atributo fica dentro das chaves da classe. Esse trecho
+      n\xE3o cria um livro nem escolhe seu n\xFAmero de p\xE1ginas."
+    gameEffect: "Os cinco atributos descrever\xE3o as capacidades do Mago. A distribui\xE7\xE3o
+      de pontos ser\xE1 escolhida na pr\xF3xima fase."
+    task: "1. Dentro da classe Mago, declare cinco atributos com acesso privado e
+      tipo int.\n2. Use os nomes <b>vida, dano, alcance, iniciativa e velocidadeAtaque</b>.\n3.
+      Declare cada atributo uma \xFAnica vez e preserve a classe.\n4. Clique em <b>Validar
+      c\xF3digo</b>."
     hints:
-    - Cada atributo deve ficar dentro do corpo da classe Mago.
-    - Use private antes de int para proteger o estado.
-    - "Declare os cinco atributos uma \xFAnica vez; a ordem entre eles pode variar."
-    - 'Exemplo: private int vida; private int dano; private int alcance; private
-      int iniciativa; private int velocidadeAtaque;'
+    - "Quais informa\xE7\xF5es o Mago precisa guardar? Cada uma precisa de uma declara\xE7\xE3o
+      pr\xF3pria."
+    - Escreva os atributos dentro das chaves de Mago, sem abrir outra classe.
+    - "Confira acesso, tipo, nome e ponto e v\xEDrgula em cada declara\xE7\xE3o."
+    - "Conte cinco atributos. Confira os nomes, mai\xFAsculas e aus\xEAncia de repeti\xE7\xF5es."
     criterion: 1
     completionMode: 1
     victoryTitle: Estado protegido!
-    victoryAchievement: "Seu Mago agora possui capacidades pr\xF3prias e protegidas."
-    victoryReview: Atributos representam o estado do objeto; private aplica encapsulamento
-      e controla o acesso a esses dados.
+    victoryAchievement: "Voc\xEA aplicou o conceito: Atributos, tipos de dados e
+      encapsulamento."
+    victoryReview: "Os atributos guardam o estado. O acesso privado mant\xE9m esses
+      dados dentro da classe; a pr\xF3xima etapa prepara os valores de um objeto.\n\nEsta
+      p\xE1gina permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: mago-constructor-object
     chapter: 1
     order: 3
     title: Dando vida ao Mago
-    concept: Construtor, this e objeto
-    whatItIs: "O construtor prepara um novo objeto. A palavra this diferencia os
-      atributos do objeto dos par\xE2metros recebidos."
-    purpose: "Construtores garantem que cada Mago comece com um estado v\xE1lido,
-      enquanto new cria uma inst\xE2ncia concreta da classe."
-    usageExample: public Mago(int vida, int dano, int alcance, int iniciativa, int
-      velocidadeAtaque) { this.vida = vida; } Mago mago = new Mago(5, 5, 5, 5, 5);
-    gameEffect: "Os valores informados na instancia\xE7\xE3o definem as capacidades
-      iniciais do Mago que aparece na arena."
-    task: "Crie o construtor de Mago, atribua os cinco par\xE2metros int com this
-      e instancie um objeto usando de 1 a 15 em cada atributo e no m\xE1ximo 25 pontos
-      no total."
+    concept: "Construtor, par\xE2metros, this e cria\xE7\xE3o de um objeto."
+    whatItIs: "O <b>construtor</b> prepara o estado inicial de um objeto. Ele tem
+      o mesmo nome da classe e n\xE3o declara um tipo de retorno.\n\nOs <b>par\xE2metros</b>
+      recebem os valores usados nessa prepara\xE7\xE3o. Dentro do construtor, atribu\xEDmos
+      esses valores aos atributos. Quando atributo e par\xE2metro t\xEAm o mesmo
+      nome, <b>this</b> identifica o atributo daquele objeto.\n\nDeclarar o construtor
+      define como criar objetos. Usar <b>new</b> faz a cria\xE7\xE3o de uma inst\xE2ncia
+      concreta. Os argumentos fornecidos devem seguir a ordem dos par\xE2metros do
+      construtor."
+    purpose: Uma classe pode criar objetos com estados diferentes. O construtor permite
+      escolher esses valores no momento em que cada objeto nasce.
+    usageExample: "Trecho dentro de Livro, que j\xE1 tem o atributo paginas:\n\n<noparse>public
+      Livro(int paginas) {\n    this.paginas = paginas;\n}</noparse>\n\nO lado esquerdo
+      \xE9 o atributo; o direito \xE9 o valor recebido.\n\nCria\xE7\xE3o de um objeto
+      no exerc\xEDcio:\n<noparse>Livro diario = new Livro(80);</noparse>\n\ndiario
+      identifica o objeto; 80 \xE9 o argumento enviado ao construtor. No editor do
+      jogo, as inst\xE2ncias ficam fora das classes."
+    gameEffect: "Cada atributo do Mago deve ficar entre 1 e 15. A soma dos cinco
+      n\xE3o pode ultrapassar 25 pontos. Escolha sua distribui\xE7\xE3o; nenhum valor
+      isolado substitui a confer\xEAncia do total."
+    task: "1. No bloco Mago, depois dos atributos e dentro da classe, crie seu construtor
+      p\xFAblico.\n2. Receba os cinco atributos como par\xE2metros int e atribua
+      cada um ao campo correspondente usando this.\n3. Fora da classe, crie uma inst\xE2ncia
+      de Mago com cinco argumentos.\n4. Respeite os limites e a soma de 25; clique
+      em <b>Validar c\xF3digo</b>."
     hints:
-    - "O construtor tem exatamente o mesmo nome da classe e n\xE3o declara tipo de
-      retorno."
-    - "Receba par\xE2metros int para vida, dano, alcance, iniciativa e velocidadeAtaque."
-    - "Use this.atributo = atributo para guardar cada par\xE2metro no objeto."
-    - "Finalize com new Mago(...); cada valor vai de 1 a 15 e a soma n\xE3o pode
-      ultrapassar 25."
+    - "Criar o modelo e criar um objeto s\xE3o a\xE7\xF5es diferentes. Voc\xEA precisa
+      das duas nesta fase."
+    - "O construtor pertence \xE0 classe. A inst\xE2ncia fica depois da chave que
+      fecha a classe no editor do jogo."
+    - "Confira se todos os par\xE2metros chegam aos atributos; usar this distingue
+      o campo do valor recebido."
+    - "Confira nome do construtor, cinco par\xE2metros, cinco atribui\xE7\xF5es,
+      ordem dos argumentos e or\xE7amento."
     criterion: 2
     completionMode: 1
     victoryTitle: O Mago ganhou vida!
-    victoryAchievement: "Voc\xEA construiu e instanciou um objeto completo."
-    victoryReview: "O construtor inicializa o objeto, this acessa seu pr\xF3prio
-      estado e new transforma a classe em uma inst\xE2ncia."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Construtor, par\xE2metros, this
+      e cria\xE7\xE3o de um objeto."
+    victoryReview: "O construtor recebe valores e prepara os atributos. A cria\xE7\xE3o
+      da inst\xE2ncia usa esse construtor; confira a diferen\xE7a entre modelo e
+      objeto.\n\nEsta p\xE1gina permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: mago-setters
     chapter: 1
     order: 4
     title: Ajustando o Mago com setters
-    concept: "Encapsulamento e m\xE9todos de altera\xE7\xE3o"
-    whatItIs: "Um setter \xE9 um m\xE9todo p\xFAblico que permite \xE0 pr\xF3pria
-      classe alterar com seguran\xE7a um atributo privado."
-    purpose: "Setters permitem redistribuir os atributos depois da constru\xE7\xE3o
-      sem liberar o acesso direto aos campos private."
-    usageExample: public void setAlcance(int valor) { this.alcance = valor; }
-    gameEffect: "Voc\xEA pode alterar os cinco atributos do mesmo Mago uma vez antes
-      da batalha; a soma final continua limitada a 25 pontos."
-    task: "Dentro da classe Mago, implemente setVida, setDano, setAlcance, setIniciativa
-      e setVelocidadeAtaque. Cada m\xE9todo recebe int valor e atribui o valor ao
-      atributo correspondente usando this."
+    concept: "Setters: declarar um m\xE9todo e depois cham\xE1-lo."
+    whatItIs: "Um <b>setter</b> \xE9 um m\xE9todo que altera um atributo do objeto.
+      Ele recebe o novo valor em um par\xE2metro e atualiza o campo correspondente.\n\n<b>void</b>
+      informa que esse m\xE9todo n\xE3o devolve um resultado. Alterar e consultar
+      s\xE3o responsabilidades diferentes: uma consulta ser\xE1 ensinada com o getter
+      de Inimigo.\n\nDeclarar o m\xE9todo dentro da classe ensina o objeto a fazer
+      a altera\xE7\xE3o. Chamar o m\xE9todo por uma inst\xE2ncia pede que ela fa\xE7a
+      essa altera\xE7\xE3o. O atributo pode continuar privado."
+    purpose: "Setters permitem alterar o estado por meio de um comportamento p\xFAblico
+      da pr\xF3pria classe, sem liberar acesso direto aos campos privados."
+    usageExample: "Trecho dentro de Livro, que j\xE1 possui paginas:\n\n<noparse>public
+      void setPaginas(int quantidade) {\n    this.paginas = quantidade;\n}</noparse>\n\nquantidade
+      recebe o n\xFAmero; this.paginas \xE9 o atributo.\n\nSe diario \xE9 um objeto
+      Livro, a chamada abaixo pede uma altera\xE7\xE3o:\n<noparse>diario.setPaginas(120);</noparse>\n\nDeclara\xE7\xE3o
+      e chamada ficam em lugares diferentes."
+    gameEffect: "Ajustes \xE9 opcional: use-o quando quiser redistribuir os pontos
+      antes da batalha. Os valores continuam sujeitos aos limites e \xE0 soma de
+      at\xE9 25. Preserve seu trabalho anterior para poder reutiliz\xE1-lo."
+    task: "1. Dentro de Mago, fora do construtor, crie <b>setVida, setDano, setAlcance,
+      setIniciativa e setVelocidadeAtaque</b>.\n2. Cada m\xE9todo deve ser p\xFAblico,
+      n\xE3o devolver valor e receber um int para atualizar seu atributo usando this.\n3.
+      Preserve o construtor e a inst\xE2ncia; clique em <b>Validar c\xF3digo</b>.\n4.
+      Para usar os setters, escreva suas chamadas no bloco Ajustes."
     hints:
-    - "Os cinco m\xE9todos ficam dentro das chaves de Mago, depois do construtor."
-    - "Cada assinatura come\xE7a com public void e recebe um par\xE2metro int valor."
-    - Use this.vida = valor, this.dano = valor, this.alcance = valor, this.iniciativa
-      = valor e this.velocidadeAtaque = valor.
-    - "N\xE3o apague o construtor nem a inst\xE2ncia. Depois, no bloco Ajustes, use
-      chamadas como mago.setAlcance(8);. Se passar de 25 pontos, redistribua tamb\xE9m
-      os outros atributos."
+    - "Se o campo \xE9 privado, pense em qual classe pode alterar diretamente seu
+      valor."
+    - "Os m\xE9todos ficam dentro de Mago, mas fora do corpo do construtor. As chamadas
+      ficam em Ajustes."
+    - Diferencie o valor recebido do atributo atualizado. Cada setter deve alterar
+      o campo correspondente ao seu nome.
+    - "Confira os cinco nomes, acesso p\xFAblico, um par\xE2metro inteiro por m\xE9todo,
+      atribui\xE7\xE3o e aus\xEAncia de retorno."
     criterion: 8
     completionMode: 1
     victoryTitle: "Atributos ajust\xE1veis!"
-    victoryAchievement: "Voc\xEA manteve os dados privados e criou m\xE9todos para
-      alter\xE1-los com controle."
-    victoryReview: "Um setter oferece uma forma p\xFAblica e controlada de mudar
-      um atributo private; a build final ainda precisa respeitar o limite de 25 pontos."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Setters: declarar um m\xE9todo
+      e depois cham\xE1-lo."
+    victoryReview: "Voc\xEA definiu m\xE9todos que alteram atributos privados. Declarar
+      os setters \xE9 diferente de cham\xE1-los por uma inst\xE2ncia em Ajustes.\n\nEsta
+      p\xE1gina permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: enemy-object
     chapter: 2
     order: 5
     title: Surge um inimigo
-    concept: "Classes e objetos em intera\xE7\xE3o"
-    whatItIs: "Uma classe pode produzir muitos objetos com estados diferentes. O
-      mesmo molde Inimigo representa advers\xE1rios variados."
-    purpose: Reutilizar uma classe evita repetir estruturas e permite criar desafios
-      diferentes apenas mudando os dados de cada objeto.
-    usageExample: Inimigo boneco = new Inimigo("Boneco de Treinamento", 10, "neutro");
-    gameEffect: "A inst\xE2ncia criada define o advers\xE1rio que aparece do outro
-      lado da arena."
-    task: Declare Inimigo com nome, vida e elemento privados, construtor, getElemento()
-      e instancie o Boneco de Treinamento com 10 de vida e elemento neutro.
+    concept: Outra classe, dados de texto e getter.
+    whatItIs: "Agora construiremos um segundo tipo de objeto: o <b>Inimigo</b>. Ele
+      tem seu pr\xF3prio estado e seu pr\xF3prio construtor, separados de Mago.\n\n<b>String</b>
+      representa texto; int representa um n\xFAmero inteiro. Uma classe pode reunir
+      atributos de tipos diferentes.\n\nUm <b>getter</b> consulta um atributo. O
+      tipo antes do nome do m\xE9todo informa o tipo do resultado. <b>return</b>
+      devolve esse resultado a quem fez a chamada. Um getter consulta; um setter
+      altera. Como o campo \xE9 privado, outros objetos podem usar essa consulta
+      p\xFAblica."
+    purpose: "Separar Mago e Inimigo d\xE1 uma responsabilidade a cada modelo. O
+      getter permite consultar o elemento necess\xE1rio para decis\xF5es futuras
+      sem acessar o campo privado diretamente."
+    usageExample: "Trechos dentro de Livro:\n\n<noparse>private String titulo;\n\npublic
+      String getTitulo() {\n    return titulo;\n}</noparse>\n\nO m\xE9todo devolve
+      um texto j\xE1 guardado no atributo. Ele n\xE3o recebe um novo t\xEDtulo nem
+      altera o livro.\n\nAplique ao elemento do Inimigo e reutilize o racioc\xEDnio
+      de construtor aprendido na fase 3."
+    gameEffect: "O Boneco come\xE7a na casa 16 e n\xE3o anda nem ataca. O Mago come\xE7a
+      na 1 e avan\xE7a uma casa por turno at\xE9 alcan\xE7ar o alvo. Atacar se repete
+      automaticamente. Ajustes \xE9 opcional; Estrat\xE9gia ainda n\xE3o \xE9 necess\xE1ria."
+    task: "1. Em um bloco vazio, declare a classe p\xFAblica <b>Inimigo</b>. Preserve
+      Mago.\n2. Declare atributos privados: nome (String), vida (int) e elemento
+      (String).\n3. Dentro da classe, crie um construtor p\xFAblico que receba e
+      guarde esses tr\xEAs valores.\n4. Adicione <b>getElemento</b>: p\xFAblico,
+      sem par\xE2metros, retorna String e devolve elemento.\n5. Fora da classe, crie
+      o inimigo chamado <b>Boneco de Treinamento</b>, com vida <b>10</b> e elemento
+      <b>neutro</b>.\n6. Clique em <b>Batalhar</b> e derrote o Boneco."
     hints:
-    - Dentro de public class Inimigo, declare private String nome; private int vida;
-      private String elemento;.
-    - "O construtor p\xFAblico Inimigo(String nome, int vida, String elemento) deve
-      guardar os tr\xEAs valores com this."
-    - Declare public String getElemento() { return elemento; } dentro de Inimigo.
-    - Finalize com new Inimigo("Boneco de Treinamento", 10, "neutro").
+    - "Inimigo \xE9 outro modelo. Seus dados e comportamentos pertencem a ele, n\xE3o
+      \xE0 classe Mago."
+    - "Atributos, construtor e getter ficam dentro de Inimigo. A cria\xE7\xE3o da
+      inst\xE2ncia fica fora da classe."
+    - Uma consulta precisa devolver um resultado. Confira o tipo do getter e o atributo
+      que ele retorna.
+    - "Confira os tr\xEAs campos, as atribui\xE7\xF5es do construtor, o getter e
+      os dados exatos do Boneco. Preserve o Mago e seu or\xE7amento."
     criterion: 3
     completionMode: 0
     victoryTitle: "Advers\xE1rio derrotado!"
-    victoryAchievement: "Voc\xEA criou um segundo tipo de objeto e o enfrentou na
-      arena."
-    victoryReview: "Uma classe \xE9 reutiliz\xE1vel; cada objeto criado por ela mant\xE9m
-      seu pr\xF3prio estado."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Outra classe, dados de texto
+      e getter."
+    victoryReview: "Mago e Inimigo t\xEAm responsabilidades distintas. O getter consulta
+      e devolve um dado; o setter recebe um valor para alter\xE1-lo.\n\nEsta p\xE1gina
+      permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: first-spell-method
     chapter: 2
     order: 6
     title: Primeira magia
-    concept: "M\xE9todos, par\xE2metros e chamadas"
-    whatItIs: "M\xE9todos descrevem comportamentos. Par\xE2metros fornecem os objetos
-      e valores necess\xE1rios para executar uma a\xE7\xE3o."
-    purpose: "M\xE9todos permitem que objetos colaborem sem expor diretamente todos
-      os detalhes de seu estado interno."
-    usageExample: public void lancarMagia(Inimigo inimigo) {} mago.lancarMagia(inimigo);
-    gameEffect: "Chamar lancarMagia faz o Mago atacar o Inimigo selecionado durante
-      a batalha autom\xE1tica."
-    task: "Declare lancarMagia com um par\xE2metro Inimigo e fa\xE7a o objeto mago
-      chamar esse m\xE9todo."
+    concept: "M\xE9todo com par\xE2metro e chamada por um objeto."
+    whatItIs: "Um <b>m\xE9todo</b> descreve um comportamento. Os par\xE2metros informam
+      os dados ou objetos necess\xE1rios para realiz\xE1-lo.\n\nA declara\xE7\xE3o
+      pertence \xE0 classe. A chamada usa um objeto concreto, seguido de ponto, nome
+      do m\xE9todo e argumentos entre par\xEAnteses.\n\nO par\xE2metro \xE9 um nome
+      local ao m\xE9todo; o argumento \xE9 o objeto que voc\xEA envia na chamada.
+      Eles n\xE3o precisam ter o mesmo nome, mas precisam ter tipos compat\xEDveis."
+    purpose: "M\xE9todos permitem que objetos colaborem: um personagem pode realizar
+      uma a\xE7\xE3o que envolve outro objeto, sem misturar suas classes."
+    usageExample: "Trecho dentro de uma classe Bibliotecario, em um exerc\xEDcio
+      simplificado:\n\n<noparse>public void conferir(Livro item) {\n}</noparse>\n\nO
+      par\xE2metro item representa o livro recebido. Se atendente \xE9 um Bibliotecario
+      e diario \xE9 um Livro, a chamada seria:\n\n<noparse>atendente.conferir(diario);</noparse>\n\nO
+      m\xE9todo vazio \xE9 apenas um exemplo de assinatura e chamada."
+    gameEffect: "No jogo, a declara\xE7\xE3o v\xE1lida da magia habilita a a\xE7\xE3o.
+      A simula\xE7\xE3o executa o ataque ao encontrar a chamada com a inst\xE2ncia
+      do inimigo. N\xE3o \xE9 preciso programar o dano dentro do m\xE9todo nesta
+      fase."
+    task: "1. Dentro de Mago, declare um m\xE9todo p\xFAblico <b>lancarMagia</b>,
+      sem retorno, com um par\xE2metro do tipo Inimigo. Seu corpo deve ficar vazio
+      nesta atividade.\n2. Fora das classes, fa\xE7a a inst\xE2ncia do Mago chamar
+      o m\xE9todo usando a inst\xE2ncia do Boneco como argumento.\n3. Preserve o
+      c\xF3digo anterior e clique em <b>Batalhar</b>."
     hints:
-    - O comportamento deve ser declarado dentro da classe Mago.
-    - "Use void quando o m\xE9todo n\xE3o precisa devolver um valor."
-    - "Receba o alvo como par\xE2metro Inimigo inimigo."
-    - "Depois da declara\xE7\xE3o, chame mago.lancarMagia(inimigo);"
+    - "Ensinar uma a\xE7\xE3o ao objeto e pedir que ele execute a a\xE7\xE3o s\xE3o
+      passos diferentes."
+    - "Declare o m\xE9todo dentro de Mago; escreva a chamada fora das classes usando
+      os objetos j\xE1 criados."
+    - "Na chamada, use o nome da inst\xE2ncia do inimigo. O nome do par\xE2metro
+      existe somente dentro do m\xE9todo."
+    - "Confira acesso, aus\xEAncia de retorno, nome da magia, tipo do par\xE2metro,
+      corpo vazio e chamada com o objeto correto."
     criterion: 4
     completionMode: 0
     victoryTitle: A primeira magia funcionou!
-    victoryAchievement: Seu Mago agora possui e executa um comportamento.
-    victoryReview: "M\xE9todos representam a\xE7\xF5es; par\xE2metros levam informa\xE7\xF5es
-      para a a\xE7\xE3o e chamadas pedem ao objeto que a execute."
+    victoryAchievement: "Voc\xEA aplicou o conceito: M\xE9todo com par\xE2metro e
+      chamada por um objeto."
+    victoryReview: "O m\xE9todo descreve o comportamento; a chamada pede sua execu\xE7\xE3o.
+      O argumento enviado representa o inimigo recebido pelo par\xE2metro.\n\nEsta
+      p\xE1gina permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: elemental-inheritance
     chapter: 3
     order: 7
     title: "Especializa\xE7\xE3o elemental"
-    concept: "Heran\xE7a"
-    whatItIs: "Heran\xE7a cria uma classe especializada a partir de outra. A subclasse
-      recebe caracter\xEDsticas e comportamentos da classe base."
-    purpose: Ela permite reutilizar o que todos os magos compartilham e concentrar
-      em cada subclasse apenas sua especialidade.
-    usageExample: public class Piromante extends Mago {}
-    gameEffect: "A subclasse muda o tipo elemental do Mago sem reconstruir todas
-      as suas capacidades b\xE1sicas."
-    task: "Acrescente public class Piromante extends Mago {} ao documento Mago. Mantenha
-      o Boneco de Treinamento e a chamada de magia. Nesta atividade a forma Piromante
-      usa fogo; a escolha por if/else ser\xE1 ensinada depois."
+    concept: "Heran\xE7a: classe base e especializa\xE7\xE3o."
+    whatItIs: "<b>Heran\xE7a</b> descreve uma rela\xE7\xE3o entre uma classe mais
+      geral e uma especializa\xE7\xE3o. A classe especializada \xE9 a <b>subclasse</b>;
+      a geral \xE9 a <b>classe base</b>.\n\nA palavra <b>extends</b> declara essa
+      rela\xE7\xE3o. Uma especializa\xE7\xE3o continua sendo um tipo da classe base
+      e pode aproveitar seus comportamentos, al\xE9m de acrescentar seus pr\xF3prios.\n\nCampos
+      privados continuam privados: herdar n\xE3o libera acesso direto a eles."
+    purpose: "A heran\xE7a concentra o que os tipos compartilham e permite especializar
+      o que muda. Ela representa uma rela\xE7\xE3o de tipo, n\xE3o uma c\xF3pia de
+      todo o c\xF3digo da base."
+    usageExample: "Em um exemplo independente, com uma classe Livro que n\xE3o declara
+      construtor pr\xF3prio:\n\n<noparse>public class LivroIlustrado extends Livro
+      {\n}</noparse>\n\nLivroIlustrado \xE9 uma especializa\xE7\xE3o de Livro. O
+      nome depois de extends \xE9 a classe base.\n\nNesta atividade, o jogo usa uma
+      forma simplificada de heran\xE7a para introduzir a rela\xE7\xE3o. Construtores
+      expl\xEDcitos das subclasses ser\xE3o pedidos na fase final."
+    gameEffect: "A forma Piromante usa fogo nesta atividade. A escolha de formas
+      por elemento ainda n\xE3o \xE9 necess\xE1ria. Preserve o Boneco e a chamada
+      da magia."
+    task: "1. No bloco Mago, fora da classe j\xE1 existente, declare uma classe p\xFAblica
+      chamada <b>Piromante</b>.\n2. Indique que ela herda de Mago. Deixe seu corpo
+      vazio nesta fase.\n3. Preserve Mago, o Boneco e a chamada da magia.\n4. Clique
+      em <b>Batalhar</b>."
     hints:
-    - A nova classe se chama Piromante.
-    - "Em Java, a rela\xE7\xE3o de heran\xE7a usa a palavra-chave extends."
-    - Mago deve aparecer depois de extends como classe base.
-    - "Solu\xE7\xE3o estrutural: public class Piromante extends Mago {}"
+    - "Piromante \xE9 um tipo de Mago. Qual rela\xE7\xE3o entre classes expressa
+      essa especializa\xE7\xE3o?"
+    - "A nova classe fica fora das chaves de Mago, no mesmo bloco de c\xF3digo."
+    - "Na rela\xE7\xE3o de heran\xE7a, primeiro vem o nome da especializa\xE7\xE3o;
+      depois da palavra de rela\xE7\xE3o vem a base."
+    - "Confira nome, acesso p\xFAblico, rela\xE7\xE3o com Mago, corpo vazio e preserva\xE7\xE3o
+      dos objetos anteriores."
     criterion: 5
     completionMode: 0
     victoryTitle: Poder elemental desbloqueado!
-    victoryAchievement: "Voc\xEA especializou o Mago sem repetir toda a classe base."
-    victoryReview: "Heran\xE7a permite que uma subclasse reutilize membros da classe
-      base e acrescente sua pr\xF3pria especializa\xE7\xE3o."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Heran\xE7a: classe base e especializa\xE7\xE3o."
+    victoryReview: "Piromante \xE9 uma especializa\xE7\xE3o de Mago. A heran\xE7a
+      representa essa rela\xE7\xE3o sem copiar todo o modelo base.\n\nEsta p\xE1gina
+      permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: spell-override
     chapter: 3
     order: 8
     title: Cada Mago, uma magia
-    concept: Sobrescrita e super
-    whatItIs: "Sobrescrita redefine em uma subclasse um m\xE9todo herdado. super
-      permite reutilizar explicitamente o comportamento da classe base."
-    purpose: "Classes relacionadas podem responder de modos diferentes \xE0 mesma
-      opera\xE7\xE3o sem perder o comportamento comum quando ele ainda \xE9 \xFAtil."
-    usageExample: '@Override public void lancarMagia(Inimigo inimigo) { super.lancarMagia(inimigo);
-      }'
-    gameEffect: "Piromante, Hidromante e Eletromante produzem ataques visuais diferentes
-      ao lan\xE7ar a mesma a\xE7\xE3o."
-    task: "Sobrescreva lancarMagia no Piromante usando @Override e super.lancarMagia(alvo).
-      No bloco Inimigo, substitua o Boneco pelo Golem de Gelo (12 de vida, gelo).
-      Atualize a chamada da magia para usar a nova inst\xE2ncia. A forma Piromante
-      continua fixa nesta atividade."
+    concept: "Sobrescrita e reutiliza\xE7\xE3o com super."
+    whatItIs: "<b>Sobrescrever</b> \xE9 oferecer, na subclasse, uma vers\xE3o de
+      um m\xE9todo herdado. A assinatura precisa corresponder ao m\xE9todo da base:
+      nome e tipos dos par\xE2metros.\n\n<b>@Override</b> deixa expl\xEDcita a inten\xE7\xE3o
+      de sobrescrever. <b>super</b> permite acessar o comportamento da classe base.\n\nA
+      vers\xE3o especializada pode reutilizar o que a base j\xE1 faz. Nesta atividade,
+      a nova magia deve apenas chamar a vers\xE3o herdada com o mesmo alvo recebido."
+    purpose: "Uma especializa\xE7\xE3o pode responder \xE0 mesma a\xE7\xE3o sem duplicar
+      a implementa\xE7\xE3o comum. A forma do objeto determina qual vers\xE3o do
+      comportamento ser\xE1 usada."
+    usageExample: "Trecho dentro de LivroIlustrado, supondo que Livro j\xE1 tenha
+      um m\xE9todo p\xFAblico mostrar sem par\xE2metros:\n\n<noparse>@Override\npublic
+      void mostrar() {\n    super.mostrar();\n}</noparse>\n\nA assinatura corresponde
+      \xE0 base. A chamada com super reutiliza o m\xE9todo herdado. No exerc\xEDcio
+      do Mago, lembre-se de encaminhar o par\xE2metro recebido."
+    gameEffect: "O Golem tem 12 de vida e elemento gelo. Nesta fase, a forma Piromante
+      permanece fixa. Trocar a inst\xE2ncia do inimigo tamb\xE9m exige atualizar
+      a chamada para o novo objeto."
+    task: "1. Dentro de Piromante, sobrescreva <b>lancarMagia</b> com a assinatura
+      definida em Mago e marque com @Override.\n2. No corpo, chame apenas a magia
+      herdada via super, passando o par\xE2metro recebido.\n3. No bloco Inimigo,
+      substitua o Boneco por <b>Golem de Gelo</b>, vida <b>12</b>, elemento <b>gelo</b>.\n4.
+      Atualize a chamada da magia para usar essa inst\xE2ncia e clique em <b>Batalhar</b>."
     hints:
-    - Mantenha a mesma assinatura de lancarMagia definida em Mago.
-    - "Marque a redefini\xE7\xE3o com @Override."
-    - "Dentro do novo m\xE9todo, super acessa o comportamento herdado."
-    - "Dentro do m\xE9todo, escreva somente super.lancarMagia(inimigo); usando o
-      mesmo par\xE2metro. No bloco Inimigo, substitua a inst\xE2ncia por Inimigo
-      golem = new Inimigo(\"Golem de Gelo\", 12, \"gelo\"); e atualize a chamada
-      para mago.lancarMagia(golem); usando o nome do seu Mago."
+    - "Voc\xEA vai especializar um m\xE9todo existente, n\xE3o criar outra a\xE7\xE3o
+      com nome diferente."
+    - "O novo m\xE9todo pertence a Piromante, dentro de suas chaves. A troca do objeto
+      inimigo fica fora de Inimigo."
+    - "Confira a assinatura herdada. A chamada via super deve encaminhar o mesmo
+      par\xE2metro recebido."
+    - "Confira anota\xE7\xE3o, assinatura, chamada herdada, dados do Golem e refer\xEAncia
+      ao novo inimigo na chamada externa."
     criterion: 6
     completionMode: 0
     victoryTitle: Magia especializada!
-    victoryAchievement: "Cada tipo de Mago agora responde \xE0 batalha \xE0 sua maneira."
-    victoryReview: "Sobrescrita especializa um m\xE9todo herdado; super permite combinar
-      o comportamento base com a nova implementa\xE7\xE3o."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Sobrescrita e reutiliza\xE7\xE3o
+      com super."
+    victoryReview: "A sobrescrita define uma vers\xE3o na subclasse. A chamada com
+      super reutiliza o comportamento da base com o mesmo alvo.\n\nEsta p\xE1gina
+      permanece dispon\xEDvel no Grim\xF3rio do Mago."
   - id: final-polymorphism
     chapter: 4
     order: 9
     title: Batalha final
-    concept: Polimorfismo
-    whatItIs: "Polimorfismo permite usar uma refer\xEAncia Mago para objetos Piromante,
-      Hidromante e Eletromante. A mesma chamada lancarMagia executa o comportamento
-      do objeto concreto. if/else escolhe esse objeto conforme o elemento do alvo."
-    purpose: "O mesmo c\xF3digo pode trabalhar com v\xE1rios tipos concretos e deixar
-      cada objeto executar sua pr\xF3pria vers\xE3o do comportamento."
-    usageExample: Mago ativo = mago; if (alvo.getElemento().equals("gelo")) { ativo
-      = new Piromante(10, 4, 9, 1, 1); } ... else { ativo = mago; } ativo.lancarMagia(alvo);
-    gameEffect: "O if/else escolhe a magia para cada alvo. O elemental ataca de longe;
-      preserve vida na build. Batalhar com c\xF3digo inv\xE1lido custa 20% da vida
-      m\xE1xima da tentativa e mant\xE9m a explica\xE7\xE3o do erro. Corrigir n\xE3o
-      cura; ap\xF3s derrota, tentar novamente restaura a vida."
-    task: "Escolha a subclasse com if/else e chame a magia pela refer\xEAncia Mago."
+    concept: "Polimorfismo e decis\xE3o por elemento."
+    whatItIs: "<b>Polimorfismo</b> permite usar uma refer\xEAncia de um tipo geral
+      para objetos de tipos especializados. Uma refer\xEAncia Mago pode apontar para
+      Piromante, Hidromante ou Eletromante.\n\nA chamada da magia \xE9 a mesma; o
+      objeto escolhido determina o comportamento concreto. <b>if/else</b> permite
+      escolher esse objeto de acordo com o elemento do alvo.\n\nO motor fornece <b>alvo</b>
+      para cada inimigo. Consulte seu elemento pelo getter. Para comparar textos,
+      use equals. Voc\xEA n\xE3o precisa criar listas nem la\xE7os: a simula\xE7\xE3o
+      percorre os alvos."
+    purpose: "O c\xF3digo que chama a magia trabalha com o tipo comum. A decis\xE3o
+      escolhe a especializa\xE7\xE3o adequada; a chamada final aproveita o comportamento
+      desse objeto."
+    usageExample: "Supondo que LivroIlustrado herde de Livro, um trecho independente
+      seria:\n\n<noparse>Livro escolhido = diario;\nif (querIlustracoes) {\n    escolhido
+      = ilustrado;\n}\nescolhido.mostrar();</noparse>\n\ndiario e ilustrado s\xE3o
+      objetos j\xE1 criados; querIlustracoes \xE9 uma condi\xE7\xE3o booleana deste
+      exemplo. A refer\xEAncia \xE9 do tipo Livro e a chamada usa o objeto escolhido.\n\nPara
+      comparar texto, por exemplo:\n<noparse>titulo.equals(\"Di\xE1rio\")</noparse>"
+    gameEffect: "Correspond\xEAncias: gelo \u2192 Piromante; fogo \u2192 Hidromante;
+      \xE1gua \u2192 Eletromante; neutro \u2192 Mago.\n\nO Elemental ataca de longe.
+      Preserve vida na distribui\xE7\xE3o de at\xE9 25 pontos. Uma tentativa com
+      c\xF3digo inv\xE1lido custa 20% da vida m\xE1xima; corrigir n\xE3o cura. Ap\xF3s
+      derrota, tentar novamente restaura a vida. Consultar o grim\xF3rio e pedir
+      dicas n\xE3o causa essa penalidade."
+    task: "1. Preserve Mago e Inimigo. No bloco Mago, prepare <b>Piromante, Hidromante
+      e Eletromante</b>, todas herdando de Mago.\n2. Cada subclasse precisa de um
+      construtor com os cinco par\xE2metros, encaminhados \xE0 base por super, e
+      da magia sobrescrita com @Override e chamada herdada.\n3. No bloco Inimigo,
+      crie uma inst\xE2ncia de cada alvo: <b>Boneco de Treinamento</b> (10, neutro),
+      <b>Golem de Gelo</b> (12, gelo), <b>Elemental de Fogo</b> (12, fogo) e <b>Slime
+      Aqu\xE1tico</b> (12, \xE1gua). Os n\xFAmeros indicam vida.\n4. Em Estrat\xE9gia,
+      inicialize uma refer\xEAncia do tipo Mago com sua inst\xE2ncia original. Escolha
+      as formas por if/else conforme o elemento de alvo. Repita os cinco valores
+      do seu Mago nas formas.\n5. Para o alvo neutro, mantenha o Mago original. Termine
+      chamando a magia pela refer\xEAncia escolhida, depois da decis\xE3o.\n6. Clique
+      em <b>Batalhar</b> e ven\xE7a todos os alvos."
     hints:
-    - Use extends Mago, construtor com super(...) e magia com @Override.
-    - "Declare Mago ativo = mago;. O motor fornece alvo; sem listas ou la\xE7os."
-    - "Gelo: Piromante. Fogo: Hidromante. \xC1gua: Eletromante. Repita a build."
-    - Use else { ativo = mago; } e termine com ativo.lancarMagia(alvo);
+    - "A refer\xEAncia tem um tipo comum; o objeto apontado pode ser uma das especializa\xE7\xF5es."
+    - "Prepare as subclasses no bloco Mago. A escolha por elemento e a chamada final
+      ficam em Estrat\xE9gia; alvo \xE9 fornecido pelo motor."
+    - "Consulte o getter, compare o texto e use as correspond\xEAncias explicadas.
+      Confira os construtores e o encaminhamento \xE0 base."
+    - "Revise as tr\xEAs formas, a mesma distribui\xE7\xE3o de pontos, o caso neutro
+      e a chamada pela refer\xEAncia comum depois da decis\xE3o."
     criterion: 7
     completionMode: 0
     victoryTitle: "Jornada conclu\xEDda!"
-    victoryAchievement: "Voc\xEA reuniu classes, objetos, encapsulamento, heran\xE7a
-      e comportamento polim\xF3rfico em uma estrat\xE9gia completa."
-    victoryReview: "Polimorfismo usa uma refer\xEAncia comum para acionar comportamentos
-      diferentes conforme o objeto concreto, tornando o c\xF3digo flex\xEDvel e extens\xEDvel."
+    victoryAchievement: "Voc\xEA aplicou o conceito: Polimorfismo e decis\xE3o por
+      elemento."
+    victoryReview: "A refer\xEAncia comum aponta para objetos especializados. Sua
+      decis\xE3o escolhe o objeto, e a mesma chamada de magia usa o comportamento
+      dessa forma.\n\nEsta p\xE1gina permanece dispon\xEDvel no Grim\xF3rio do Mago."

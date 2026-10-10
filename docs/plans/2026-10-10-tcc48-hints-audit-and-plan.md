@@ -39,7 +39,7 @@ As dicas aparecem após tentativas inválidas, sem um pedido explícito de ajuda
 | 8 — Sobrescrita | Exemplo entrega o método inteiro; a última dica combina implementação, criação do Golem e chamada. Fonte da dica cai para 11,85 px. | Separar três ações: sobrescrever, trocar o alvo e atualizar a chamada. Explicar assinatura, anotação e reutilização via `super` com uma analogia. Dicas curtas, cada uma com uma função pedagógica. |
 | 9 — Polimorfismo | Tarefa muito genérica para várias exigências. Exemplo longo contém reticências literais no meio do código. Regras de combate competem com a explicação. | Dar checklist de subclasses, construtores, métodos e seleção por elemento, alinhado ao validador. Explicar a referência comum e o alvo fornecido pelo motor. Separar regras de combate, inclusive penalidade de tentativa inválida. Usar exemplo pequeno, sem código incompleto apresentado como executável. |
 
-## Padrão recomendado
+## Proposta inicial (substituída pelo grimório)
 
 Manter o painel à direita, com título e objetivo resumido sempre visíveis. Abaixo, quatro abas iguais em todas as fases:
 
@@ -123,3 +123,40 @@ Plano concreto: testar desbloqueio e ajuda persistida sem falhas; implementar mo
 - Exercícios reais contra os validadores: cada tarefa descreve o necessário para avançar; os exemplos do outro contexto não concluem a atividade por simples colagem. Revisão pedagógica manual complementa os testes.
 - Conferência visual em 1920 × 1080, 1366 × 768 e formato 4:3, com as instruções mais longas e as quatro dicas reveladas. Não ocultar texto nem usar fonte minúscula para fazê-lo caber.
 - Percurso completo com progressão salva, retorno pelo mapa e revisão de fases concluídas. O diagnóstico atual não substitui essa validação final.
+
+## Refinamento visual aprovado
+
+O usuário pediu artes originais inspiradas nas referências, com o livro fechado de frente e o livro aberto próximo da tela. Foram gerados dois sprites exclusivos, com fundo transparente: `Grimoire-Closed-PixelArt.png` e `Grimoire-Open-PixelArt.png`. As referências não foram incorporadas ao projeto. Os sprites usam filtragem Point, sem mipmaps, e as páginas não contêm texto rasterizado: o conteúdo continua editável, acessível por rolagem e renderizado em TMP.
+
+O botão apresenta o livro fechado flutuando, com círculos roxos e azuis e partículas orbitando em tempo não escalado. Ao abrir, uma animação curta expande o livro na cena própria. A arte aberta ocupa a maior parte da tela; as duas áreas de leitura ficam sobre o pergaminho, sem encobrir os ornamentos. O conteúdo das nove fases segue o mesmo padrão e usa exemplos de outro contexto, sem fornecer a solução completa do exercício.
+
+Implementação na branch `codex/TCC-48-hints`, baseada em `dev` (`a04f3a3`). A consulta pausa a batalha, preserva o código e permite retornar por Fechar/Esc. As páginas futuras usam escrita mágica; desbloqueio e dicas consultadas são persistidos junto ao progresso, com compatibilidade para saves anteriores.
+
+## Resultado da validação
+
+### Polimento solicitado após a revisão do jogador
+
+Escopo autorizado: preservar a proporção do livro aberto e ampliar o espaço vertical em 16:9; alinhar a silhueta pela base do sprite espectral; dar margem interna aos seletores e títulos de código; desenhar um alfabeto de runas fictícias nas páginas seladas; encaminhar Próxima fase ao mapa e remover o botão de mapa da vitória; separar Pausar e Mapa na arena. O item 7 permanece em avaliação: recomenda-se um livro maior clicável, sem o retângulo marrom, com legenda discreta e área de clique generosa; não será implementado antes da escolha do usuário.
+
+Plano: adicionar verificações dos problemas; corrigir geometria e navegação; aplicar alterações pontuais às cenas existentes; conferir 16:9/4:3, runas, silhueta, combate e vitória; executar regressão das partes afetadas.
+
+- Treze testes específicos do grimório aprovados: três de progresso/persistência, dois das artes importadas e oito de integração. Os quatro testes adicionais verificam proporção e runas desenhadas, silhueta acima do solo, margens dos controles e separação entre pausa/mapa, além da transição da vitória ao mapa sem botão redundante. Foram observadas as falhas antes das correções e a aprovação depois.
+- Regressão: LearningProgress 32/32; LearningFlowPresenter 17/17; LevelMapScene 9/9; GameplaySceneAsset 20/22; GameplayScene 60/61. Total com os testes do grimório: 151/154. Os testes de progressão agora percorrem o mapa entre fases, conforme o fluxo solicitado.
+- As três falhas restantes já estavam presentes: expectativa do sprite antigo `Mago-pixel.png`; preparação da cena não idempotente (164 objetos esperados, 169 na execução atual); enquadramento do cenário sob pai escalado (0,464241 contra 0,5 na execução atual, dependente do formato da Game View). Elas não foram mascaradas nem tiveram seus testes removidos.
+- Conferidas as nove páginas no início/fim da rolagem em 1920 × 1080, quatro dicas da última fase, página futura selada, formato 4:3 em 1440 × 1080 e 1366 × 768. A revisão com código inválido encontrou sobreposição do botão com o diagnóstico; isso foi corrigido e ganhou teste de regressão.
+- Save pessoal, cena e configurações da Game View foram restaurados após as conferências. Os testes existentes exercitam construção do Mago, setters, Inimigo/getter, magia, herança, sobrescrita e batalha final com recarga do progresso; a revisão pedagógica do jogador continua sendo parte da avaliação humana.
+- A revisão do polimento conferiu o livro e as runas em 16:9, o livro em 4:3, a silhueta, o espaçamento do rodapé, pausa/mapa e vitória/mapa. O item 7 recebeu apenas uma prévia temporária em Play Mode, com livro ampliado sem fundo/moldura marrom; o botão salvo permanece como estava, aguardando avaliação.
+
+### Item 7 aprovado: livro maior sem moldura
+
+Após avaliar a prévia, o jogador autorizou retirar o fundo e a moldura marrom e ampliar ainda mais apenas a arte do grimório. A legenda mantém o limite de fonte de 28 e recebe a cor de tinta do pergaminho. O livro e seus círculos mágicos ocupam uma área maior abaixo da tarefa; o botão conserva uma área transparente de clique e a própria imagem recebe cliques inclusive onde ultrapassa o retângulo do botão. A abertura, a flutuação e os efeitos de interação permanecem. A apresentação é aplicada tanto à cena salva quanto na inicialização, para que o estilo global dos botões não restaure a moldura.
+
+Plano de conferência: comparar visualmente com a prévia em 16:9 e 4:3, verificar a distância da tarefa e do diagnóstico, clicar para abrir/fechar a cena do grimório e executar os testes de integração existentes.
+
+Resultado: arte aproximadamente um terço maior que na prévia em 16:9, legenda com o mesmo tamanho, fundo e borda removidos; conferidos os dois formatos e abertura/retorno pelo botão. Os oito testes de integração do grimório passaram novamente. Save e configurações da revisão visual foram restaurados.
+
+Refinamento de espaçamento aprovado: deslocar livro, efeitos e legenda 20 unidades de UI para baixo, mantendo suas dimensões e a fonte, para dar mais distância ao texto da tarefa. A área de diagnóstico permanece reservada.
+
+Revisão seguinte: livro, efeitos e legenda descem mais 10 unidades (deslocamento total de 30). A silhueta agora encosta os pés visíveis no solo: o cálculo desconta os 148 pixels transparentes abaixo dos pés na arte de 1254 pixels e remove o movimento de flutuação vertical. O teste de contato dos pés falhou antes da correção (3,119 contra solo 2,9) e verifica o alinhamento em vários frames.
+
+Conferência visual desta revisão em 16:9 e 4:3 e abertura/retorno pelo botão aprovados; oito testes de integração passaram, incluindo o contato dos pés corrigido. Save pessoal e configurações da revisão restaurados.

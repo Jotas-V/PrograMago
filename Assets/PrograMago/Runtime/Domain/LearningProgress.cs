@@ -9,6 +9,7 @@ namespace PrograMago.Domain
         private readonly int[] attemptCounts;
         private readonly int[] failedCounts;
         private readonly bool[] completed;
+        private readonly int[] revealedHintCounts;
 
         public LearningProgress(LearningPath path)
         {
@@ -45,6 +46,7 @@ namespace PrograMago.Domain
             attemptCounts = new int[playableBattleCount];
             failedCounts = new int[playableBattleCount];
             completed = new bool[playableBattleCount];
+            revealedHintCounts = new int[playableBattleCount];
             Stage = LearningStage.Editing;
         }
 
@@ -56,6 +58,26 @@ namespace PrograMago.Domain
 
         public bool HasCompletedJourney => playableBattleCount == Path.Battles.Count &&
             Array.TrueForAll(completed, value => value);
+
+        public bool CanReadGrimoirePage(int index)
+        {
+            return index >= 0 && index < playableBattleCount &&
+                (index == 0 || completed[index - 1]);
+        }
+
+        public int GetRevealedHintCount(int index)
+        {
+            if (index < 0 || index >= playableBattleCount) throw new ArgumentOutOfRangeException(nameof(index));
+            return revealedHintCounts[index];
+        }
+
+        public string RevealGrimoireHint(int index)
+        {
+            if (!CanReadGrimoirePage(index)) return null;
+            var hints = Path.Battles[index].Hints;
+            revealedHintCounts[index] = Math.Min(revealedHintCounts[index] + 1, hints.Count);
+            return hints[revealedHintCounts[index] - 1];
+        }
 
         public bool CanSelectBattle(int index)
         {
@@ -206,6 +228,7 @@ namespace PrograMago.Domain
             failedCounts[CurrentBattleIndex] = FailedAttempts;
             int hintIndex = Math.Min(FailedAttempts - 1, CurrentBattle.Hints.Count - 1);
             CurrentHint = CurrentBattle.Hints[hintIndex];
+            revealedHintCounts[CurrentBattleIndex] = Math.Max(revealedHintCounts[CurrentBattleIndex], hintIndex + 1);
             return CurrentHint;
         }
 
@@ -235,6 +258,7 @@ namespace PrograMago.Domain
                 battleIds = ids,
                 attemptCounts = (int[])attemptCounts.Clone(),
                 failedCounts = (int[])failedCounts.Clone(),
+                revealedHintCounts = (int[])revealedHintCounts.Clone(),
                 completed = (bool[])completed.Clone(),
                 sourceCode = sourceCode ?? string.Empty,
                 approvedCode = approvedCode ?? string.Empty,
@@ -310,6 +334,13 @@ namespace PrograMago.Domain
             Array.Copy(data.attemptCounts, attemptCounts, expectedCount);
             Array.Copy(data.failedCounts, failedCounts, expectedCount);
             Array.Copy(data.completed, completed, expectedCount);
+            for (int index = 0; index < expectedCount; index++)
+            {
+                int legacyCount = Math.Min(failedCounts[index], Path.Battles[index].Hints.Count);
+                int savedCount = data.revealedHintCounts != null && index < data.revealedHintCounts.Length
+                    ? data.revealedHintCounts[index] : 0;
+                revealedHintCounts[index] = Math.Max(legacyCount, Math.Min(Math.Max(0, savedCount), Path.Battles[index].Hints.Count));
+            }
             CurrentBattleIndex = data.currentBattleIndex;
             Stage = data.stage == LearningStage.BattleInProgress
                 ? LearningStage.Editing : data.stage;

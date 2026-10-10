@@ -46,7 +46,7 @@ namespace PrograMago.UnityIntegration
 
         private void LayoutCodeFileButtons()
         {
-            float x = 0f;
+            float x = 16f;
             for (int index = 0; index < codeBlockButtons.Length; index++)
             {
                 if (codeBlockButtons[index] == null) continue;
@@ -62,7 +62,7 @@ namespace PrograMago.UnityIntegration
         {
             Transform legacyTitle = definitionStrip.Find("DefinitionBlocksTitle");
             if (legacyTitle != null) legacyTitle.gameObject.SetActive(false);
-            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 0f, 512f);
+            LayoutWorkspaceTitle("PhaseCodeGroupTitle", "BLOCOS DE CÓDIGO", 16f, 496f);
             LayoutWorkspaceTitle("WizardConfigGroupTitle", "AJUSTES", 536f, 144f);
         }
 

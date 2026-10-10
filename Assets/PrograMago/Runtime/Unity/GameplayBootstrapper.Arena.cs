@@ -142,7 +142,10 @@ namespace PrograMago.UnityIntegration
             SpriteRenderer sprite = actor.GetComponentInChildren<SpriteRenderer>();
             Vector3 ground = CellGroundPosition(cell);
             Transform feet = actor.transform.Find("CombatFootAnchor");
-            actor.transform.position += new Vector3(ground.x - sprite.bounds.center.x, ground.y - (feet != null ? feet.position.y : sprite.bounds.min.y), 0);
+            float footHeight = actor == wizardInstance && CurrentMago == null
+                ? SpectralWizardFeetHeight(sprite)
+                : feet != null ? feet.position.y : sprite.bounds.min.y;
+            actor.transform.position += new Vector3(ground.x - sprite.bounds.center.x, ground.y - footHeight, 0);
         }
 
         private int TargetDistance(string variableName)
