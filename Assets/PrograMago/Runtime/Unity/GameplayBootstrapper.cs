@@ -243,6 +243,7 @@ namespace PrograMago.UnityIntegration
             nextBattleButton.onClick.AddListener(HandleNextBattle);
             codeInput.onValueChanged.AddListener(HandleCodeChanged);
             learningFlowPresenter.Initialize();
+            ShowCodeDocument(codeBlocks.ActiveText);
             if (saved != null)
             {
                 // Rendering the lesson may focus Mago; reload must preserve the saved selection.
@@ -491,6 +492,7 @@ namespace PrograMago.UnityIntegration
                 renderer.sprite = idleSprite != null ? idleSprite : GetEnemyPlaceholderSprite();
                 renderer.color = idleSprite != null ? Color.white : EnemyColor(enemy.Elemento);
                 renderer.sortingOrder = 10;
+                renderer.flipX = true;
                 marker.transform.localScale = new Vector3(0.65f, 0.85f, 1f);
                 if (controller != null)
                 {
@@ -518,6 +520,7 @@ namespace PrograMago.UnityIntegration
 
         private void ClearEnemyMarkers()
         {
+            StopEnemyMoves();
             foreach (GameObject marker in enemyMarkers)
             {
                 if (marker != null) Destroy(marker);
@@ -671,6 +674,7 @@ namespace PrograMago.UnityIntegration
             if (IsFinalEncounter && attemptLife == 0) return;
             StoreWorkspaceText();
             ShowCodeDocument(codeInput.text);
+            codeInput.GetComponent<CodeEditorSession>()?.ScrollToStart();
             if (learningFlowPresenter.Progress.CurrentBattle.CompletionMode == BattleCompletionMode.OnCombatVictory)
             {
                 if (!CompileTimeline() || !TryApplyPreparation())
@@ -1008,6 +1012,10 @@ namespace PrograMago.UnityIntegration
                     break;
                 case CombatEventKind.Move:
                     if (action.Actor == "Mago") AnimateWizardMove(action.Position);
+                    else {
+                        var enemy = enemyMarkers.Find(item => item != null && item.name == "EnemyMarker-" + action.Actor);
+                        if (enemy != null) AnimateEnemyMove(enemy, action.Position);
+                    }
                     combatStatusText.text = $"{actor} avança para a casa {action.Position + 1} para entrar no alcance.";
                     combatStatusText.color = new Color32(255, 214, 137, 255);
                     break;
@@ -1065,6 +1073,8 @@ namespace PrograMago.UnityIntegration
                 enemyMarkers[index].SetActive(combat.Enemies[index].Life > 0 ||
                     pendingEnemyImpacts.ContainsKey(combat.Enemies[index].Source.VariableName));
                 StandInCell(enemyMarkers[index], combat.Enemies[index].Position);
+                if (wizardInstance != null) enemyMarkers[index].GetComponent<SpriteRenderer>().flipX =
+                    enemyMarkers[index].transform.position.x >= wizardInstance.transform.position.x;
             }
             UpdateReachIndicators();
         }

@@ -115,10 +115,12 @@ namespace PrograMago.Domain
             Position = position;
             InitialPosition = position;
             bool dummy = source.Elemento == "neutro";
-            Damage = dummy ? 0 : 2;
-            Range = 1;
+            Damage = dummy ? 0 : 1;
+            Range = dummy ? 1 : 8;
             Initiative = dummy ? 1 : 5;
             AttackSpeed = dummy ? 3 : 5;
+            // Introductory enemies approach normally, but leave time to respond after a hit.
+            HitRecoveryTicks = finalEncounter ? 0 : 16 - AttackSpeed;
             if (finalEncounter && !dummy)
             {
                 switch (source.Elemento)
@@ -138,6 +140,7 @@ namespace PrograMago.Domain
         public int Range { get; }
         public int Initiative { get; }
         public int AttackSpeed { get; }
+        internal int HitRecoveryTicks { get; }
         internal int NextDueTick { get; set; }
     }
 
@@ -255,7 +258,8 @@ namespace PrograMago.Domain
             {
                 result = EnemyTurn(enemies[actor]);
                 eventsThisTick.Add(result);
-                enemies[actor].NextDueTick = CurrentTick + 16 - enemies[actor].AttackSpeed;
+                enemies[actor].NextDueTick = CurrentTick + 16 - enemies[actor].AttackSpeed +
+                    (result.Kind == CombatEventKind.Hit ? enemies[actor].HitRecoveryTicks : 0);
             }
             CurrentTick++;
             return result;

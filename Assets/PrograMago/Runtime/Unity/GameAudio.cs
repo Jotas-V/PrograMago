@@ -20,6 +20,8 @@ namespace PrograMago.UnityIntegration
         private readonly Dictionary<GameSound, float> lastPlayed = new Dictionary<GameSound, float>();
         private readonly AudioSource[] voices = new AudioSource[8];
         private readonly bool[] resultVoices = new bool[8];
+        private readonly float[] voiceGains = new float[8];
+        public static float HoverGainForScene(string scene) => scene == MainMenuView.SceneName ? 1f : .5f;
         private AudioSource music;
         private float duckUntil;
         private bool initialized;
@@ -108,6 +110,7 @@ namespace PrograMago.UnityIntegration
             if (slot < 0) return false;
             lastPlayed[sound] = now;
             resultVoices[slot] = result;
+            voiceGains[slot] = sound == GameSound.Hover ? HoverGainForScene(SceneManager.GetActiveScene().name) : 1f;
             voices[slot].clip = clip;
             if (result) duckUntil = now + Mathf.Min(clip.length, 3f);
             voices[slot].volume = GameAudioSettings.Effects * .65f;
@@ -131,7 +134,7 @@ namespace PrograMago.UnityIntegration
             music.volume = GameAudioSettings.Music * .3f * (resultPlaying && Time.unscaledTime < duckUntil ? .4f : 1f);
             // The sum of voice gains stays <= .65 even during a burst of attacks.
             float gain = GameAudioSettings.Effects * .65f / Mathf.Max(1, count);
-            foreach (var voice in voices) if (voice != null) voice.volume = gain;
+            for (int i = 0; i < voices.Length; i++) if (voices[i] != null) voices[i].volume = gain * voiceGains[i];
         }
 
         private void OnDestroy()

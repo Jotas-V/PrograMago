@@ -406,7 +406,7 @@ namespace PrograMago.UnityIntegration
                     animator.Update(0f);
                 }
             }
-            sprite.color = Color.white;
+            if (!damageFlashes.ContainsKey(sprite)) sprite.color = Color.white;
         }
 
         private void UpdateSpectralWizardIdle()
@@ -441,16 +441,24 @@ namespace PrograMago.UnityIntegration
             Vector3 destination = GetActorCellPosition(actor, destinationCell);
             const float duration = 0.44f;
             float elapsed = 0f;
+            float stepTime = .32f;
             while (elapsed < duration && actor != null)
             {
+                if (combat != null && combat.IsPaused) {
+                    if (animator != null) animator.speed = 0;
+                    yield return null; continue;
+                }
+                if (animator != null) animator.speed = 1;
                 elapsed += Time.unscaledDeltaTime;
+                stepTime += Time.unscaledDeltaTime;
+                if (start != destination && stepTime >= .32f) { GameAudio.Play(GameSound.MapStep); stepTime %= .32f; }
                 actor.transform.position = Vector3.Lerp(start, destination, Mathf.Clamp01(elapsed / duration));
                 yield return null;
             }
             if (actor != null)
             {
                 actor.transform.position = destination;
-                if (animator != null && animator.enabled) animator.SetBool("Walking", false);
+                if (animator != null && animator.enabled) { animator.SetBool("Walking", false); animator.speed = CharacterAnimationSpeed; }
                 movingActors.Remove(actor);
             }
             wizardMoveRoutine = null;
@@ -505,9 +513,11 @@ namespace PrograMago.UnityIntegration
             damageFlashes[sprite] = StartCoroutine(DamageFlash(sprite, element, baseColor));
         }
 
+        private bool actorIsWizard(SpriteRenderer sprite) => wizardInstance != null && sprite.transform.IsChildOf(wizardInstance.transform);
+
         private IEnumerator DamageFlash(SpriteRenderer sprite, CombatElement element, Color baseColor)
         {
-            Color elementColor = ElementColor(element);
+            Color elementColor = actorIsWizard(sprite) ? new Color(1f, .12f, .12f) : ElementColor(element);
             sprite.color = Color.Lerp(baseColor, elementColor, 0.58f);
             const float duration = 0.26f;
             float elapsed = 0f;

@@ -24,6 +24,15 @@ namespace PrograMago.UnityIntegration
         public int CurrentPage { get; private set; }
         public bool IsPageReadable => progress != null && progress.CanReadGrimoirePage(CurrentPage);
 
+        private void Awake()
+        {
+            foreach (var scroll in new[] { leftScroll, rightScroll }) {
+                if (scroll == null || scroll.verticalScrollbar != null) continue;
+                scroll.verticalScrollbar = ThinScrollbar.Create(scroll.transform, "PageScrollbar");
+                var max = scroll.viewport.offsetMax; max.x -= 20; scroll.viewport.offsetMax = max;
+            }
+        }
+
         public void Configure(LearningProgress value, Action onClose, Action onSave)
         {
             progress = value ?? throw new ArgumentNullException(nameof(value));

@@ -205,6 +205,7 @@ namespace PrograMago.UnityIntegration
             pendingWizardCasts.Clear();
             FinishWizardCast();
             StopWizardMove();
+            StopEnemyMoves();
             foreach (var projectile in projectiles) if (projectile != null) Destroy(projectile.gameObject);
             projectiles.Clear();
             pendingEnemyImpacts.Clear();

@@ -124,8 +124,8 @@ namespace PrograMago.UnityIntegration
             else if (area == WorkspaceArea.Preparation)
             {
                 ShowCodeDocument(preparationCode);
-                feedbackText.text = "Ajustes · redistribua atributos antes da batalha usando os setters da classe Mago.\n" +
-                    $"Exemplo: {(declaredMago == null ? "mago" : declaredMago.InstanceName)}.setAlcance(5);";
+                feedbackText.text = $"Ajustes: {(declaredMago == null ? "mago" : declaredMago.InstanceName)}.setAlcance(5);\n" +
+                    "Uma chamada por linha. Valores de 1 a 15, soma até 25. Batalhar aplica. Consulte a página 4 do grimório.";
             }
             UpdateWorkspaceUi();
             RefreshCodeBlockButtons();
@@ -254,14 +254,18 @@ namespace PrograMago.UnityIntegration
         private void ShowCodeDocument(string source)
         {
             if (codeInput == null) return;
-            codeInput.DeactivateInputField();
-            codeInput.SetTextWithoutNotify(source ?? string.Empty);
-            codeInput.stringPosition = 0;
-            codeInput.caretPosition = 0;
-            if (codeInput.textComponent != null)
-                codeInput.textComponent.rectTransform.anchoredPosition = Vector2.zero;
-            if (codeInput.verticalScrollbar != null) codeInput.verticalScrollbar.value = 0;
-            codeInput.ForceLabelUpdate();
+            if (!UnityEngine.Application.isPlaying)
+            {
+                codeInput.SetTextWithoutNotify(source ?? string.Empty);
+                codeInput.ForceLabelUpdate();
+                return;
+            }
+            var session = codeInput.GetComponent<CodeEditorSession>();
+            if (session == null) session = codeInput.gameObject.AddComponent<CodeEditorSession>();
+            string key = workspaceArea == WorkspaceArea.Classes || workspaceArea == WorkspaceArea.Strategy
+                ? selectedCombatBlock >= 0 ? "combat:" + selectedCombatBlock : "block:" + codeBlocks.ActiveIndex
+                : workspaceArea.ToString();
+            session.LoadDocument(key, source);
         }
 
         private static void SetWorkspaceButtonSelection(UnityEngine.UI.Button button, bool selected)

@@ -27,6 +27,7 @@ namespace PrograMago.UnityIntegration
             if (attemptLife > 0) GameAudio.Play(GameSound.Damage);
             feedbackText.text += $"\nCódigo inválido: perdeu {damage} de vida. Vida: {attemptLife}/{attemptMaximumLife}.";
             RenderWizard();
+            FlashCombatTarget(wizardInstance, CombatElement.Neutral);
             if (attemptLife == 0)
             {
                 GameAudio.Play(GameSound.Defeat);

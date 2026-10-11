@@ -167,7 +167,12 @@ MonoBehaviour:
       setIniciativa e setVelocidadeAtaque</b>.\n2. Cada m\xE9todo deve ser p\xFAblico,
       n\xE3o devolver valor e receber um int para atualizar seu atributo usando this.\n3.
       Preserve o construtor e a inst\xE2ncia; clique em <b>Validar c\xF3digo</b>.\n4.
-      Para usar os setters, escreva suas chamadas no bloco Ajustes."
+      Na pr\xF3xima fase, abra <b>Ajustes</b> para usar os setters. Escreva chamadas
+      pelo nome da inst\xE2ncia criada, uma por linha, com ponto e v\xEDrgula; n\xE3o
+      copie a classe Mago para Ajustes.\n5. Cada valor deve ficar de 1 a 15 e a soma
+      dos cinco at\xE9 25 pontos. Ao aumentar um atributo, reduza outro se necess\xE1rio.\n6.
+      As chamadas em Ajustes ser\xE3o aplicadas antes da batalha. Se apagar esse
+      bloco, voltam os valores do construtor."
     hints:
     - "Se o campo \xE9 privado, pense em qual classe pode alterar diretamente seu
       valor."
