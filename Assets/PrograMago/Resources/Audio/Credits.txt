@@ -1,0 +1,55 @@
+PrograMago - Audio credits / TCC-45
+
+Music.ogg: Deja Vus (full in-game OST loop), YannZ.
+Music by YannZ: https://yannz41.itch.io
+Spotify: https://open.spotify.com/intl-it/artist/76CUcHd0t0XViSm9YBbHBw
+Contact: yziango@gmail.com
+Source: https://opengameart.org/content/free-contemplative-fantasy-music-pack
+License: Creative Commons Attribution 4.0 International
+https://creativecommons.org/licenses/by/4.0/
+Unmodified source audio.
+
+FireSpell.wav: Fire / Evil Spell, artisticdude (Fire.aif).
+Source: https://opengameart.org/content/fire-evil-spell
+License: Creative Commons Attribution 3.0 Unported
+https://creativecommons.org/licenses/by/3.0/
+Converted from AIFF to WAV without cutting or changing the sound.
+
+NormalSpell.wav: Quick Zap, dklon (quick_zap.wav).
+Source: https://opengameart.org/content/quick-zap
+License: Creative Commons Attribution 3.0 Unported
+https://creativecommons.org/licenses/by/3.0/
+Unmodified source audio; used as the normal spell by user selection.
+
+ElectricSpell.wav: Electricity sound effects, BMacZero / Brian MacIntosh (continuousspark.wav).
+Source: https://opengameart.org/content/electricity-sound-effects-0
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Hover.ogg: select_001.ogg, Kenney, Interface Sounds.
+Source: https://kenney.nl/assets/interface-sounds
+GrimoireOpen.ogg: cloth1.ogg, Kenney, RPG Audio.
+PageTurn.ogg: bookFlip1.ogg, Kenney, RPG Audio.
+Source: https://kenney.nl/assets/rpg-audio
+Damage.ogg: impactSoft_medium_002.ogg, Kenney, Impact Sounds.
+MapStep.ogg: footstep_grass_000.ogg, Kenney, Impact Sounds.
+Source: https://kenney.nl/assets/impact-sounds
+License for all Kenney sounds: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+MapOpen.ogg: book_03.ogg, rubberduck, 80 RPG sound effects.
+Source: https://opengameart.org/node/86018
+WaterSpell.ogg: splash_14.ogg, rubberduck, 40 water / splash / slime SFX.
+Source: https://opengameart.org/content/40-cc0-water-splash-slime-sfx
+License for both rubberduck sounds: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Victory.wav: Win sound.wav, Listener.
+Source: https://opengameart.org/content/win-sound-effect
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+All effects are complete individual clips, renamed for their game events.
+Click reuses Hover; defeat reuses Damage; completion reuses Victory.
+Opening the map and grimoire uses the swapped selection approved by the user.
+Unity imports the files with Vorbis compression for playback.

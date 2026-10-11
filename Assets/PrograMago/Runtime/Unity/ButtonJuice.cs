@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace PrograMago.UnityIntegration
 {
     public sealed class ButtonJuice : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
-        IPointerDownHandler, IPointerUpHandler
+        IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, ISubmitHandler
     {
         [SerializeField, Range(1f, 1.12f)] private float hoverScale = 1.035f;
         [SerializeField, Range(0.85f, 1f)] private float pressedScale = 0.94f;
@@ -37,7 +38,26 @@ namespace PrograMago.UnityIntegration
             rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, baseScale * multiplier, blend);
         }
 
-        public void OnPointerEnter(PointerEventData eventData) => pointerInside = true;
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (pointerInside) return;
+            pointerInside = true;
+            if (CanInteract()) GameAudio.Play(GameSound.Hover);
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left && CanInteract())
+                GameAudio.Play(GameSound.Click);
+        }
+        public void OnSubmit(BaseEventData eventData)
+        {
+            if (CanInteract()) GameAudio.Play(GameSound.Click);
+        }
+        private bool CanInteract()
+        {
+            var button = GetComponent<Button>();
+            return button != null && button.isActiveAndEnabled && button.IsInteractable();
+        }
         public void OnPointerExit(PointerEventData eventData) { pointerInside = false; pointerDown = false; }
         public void OnPointerDown(PointerEventData eventData) => pointerDown = true;
         public void OnPointerUp(PointerEventData eventData) => pointerDown = false;

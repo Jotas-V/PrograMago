@@ -3,6 +3,7 @@ namespace PrograMago.UnityIntegration
 {
     public static class GameAudioSettings
     {
+        public static event System.Action Changed;
         public const string MasterKey = "PrograMago.Volume.Master";
         public const string MusicKey = "PrograMago.Volume.Music";
         public const string EffectsKey = "PrograMago.Volume.Effects";
@@ -16,6 +17,7 @@ namespace PrograMago.UnityIntegration
                 throw new System.ArgumentException("Configuração de áudio desconhecida.", nameof(key));
             PlayerPrefs.SetFloat(key, Mathf.Clamp01(value)); PlayerPrefs.Save();
             AudioListener.volume = Master;
+            Changed?.Invoke();
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Apply() => AudioListener.volume = Master;

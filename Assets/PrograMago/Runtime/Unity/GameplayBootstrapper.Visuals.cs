@@ -126,14 +126,18 @@ namespace PrograMago.UnityIntegration
             Transform source = FindCombatActor(step.Actor);
             Transform target = FindCombatActor(step.Target);
             if (source == null || target == null) { FinishEnemyImpact(step); return; }
-            if (step.Kind == CombatEventKind.Hit)
-                FlashCombatTarget(target.gameObject, step.Element);
             var projectile = Instantiate(prefab).GetComponent<CombatProjectileView>();
+            GameAudio.PlaySpell(step.Element);
             int generation = presentationGeneration;
             projectile.Launch(CombatActorVisualCenter(source), CombatActorVisualCenter(target),
                 () => combat != null && combat.IsPaused, () =>
                 {
                     if (generation == presentationGeneration) FinishEnemyImpact(step);
+                }, () =>
+                {
+                    if (generation != presentationGeneration || step.Kind != CombatEventKind.Hit) return;
+                    if (target != null) FlashCombatTarget(target.gameObject, step.Element);
+                    GameAudio.Play(GameSound.Damage);
                 });
             projectiles.Add(projectile);
         }

@@ -595,6 +595,8 @@ namespace PrograMago.UnityIntegration
 
         public void ShowVictory(BattleVictoryContent content, bool isFinalBattle, bool isPhaseComplete)
         {
+            if (!victoryOverlay.activeSelf)
+                GameAudio.Play(isFinalBattle ? GameSound.Completion : GameSound.Victory);
             victoryTitleText.text = content.Title;
             victoryAchievementText.text = content.Achievement;
             victoryReviewText.text = content.Review;
@@ -827,6 +829,7 @@ namespace PrograMago.UnityIntegration
             }
             else if (combat.Outcome == CombatOutcome.Defeat)
             {
+                if (!combatDefeatOverlay.activeSelf) GameAudio.Play(GameSound.Defeat);
                 combatDefeatOverlay.SetActive(true);
                 pauseCombatButton.gameObject.SetActive(false);
                 combatStatusText.text = "Derrota — tente novamente ou edite o código";

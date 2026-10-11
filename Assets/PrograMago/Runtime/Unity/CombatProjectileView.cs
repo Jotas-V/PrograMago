@@ -17,13 +17,18 @@ namespace PrograMago.UnityIntegration
         private Color initialColor;
         private bool launched;
         private Action finished;
+        private Action impacted;
+        private bool arrived;
 
-        public void Launch(Vector3 start, Vector3 end, Func<bool> isPaused, Action onFinished = null)
+        public void Launch(Vector3 start, Vector3 end, Func<bool> isPaused, Action onFinished = null, Action onImpact = null)
         {
             origin = start;
             destination = end;
             paused = isPaused;
             finished = onFinished;
+            impacted = onImpact;
+            arrived = false;
+            elapsed = 0;
             originalScale = transform.localScale;
             sprite = GetComponentInChildren<SpriteRenderer>();
             initialColor = sprite.color;
@@ -49,6 +54,11 @@ namespace PrograMago.UnityIntegration
             }
             else
             {
+                if (!arrived) {
+                    arrived = true;
+                    impacted?.Invoke();
+                    impacted = null;
+                }
                 float t = Mathf.Clamp01((elapsed - flightDuration) / impactDuration);
                 transform.position = destination;
                 transform.localScale = originalScale * (1f + t * 2.5f);

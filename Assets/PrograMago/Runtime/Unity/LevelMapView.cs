@@ -46,6 +46,7 @@ namespace PrograMago.UnityIntegration
         private float animationTime;
         private float cameraTargetX;
         private bool followWizard = true;
+        private float stepElapsed;
 
         public bool IsVisible { get; private set; }
         public bool IsTravelling => targetNode >= 0;
@@ -105,6 +106,7 @@ namespace PrograMago.UnityIntegration
             cameraTargetX = wizard.position.x;
             FollowCamera(1f, true);
             RefreshState();
+            GameAudio.Play(GameSound.MapOpen);
         }
 
         public bool SelectPhase(int index)
@@ -117,6 +119,7 @@ namespace PrograMago.UnityIntegration
                 if (i == index) break;
             }
             targetNode = index;
+            stepElapsed = .32f;
             followWizard = true;
             message.text = $"Caminhando até a fase {index + 1}… A fase começa ao chegar.";
             RefreshButtons();
@@ -126,6 +129,7 @@ namespace PrograMago.UnityIntegration
         public void AdvanceTravel(float deltaTime)
         {
             if (!IsVisible || !IsTravelling) return;
+            Vector2 beforeMove = wizard.anchoredPosition;
             float remaining = Mathf.Max(0, deltaTime) * 560f;
             while (waypoints.Count > 0 && remaining > 0) {
                 Vector2 target = waypoints.Peek();
@@ -139,6 +143,13 @@ namespace PrograMago.UnityIntegration
                 waypoints.Dequeue();
             }
             FollowCamera(deltaTime, false);
+            if (wizard.anchoredPosition != beforeMove) {
+                stepElapsed += Mathf.Max(0, deltaTime);
+                if (stepElapsed >= .32f) {
+                    stepElapsed %= .32f;
+                    GameAudio.Play(GameSound.MapStep);
+                }
+            }
             if (waypoints.Count != 0) return;
             int arrived = targetNode;
             targetNode = -1;

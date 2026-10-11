@@ -24,10 +24,12 @@ namespace PrograMago.UnityIntegration
             if (attemptLife < 0) return;
             int damage = Mathf.Max(1, Mathf.CeilToInt(attemptMaximumLife * 0.2f));
             attemptLife = Mathf.Max(0, attemptLife - damage);
+            if (attemptLife > 0) GameAudio.Play(GameSound.Damage);
             feedbackText.text += $"\nCódigo inválido: perdeu {damage} de vida. Vida: {attemptLife}/{attemptMaximumLife}.";
             RenderWizard();
             if (attemptLife == 0)
             {
+                GameAudio.Play(GameSound.Defeat);
                 combatDefeatOverlay.SetActive(true);
                 SetInteractionEnabled(false);
             }

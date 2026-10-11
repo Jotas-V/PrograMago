@@ -20,6 +20,7 @@ namespace PrograMago.UnityIntegration
         private LearningProgress progress;
         private Action close, save;
         private bool closing;
+        private bool pageSelected;
         public int CurrentPage { get; private set; }
         public bool IsPageReadable => progress != null && progress.CanReadGrimoirePage(CurrentPage);
 
@@ -35,6 +36,7 @@ namespace PrograMago.UnityIntegration
                 int page = i; pageButtons[i].onClick.AddListener(() => SelectPage(page));
             }
             SelectPage(progress.CurrentBattleIndex);
+            GameAudio.Play(GameSound.GrimoireOpen);
             StartCoroutine(AnimateOpening());
         }
 
@@ -53,6 +55,8 @@ namespace PrograMago.UnityIntegration
         public void SelectPage(int index)
         {
             if (progress == null || closing || index < 0 || index >= progress.Path.Battles.Count) return;
+            if (pageSelected && CurrentPage != index) GameAudio.Play(GameSound.PageTurn);
+            pageSelected = true;
             CurrentPage = index;
             previousButton.interactable = index > 0;
             nextButton.interactable = index < progress.Path.Battles.Count - 1;
